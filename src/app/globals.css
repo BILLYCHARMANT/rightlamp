@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
+/*
+ * Brand palette — Rightlamps / Right Lamp Shine Group (logo-derived).
+ * Light-first: warm off-whites (never pure #fff) + orange + cyan.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Pearl / porcelain tones — reads as white without harsh glare.
+   * Named --canvas / --ink (not --background) so nothing can shadow Tailwind-style tokens. */
+  --canvas: #f4f3f0;
+  /* Primary copy — slightly deeper than pure gray-black for contrast on pearl */
+  --ink: #121110;
+  /* Light wash for gradient stops / subtle fills (`to-muted`, etc.) — not for body text */
+  --muted: #dcdad6;
+  /* Secondary copy — must stay readable on --canvas (do not use --muted for text) */
+  --muted-foreground: #454038;
+  --surface: #ebe9e4;
+  --surface-elevated: #f9f8f6;
+  --border: #d4d1cb;
+  /* Softer “burnt” orange — less fluorescent than #ff6600, easier on the eyes */
+  --brand-primary: #c55316;
+  --brand-primary-hover: #d46320;
+  --brand-accent: #00bfff;
+  --brand-accent-muted: #3bc8ff;
+  --danger: #dc2626;
+  --success: #16a34a;
 }
 
+/*
+ * Tailwind v4’s preset includes names like `background` / `foreground` that can
+ * shadow custom tokens — use unique keys so `bg-canvas` / `text-ink` always match our palette.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-canvas: var(--canvas);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  --color-brand: var(--brand-primary);
+  --color-brand-hover: var(--brand-primary-hover);
+  --color-accent: var(--brand-accent);
+  --color-accent-muted: var(--brand-accent-muted);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background-color: var(--canvas);
+  color: var(--ink);
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100dvh;
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
 }
