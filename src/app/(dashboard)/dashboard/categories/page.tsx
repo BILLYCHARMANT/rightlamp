@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { getCachedRightlampsProducts } from "@/lib/rightlamps/server-products";
+import { getCachedPublishedCatalog } from "@/lib/store/published-catalog";
 
 export default async function DashboardCategoriesPage() {
   let rows: { name: string; count: number }[] = [];
   try {
-    const products = await getCachedRightlampsProducts();
+    const products = await getCachedPublishedCatalog();
     const counts = new Map<string, number>();
     for (const p of products) {
       const c = (p.category ?? "").trim();
@@ -21,27 +21,20 @@ export default async function DashboardCategoriesPage() {
   return (
     <div className="space-y-6 p-4 md:p-8">
       <p className="max-w-2xl text-sm text-muted-foreground">
-        Category buckets mirror the live catalog served from{" "}
-        <code className="rounded-md bg-surface px-1.5 py-0.5 font-mono text-xs ring-1 ring-border">
-          /api/products
-        </code>{" "}
-        on{" "}
-        <Link
-          className="font-medium text-accent hover:text-accent-muted"
-          href="/shop"
-        >
-          PV-GRID
-        </Link>
-        . Open a category on the storefront with one click.
+        Category buckets mirror published products in your dashboard catalog. Open a
+        category on the storefront with one click.
       </p>
 
       {rows.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-surface px-6 py-14 text-center text-sm text-muted-foreground">
-          No categories loaded — check catalog API origin (
-          <code className="rounded bg-surface-elevated px-1 font-mono ring-1 ring-border">
-            RIGHTLAMPS_API_ORIGIN
-          </code>
-          ) or network access.
+          No categories yet — publish products with a category from{" "}
+          <Link
+            className="font-medium text-accent hover:text-accent-muted"
+            href="/dashboard/products"
+          >
+            Products
+          </Link>
+          .
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated shadow-sm">

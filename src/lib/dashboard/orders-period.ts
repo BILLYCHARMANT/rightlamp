@@ -14,6 +14,35 @@ export const ORDER_PERIOD_OPTIONS: {
   { id: "year", label: "This year" },
 ];
 
+/** Period filters when orders are limited to the current calendar month. */
+export const MONTH_SCOPED_ORDER_PERIOD_OPTIONS = ORDER_PERIOD_OPTIONS.filter(
+  (option) => option.id !== "all" && option.id !== "year",
+);
+
+function formatDateInput(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+export function startOfCurrentMonth(now = new Date()) {
+  return new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
+export function endOfCurrentMonth(now = new Date()) {
+  return new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+}
+
+export function currentMonthDateBounds(now = new Date()) {
+  const start = startOfCurrentMonth(now);
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return {
+    min: formatDateInput(start),
+    max: formatDateInput(end),
+  };
+}
+
 function startOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }

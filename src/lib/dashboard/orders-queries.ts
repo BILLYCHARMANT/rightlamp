@@ -27,12 +27,29 @@ function branchWhere(scope: OrderViewerScope | null | undefined) {
   return { branchId: { in: scope.branchIds } };
 }
 
+type FetchOrdersOptions = {
+  placedAtGte?: Date;
+};
+
+function orderWhere(
+  scope: OrderViewerScope | null | undefined,
+  options?: FetchOrdersOptions,
+) {
+  const where = branchWhere(scope);
+  if (!options?.placedAtGte) return where;
+  return {
+    ...where,
+    placedAt: { gte: options.placedAtGte },
+  };
+}
+
 export async function fetchAllOrders(
   scope?: OrderViewerScope | null,
+  options?: FetchOrdersOptions,
 ): Promise<OrderRow[]> {
   try {
     const rows = await prisma.order.findMany({
-      where: branchWhere(scope),
+      where: orderWhere(scope, options),
       orderBy: { placedAt: "desc" },
       include: orderInclude,
     });

@@ -10,6 +10,7 @@ import { formatMoneyFromCents } from "@/lib/dashboard/format-money";
 
 import { fetchAllOrders } from "@/lib/dashboard/orders-queries";
 import type { OrderViewerScope } from "@/lib/dashboard/order-access";
+import { startOfCurrentMonth } from "@/lib/dashboard/orders-period";
 
 
 
@@ -56,6 +57,10 @@ export type OrdersOverviewPayload = {
   channels: OrdersChannelSlice[];
 
   openQueue: OrderRow[];
+
+  viewMode: {
+    monthOnly: boolean;
+  };
 
 };
 
@@ -199,6 +204,8 @@ function buildOverviewPayload(orders: OrderRow[]): OrdersOverviewPayload {
 
     openQueue: openOrders.slice(0, 6),
 
+    viewMode: { monthOnly: false },
+
   };
 
 }
@@ -208,7 +215,10 @@ function buildOverviewPayload(orders: OrderRow[]): OrdersOverviewPayload {
 export async function getOrdersOverviewPayload(
   scope?: OrderViewerScope | null,
 ): Promise<OrdersOverviewPayload> {
-  const orders = await fetchAllOrders(scope);
-  return buildOverviewPayload(orders);
+  const orders = await fetchAllOrders(scope, {
+    placedAtGte: startOfCurrentMonth(),
+  });
+  const payload = buildOverviewPayload(orders);
+  return { ...payload, viewMode: { monthOnly: true } };
 }
 

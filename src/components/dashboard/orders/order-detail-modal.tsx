@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { OrderRow } from "@/lib/dashboard/order-types";
 import type { OrderProgressField } from "@/lib/dashboard/order-actions";
 import { OrderStatusBadge } from "@/components/dashboard/order-status-badge";
@@ -148,10 +149,13 @@ export function OrderDetailModal({
                           <span className="flex min-w-0 items-center gap-2 text-muted-foreground">
                             {accessory.imageUrl ? (
                               <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-sm border border-slate-200 bg-slate-50">
-                                <img
+                                <Image
                                   src={accessory.imageUrl}
                                   alt=""
-                                  className="h-full w-full object-cover"
+                                  fill
+                                  sizes="28px"
+                                  className="object-cover"
+                                  unoptimized
                                 />
                               </span>
                             ) : null}

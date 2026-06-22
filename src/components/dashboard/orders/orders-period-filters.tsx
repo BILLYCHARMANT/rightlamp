@@ -12,6 +12,10 @@ type Props = {
   customDate: string | null;
   onPeriodChange: (period: OrderPeriodFilter) => void;
   onCustomDateChange: (date: string | null) => void;
+  periodOptions?: typeof ORDER_PERIOD_OPTIONS;
+  dateMin?: string;
+  dateMax?: string;
+  monthOnly?: boolean;
 };
 
 export function OrdersPeriodFilters({
@@ -19,9 +23,18 @@ export function OrdersPeriodFilters({
   customDate,
   onPeriodChange,
   onCustomDateChange,
+  periodOptions = ORDER_PERIOD_OPTIONS,
+  dateMin,
+  dateMax,
+  monthOnly = false,
 }: Props) {
   return (
     <div className="flex flex-wrap items-center gap-2">
+      {monthOnly ? (
+        <span className="rounded-full bg-brand/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-brand">
+          This month only
+        </span>
+      ) : null}
       <div className="relative w-full min-w-[140px] sm:w-auto sm:min-w-[160px]">
         <label className="sr-only" htmlFor="orders-period-filter">
           Filter by period
@@ -36,7 +49,7 @@ export function OrdersPeriodFilters({
           }}
           className="w-full appearance-none rounded-lg border border-slate-300 bg-white py-1.5 pl-3 pr-9 text-xs font-medium text-ink shadow-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-muted-foreground"
         >
-          {ORDER_PERIOD_OPTIONS.map(({ id, label }) => (
+          {periodOptions.map(({ id, label }) => (
             <option key={id} value={id}>
               {label}
             </option>
@@ -59,6 +72,8 @@ export function OrdersPeriodFilters({
         <input
           type="date"
           value={customDate ?? ""}
+          min={dateMin}
+          max={dateMax}
           onChange={(e) => {
             const value = e.target.value;
             onCustomDateChange(value || null);

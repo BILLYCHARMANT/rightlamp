@@ -7,8 +7,13 @@ import type { OrderRow } from "@/lib/dashboard/order-types";
 import type { StaffOrderFormContext } from "@/lib/dashboard/order-branches";
 import type { OrderableProduct } from "@/lib/dashboard/order-types";
 import type { OrdersOverviewPayload } from "@/lib/dashboard/orders-overview";
+import {
+  filterOrdersByPeriod,
+  currentMonthDateBounds,
+  formatCalendarDateLabel,
+  MONTH_SCOPED_ORDER_PERIOD_OPTIONS,
+} from "@/lib/dashboard/orders-period";
 import type { OrderPeriodFilter } from "@/lib/dashboard/orders-period";
-import { formatCalendarDateLabel } from "@/lib/dashboard/orders-period";
 import {
   updateOrderProgress,
   cancelOrder,
@@ -28,7 +33,6 @@ import {
   ordersToCsv,
   type OrderTabFilter,
 } from "@/components/dashboard/orders/orders-utils";
-import { filterOrdersByPeriod, ORDER_PERIOD_OPTIONS } from "@/lib/dashboard/orders-period";
 import { DashboardEcomCard } from "@/components/dashboard/ui/dashboard-ecom";
 import { DashboardTablePagination } from "@/components/dashboard/ui/dashboard-table-pagination";
 import { usePaginatedRows } from "@/hooks/use-paginated-rows";
@@ -41,9 +45,11 @@ type Props = {
 
 export function OrdersDashboard({ data, orderableProducts, orderFormContext }: Props) {
   const router = useRouter();
+  const monthBounds = currentMonthDateBounds();
+  const periodOptions = MONTH_SCOPED_ORDER_PERIOD_OPTIONS;
   const [orders, setOrders] = useState<OrderRow[]>(data.orders);
   const [tab, setTab] = useState<OrderTabFilter>("active");
-  const [period, setPeriod] = useState<OrderPeriodFilter>("all");
+  const [period, setPeriod] = useState<OrderPeriodFilter>("month");
   const [customDate, setCustomDate] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [detail, setDetail] = useState<OrderRow | null>(null);
@@ -69,10 +75,11 @@ export function OrdersDashboard({ data, orderableProducts, orderFormContext }: P
 
   const periodLabel = useMemo(() => {
     if (customDate) return formatCalendarDateLabel(customDate);
+    if (period === "month") return "This month";
     return (
-      ORDER_PERIOD_OPTIONS.find((o) => o.id === period)?.label ?? "All time"
+      periodOptions.find((o) => o.id === period)?.label ?? "This month"
     );
-  }, [period, customDate]);
+  }, [period, customDate, periodOptions]);
 
   function patchOrder(updated: OrderRow) {
     setOrders((prev) =>
@@ -169,6 +176,10 @@ export function OrdersDashboard({ data, orderableProducts, orderFormContext }: P
             <OrdersPeriodFilters
               period={period}
               customDate={customDate}
+              periodOptions={periodOptions}
+              dateMin={monthBounds.min}
+              dateMax={monthBounds.max}
+              monthOnly
               onPeriodChange={(next) => {
                 setPeriod(next);
                 resetPage();
