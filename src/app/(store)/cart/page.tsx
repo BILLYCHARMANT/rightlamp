@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { storeDisplay } from "@/components/store/store-fonts";
 
 export const metadata = {
   title: "Shopping Cart",
@@ -8,21 +7,17 @@ export const metadata = {
 export default function CartPage() {
   return (
     <main className="mx-auto max-w-3xl flex-1 px-4 py-10 sm:py-14">
-      <h1
-        className={`${storeDisplay.className} text-3xl font-semibold tracking-tight text-ink`}
-      >
+      <h1 className="text-3xl font-bold tracking-tight text-ink">
         Shopping Cart
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
         Same entry point as{" "}
-        <a
-          href="https://www.rightlamps.com/cart"
+        <Link
+          href="/cart"
           className="font-medium text-accent hover:text-accent-muted"
-          target="_blank"
-          rel="noreferrer"
         >
-          rightlamps.com/cart
-        </a>
+          PV-GRID cart
+        </Link>
         . Checkout wiring comes next — browse the catalog and add lines here once
         cart persistence is connected.
       </p>

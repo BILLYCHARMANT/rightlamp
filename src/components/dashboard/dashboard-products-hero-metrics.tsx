@@ -18,7 +18,7 @@ export function DashboardProductsHeroMetrics({
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <div className="rounded-2xl border border-border bg-surface-elevated p-5 shadow-sm shadow-ink/[0.03]">
+      <div className="dash-stat-card p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
@@ -41,7 +41,7 @@ export function DashboardProductsHeroMetrics({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-surface-elevated p-5 shadow-sm shadow-ink/[0.03]">
+      <div className="dash-stat-card p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
@@ -51,11 +51,11 @@ export function DashboardProductsHeroMetrics({
               {livePct}%
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
-              <span className="font-semibold text-accent">{publishedSkus}</span>{" "}
-              of {totalSkus} SKUs visible to shoppers
+              <span className="font-semibold text-brand">{publishedSkus}</span>{" "}
+              of {totalSkus} products visible to shoppers
             </p>
           </div>
-          <div className="rounded-xl bg-accent/12 p-3 text-accent ring-1 ring-accent/20">
+          <div className="rounded-xl bg-[var(--dash-accent-yellow)]/25 p-3 text-brand ring-1 ring-brand/20">
             <TrendingUp className="h-6 w-6" aria-hidden />
           </div>
         </div>

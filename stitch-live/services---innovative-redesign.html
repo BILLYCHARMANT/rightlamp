@@ -1,0 +1,450 @@
+﻿<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Our Specialized Energy Services | RLS Group</title>
+<meta content="Professional electrical and renewable energy services by PV-GRID." name="description"/>
+<!-- Design System Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#dcd9d9",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-container-highest": "#e5e2e1",
+                    "surface": "#fcf9f8",
+                    "primary-fixed-dim": "#aec6ff",
+                    "tertiary-fixed-dim": "#ffba27",
+                    "surface-container-lowest": "#ffffff",
+                    "border-subtle": "#E2E8F0",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#4edea3",
+                    "background": "#fcf9f8",
+                    "outline-variant": "#c2c6d6",
+                    "on-primary-fixed": "#001a42",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e5e2e1",
+                    "on-secondary-fixed": "#002113",
+                    "secondary-fixed": "#6ffbbe",
+                    "inverse-primary": "#aec6ff",
+                    "secondary-container": "#6cf8bb",
+                    "inverse-surface": "#313030",
+                    "surface-container-high": "#ebe7e7",
+                    "power-yellow": "#FAB40D",
+                    "surface-bright": "#fcf9f8",
+                    "on-surface": "#1c1b1b",
+                    "on-secondary-fixed-variant": "#005236",
+                    "outline": "#727786",
+                    "primary": "#0056be",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#424754",
+                    "surface-gray": "#F8FAFC",
+                    "tertiary": "#785400",
+                    "on-background": "#1c1b1b",
+                    "surface-tint": "#005ac5",
+                    "surface-container-low": "#f6f3f2",
+                    "tertiary-container": "#976b00",
+                    "secondary": "#006c49",
+                    "energy-green": "#10B981",
+                    "tertiary-fixed": "#ffdea9",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#00714d",
+                    "surface-container": "#f0edec",
+                    "primary-fixed": "#d8e2ff",
+                    "on-tertiary-fixed": "#271900",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#106eea",
+                    "on-tertiary-container": "#fff9f6",
+                    "on-primary-fixed-variant": "#004396",
+                    "on-primary-container": "#fbfaff",
+                    "on-tertiary-fixed-variant": "#5e4100"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "section-padding": "80px",
+                    "section-padding-mobile": "48px",
+                    "gutter": "24px",
+                    "base": "8px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "label-caps": ["JetBrains Mono"],
+                    "button": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "display-lg-mobile": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .innovative-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .innovative-card:hover {
+            transform: translateY(-8px);
+        }
+        .slanted-bg {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .industrial-text {
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .offset-border {
+            position: relative;
+        }
+        .offset-border::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: -12px;
+            bottom: -12px;
+            border: 2px solid #0056be;
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+        .offset-border:hover::before {
+            top: 8px;
+            left: 8px;
+            right: -8px;
+            bottom: -8px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar (Shared Component) -->
+<nav class="bg-surface/90 backdrop-blur-md w-full h-20 sticky top-0 z-50 border-b border-border-subtle">
+<div class="flex justify-between items-center px-gutter max-w-container-max mx-auto h-full">
+<div class="font-headline-sm text-headline-sm font-bold text-primary">
+            RLS Group
+        </div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">About</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Services</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Portfolio</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Team</a>
+</div>
+<div>
+<button class="bg-primary text-on-primary font-button text-button px-6 py-3 rounded-lg hover:shadow-lg transition-all">
+                Get Quote
+            </button>
+</div>
+</div>
+</nav>
+<!-- Enhanced Innovative Hero Section -->
+<header class="relative w-full h-[75vh] min-h-[600px] flex items-center justify-start overflow-hidden bg-inverse-surface">
+<div class="absolute inset-0 z-0">
+<img alt="Energy Infrastructure" class="w-full h-full object-cover opacity-40 scale-105 animate-[pulse_10s_infinite]" src="https://lh3.googleusercontent.com/aida/AP1WRLvg3lZchL-aB-Ccsbq0TTHit2zHwU2f3pN2youIFUk4MxqCxjrK1sXsmj0zWs4S4VT3m4swjbNNUfKB2sS1wqwxVxIF-fdfrviV7HLL1JPgLUoQ0VJVZMmH0x_jsUJO9digvH7lMsokEebAeEV1GpZG8Tbz8m6YlAzErWDgzpokUQi1nOU_tL3WroB7vYnYGbW1_lYMKBAe9ZrQg1GlES5yHqzyr9BNs1iqoJmPUwl8tjrs5VptSM2CYdE"/>
+<div class="absolute inset-0 bg-gradient-to-r from-inverse-surface via-inverse-surface/60 to-transparent"></div>
+<!-- Technical Overlay Elements -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#0056be 1px, transparent 1px); background-size: 30px 30px;"></div>
+</div>
+<div class="relative z-10 px-gutter max-w-container-max mx-auto w-full">
+<div class="max-w-3xl">
+<div class="flex items-center gap-3 mb-8">
+<div class="h-[2px] w-12 bg-primary"></div>
+<span class="font-label-caps text-label-caps text-primary-fixed-dim uppercase tracking-widest">Our Technical Expertise</span>
+</div>
+<h1 class="font-display-lg text-display-lg-mobile md:text-6xl text-white mb-8 leading-[1.1] industrial-text font-extrabold">
+                High-Performance <br/><span class="text-primary-fixed-dim">Energy Infrastructure</span>
+</h1>
+<p class="font-body-lg text-body-lg text-white/80 max-w-xl mb-12 leading-relaxed">
+                Empowering Rwanda's future through precision electrical engineering and innovative renewable energy solutions since 2010.
+            </p>
+<div class="flex flex-wrap gap-6">
+<button class="group bg-primary text-on-primary px-8 py-4 rounded-lg font-button flex items-center gap-2 hover:bg-primary-container transition-all">
+                    Explore Solutions
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<div class="flex items-center gap-4 text-white/60">
+<div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">bolt</span>
+</div>
+<span class="font-label-caps text-xs">ISO 9001 Certified Systems</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Technical Indicator -->
+<div class="absolute bottom-12 right-gutter hidden lg:block">
+<div class="glass-panel p-6 rounded-xl border-l-4 border-l-primary flex flex-col gap-2">
+<div class="text-primary font-bold text-2xl font-headline-md">24/7</div>
+<div class="text-on-surface-variant font-label-caps text-[10px]">Rapid Response Support</div>
+</div>
+</div>
+</header>
+<!-- Services Main Grid Section -->
+<main class="max-w-container-max mx-auto px-gutter py-section-padding relative">
+<!-- Decorative geometric element -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
+<div class="flex flex-col md:flex-row justify-between items-start mb-20 gap-8">
+<div class="max-w-2xl">
+<h2 class="font-headline-md text-4xl text-on-surface industrial-text font-bold mb-6 flex items-center gap-4">
+<span class="w-8 h-8 bg-primary rounded-sm flex items-center justify-center text-white text-lg">01</span>
+                Core Disciplines
+            </h2>
+<p class="text-body-lg text-on-surface-variant">We bridge the gap between traditional electrical systems and the future of clean energy with end-to-end solutions for industrial, commercial, and residential clients.</p>
+</div>
+<div class="flex flex-col items-end">
+<div class="text-primary font-label-caps text-sm tracking-tighter mb-2">OPERATIONAL STANDARDS</div>
+<div class="flex gap-1">
+<div class="w-12 h-1 bg-primary"></div>
+<div class="w-8 h-1 bg-primary/30"></div>
+<div class="w-4 h-1 bg-primary/10"></div>
+</div>
+</div>
+</div>
+<!-- Innovative Bento-Style Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Service 1: Natural Gas/Biogas -->
+<div class="md:col-span-8 group innovative-card relative overflow-hidden rounded-xl bg-white border border-border-subtle shadow-sm flex flex-col md:flex-row">
+<div class="md:w-1/2 p-10 flex flex-col justify-between">
+<div>
+<span class="text-primary font-label-caps text-xs mb-4 block">RENEWABLE SOLUTIONS</span>
+<h3 class="font-headline-sm text-2xl mb-4 text-on-surface industrial-text">Extraction of Natural Gases.</h3>
+<p class="text-on-surface-variant mb-8">We build Biogas digesters both for Domestic and Institutional use, enabling sustainable waste-to-energy transformation.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<span class="font-button text-sm">Sustainable Infrastructure</span>
+</div>
+</div>
+<div class="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
+<img alt="Biogas project" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AP1WRLtraaROltpQnCYRHwqLzqSGlIUabaKdAFLDMHVuvhXpOmByhMV9g6F-8iQA-6v0jsmeUgRrIQay_BLZxfDUIxMm_-JNR5hN24Cb8HKZ02CJA3iXrRP-ztwR4gBu8XVJdzcoCrq09sHihKlvywUQX0UaWHdy8PEfzfIMXTLZayI4rT7aO_9k3X6QnzXZXrrX60y7aI0D3GWUb1-xMAprU6grpLbdvLRuacoPsFxSRNpnn8-bus-FKLgOfw"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+</div>
+</div>
+<!-- Service 2: Retail Sale -->
+<div class="md:col-span-4 group innovative-card bg-surface-container-low border border-border-subtle rounded-xl p-10 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-12 -top-12 w-32 h-32 bg-primary/5 rounded-full transition-transform duration-500 group-hover:scale-150"></div>
+<div>
+<span class="material-symbols-outlined text-primary text-4xl mb-6">shopping_cart</span>
+<h3 class="font-headline-sm text-xl mb-4 industrial-text">Retail Sale of Electrical Appliances.</h3>
+<p class="text-on-surface-variant text-sm">Retail shops stocking high-efficiency electrical equipment including industrial lamps, professional cabling, and more.</p>
+</div>
+<div class="mt-8">
+<a class="inline-flex items-center gap-2 text-primary font-button group-hover:gap-4 transition-all" href="#">
+                    Browse Catalogue
+                    <span class="material-symbols-outlined text-sm">arrow_right_alt</span>
+</a>
+</div>
+</div>
+<!-- Service 3: Electrical Installation -->
+<div class="md:col-span-5 group innovative-card relative rounded-xl overflow-hidden shadow-sm border border-border-subtle bg-white">
+<div class="h-64 overflow-hidden relative">
+<img alt="Field Engineer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AP1WRLtJ1kQ5d-EhioajKulDeUuAHjRzXHic1ez0eHKOepHPNCDm274zcXDLgNvxWf6Jm9VG3Cqx3_K2QaiZbJ_iDDj2tOQitVXtY8imKalFWL9Myq4CTlflj08kJ8fUh7fsNrgD_PV7AGrwj8Me4ydVgcgHmmJc9XYvaR6fMbgDGgNMVjqwXeRoUn9UX4Din_iqRZsVXYl74jQCi9m5LekhE-ZaLzHhO2TdNxgZc1EPC32JfA5OrgBKaPMZ1QA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="bg-primary text-white text-[10px] font-label-caps px-3 py-1 rounded">INSTALLATION</span>
+</div>
+</div>
+<div class="p-10">
+<h3 class="font-headline-sm text-2xl mb-4 industrial-text">Electrical Installation.</h3>
+<p class="text-on-surface-variant mb-6">Implementing Energy Saving Lighting, Motor Controls, and advanced Solar Panel Systems for maximum efficiency.</p>
+<div class="flex gap-2">
+<span class="text-[10px] bg-surface-container px-2 py-1 rounded font-label-caps">SOLAR</span>
+<span class="text-[10px] bg-surface-container px-2 py-1 rounded font-label-caps">HVAC</span>
+<span class="text-[10px] bg-surface-container px-2 py-1 rounded font-label-caps">CONTROLS</span>
+</div>
+</div>
+</div>
+<!-- Service 4: Research - Glassmorphism Highlight -->
+<div class="md:col-span-7 group innovative-card relative rounded-xl overflow-hidden bg-primary text-on-primary">
+<div class="absolute inset-0 opacity-20">
+<img alt="Technical tools" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida/AP1WRLvXC0NvNRWGBIMSebaRNPl2cTvtaHYfZsDarVuSYZM-8jbm66zzggM1aD_jvzufIG7dMd97XjfKQ7SBDJuBwwHR9hCSXdm-ChC3YpSrMrKLaXtUSmhucCm5YD_ZPAEm0aQUholXmFRnIycrRUhVSwhdiBdPfW8DVWX5s-vUb0FdSGHSzqP9TsnN_gHetcTg7pa3JSVOwg1zdq_zudYSb-Mi4nPN5PaeeN33vJFc-wRx4TW0KVY2VL3OJDQ"/>
+</div>
+<div class="absolute inset-0 bg-primary/80 backdrop-blur-sm"></div>
+<div class="relative z-10 p-12 h-full flex flex-col justify-center max-w-2xl">
+<span class="material-symbols-outlined text-power-yellow text-5xl mb-6">science</span>
+<h3 class="font-headline-sm text-3xl mb-6 industrial-text">Research &amp; Implementation.</h3>
+<p class="text-on-primary/90 text-lg mb-8 leading-relaxed">We participate in renewable energy innovation by bringing new energy projects to Rwanda, specializing in technology transfer and pilot programs.</p>
+<button class="bg-white text-primary px-8 py-3 rounded font-button self-start hover:shadow-xl transition-all">
+                    View Innovations
+                </button>
+</div>
+<!-- Technical geometric accent -->
+<div class="absolute top-0 right-0 w-24 h-24 border-r-4 border-t-4 border-power-yellow/30 m-8"></div>
+</div>
+<!-- Service 5: Repair -->
+<div class="md:col-span-4 group innovative-card bg-white border border-border-subtle rounded-xl p-10 flex flex-col offset-border">
+<div class="flex justify-between items-start mb-8">
+<div class="p-3 bg-primary/5 rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl">build</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-xl mb-4 industrial-text">Repair &amp; Maintenance.</h3>
+<p class="text-on-surface-variant text-sm mb-6">Rapid troubleshooting, comprehensive repairs, and maintenance contracts. We replace lamps, ballasts, and optimize aging systems.</p>
+<div class="mt-auto pt-6 border-t border-border-subtle flex items-center justify-between">
+<span class="text-xs font-label-caps text-on-surface-variant">24/7 SUPPORT AVAILABLE</span>
+<span class="material-symbols-outlined text-primary">history</span>
+</div>
+</div>
+<!-- Service 6: Manufacture -->
+<div class="md:col-span-8 group innovative-card relative overflow-hidden bg-surface-container rounded-xl flex flex-col md:flex-row shadow-sm border border-border-subtle">
+<div class="md:w-2/3 p-12 flex flex-col justify-center">
+<div class="flex items-center gap-3 mb-6">
+<div class="px-3 py-1 bg-energy-green text-white text-[10px] font-label-caps rounded">PROUDLY RWANDAN</div>
+<span class="text-on-surface-variant font-label-caps text-xs">MANUFACTURING DIVISION</span>
+</div>
+<h3 class="font-headline-md text-3xl mb-6 industrial-text font-bold">Domestic Appliance Manufacturing.</h3>
+<p class="text-body-lg text-on-surface-variant mb-8">We manufacture improved Cook Stoves that utilize electricity, specifically engineered as "Made in Rwanda" extensions for modern homes.</p>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-energy-green">check_circle</span>
+<span class="text-sm font-button">Efficient Power</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-energy-green">check_circle</span>
+<span class="text-sm font-button">Locally Sourced</span>
+</div>
+</div>
+</div>
+<div class="md:w-1/3 h-64 md:h-auto">
+<img alt="Manufacturing" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLty5c8TU2A0OXf8MqTVmS4NUSZ2TtU8l0BKcqbfUN8k9g1CDE93mLpBJyhcnII_THVkVQZHtk31Bwdq2EiLOkOqKD7zW_7Adt8Rvqc8xto8MwlTsXnCz0FkUV-bCD3QS0o0FI840kYzTW7UZYC0FrkDAnlZKsI5ifAkwfwvFt6AmX_3-SD2yE9iCN_kqlmqcY8nFDCSPI_nNEOaOYqTAYgeN9DQNIvo066aNvEzgQvImlp_NM8DBcFzow"/>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom CTA Section -->
+<section class="bg-inverse-surface py-section-padding relative overflow-hidden">
+<!-- Geometric Overlay -->
+<div class="absolute top-0 right-0 w-1/2 h-full bg-primary/5 slanted-bg -z-0"></div>
+<div class="max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-2 gap-20 items-center relative z-10">
+<div class="relative">
+<div class="aspect-square rounded-xl overflow-hidden shadow-2xl relative">
+<img alt="Project site" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyLWSPyP1OLcrzFqQwiFI5ZgJXX4F2_ceOl5EuXoftSpMOxPDJeIcLWmI68NSfxsAHsqk0WRT7MaYxk7Klos4BUH3qlZpoVaJ1SXDOO-WDRaqiklNWuUr2wFTdTTjerFxaNbPRJ7NhzozouqvKlagIGN5TKnu7lvH8MTbEbYaSfEt8cH-GKeFflOdCw3QrrqfLic4qBrAzG-LrYLwZ3W-X2G_vyb5oJcbUlQeLvwGLShjQK7PnR3yZW6sgWgFyu489WQwnNorp1mg"/>
+<div class="absolute inset-0 bg-primary/20 mix-blend-overlay"></div>
+</div>
+<!-- Offset floating stat -->
+<div class="absolute -bottom-10 -right-10 bg-primary p-10 rounded-lg shadow-2xl">
+<div class="text-white text-6xl font-headline-md font-bold leading-none mb-2">14+</div>
+<div class="text-white/80 font-label-caps text-xs uppercase tracking-widest">Years of <br/>Excellence</div>
+</div>
+</div>
+<div>
+<h2 class="font-display-lg text-white mb-8 industrial-text leading-tight">Ready to Engineer <br/><span class="text-primary-fixed-dim">The Future?</span></h2>
+<p class="text-white/70 text-lg mb-12 leading-relaxed">
+                From concept to reality, we take your electrical and lighting ideas and turn them into high-performing assets. Our team of mature engineers ensures every project is delivered with surgical precision.
+            </p>
+<div class="flex flex-col sm:flex-row gap-6">
+<button class="bg-primary text-on-primary font-button px-10 py-5 rounded-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+                    Request Technical Quote
+                </button>
+<button class="border border-white/30 text-white font-button px-10 py-5 rounded-lg hover:bg-white/5 transition-all">
+                    Our Portfolio
+                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer (Shared Component) -->
+<footer class="bg-surface-container-highest border-t border-border-subtle w-full py-section-padding">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-gutter max-w-container-max mx-auto">
+<div class="space-y-6">
+<div class="font-headline-sm text-headline-sm font-bold text-primary">RLS Group</div>
+<p class="text-on-surface-variant font-body-md leading-relaxed">
+                Leading independent provider of end-to-end electrical contracting and renewable energy solutions.
+            </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-sm">public</span>
+</a>
+<a class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-sm">mail</span>
+</a>
+</div>
+</div>
+<div>
+<h4 class="font-button text-on-surface mb-6 uppercase tracking-wider">Explore</h4>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-primary transition-all text-sm" href="#">Services</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all text-sm" href="#">Portfolio</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all text-sm" href="#">Team</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all text-sm" href="#">Events</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-button text-on-surface mb-6 uppercase tracking-wider">Legal</h4>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-primary transition-all text-sm" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all text-sm" href="#">Terms of Service</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all text-sm" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-button text-on-surface mb-6 uppercase tracking-wider">Technical Briefs</h4>
+<p class="text-on-surface-variant text-sm mb-4">Subscribe to our engineering updates.</p>
+<div class="flex">
+<input class="bg-surface px-4 py-3 border border-border-subtle rounded-l-lg w-full focus:outline-none focus:border-primary" placeholder="Email address" type="email"/>
+<button class="bg-primary text-on-primary px-4 rounded-r-lg hover:bg-on-primary-fixed-variant transition-colors">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter mt-20 pt-8 border-t border-border-subtle/30 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-on-surface-variant font-label-caps text-[10px]">
+            © 2024 PV-GRID. Precision Engineered in Kigali.
+        </div>
+<div class="flex gap-6">
+<span class="text-on-surface-variant font-label-caps text-[10px]">EST. 2010</span>
+<span class="text-on-surface-variant font-label-caps text-[10px]">KIGALI, RWANDA</span>
+</div>
+</div>
+</footer>
+<script>
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.innovative-card').forEach(card => {
+        card.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
+        observer.observe(card);
+    });
+</script>
+</body></html>

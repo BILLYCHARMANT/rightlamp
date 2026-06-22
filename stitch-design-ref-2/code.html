@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Products Management | PV-GRID</title>
+<!-- Tailwind CSS CDN with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols for Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              orange: '#F57C00',
+              blue: '#0097A7',
+              dark: '#1A202C',
+              yellow: '#FFC107',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="technical-aesthetic">
+    /* Blueprint background pattern */
+    .blueprint-bg {
+      background-color: #f8fafc;
+      background-image: 
+        linear-gradient(rgba(0, 151, 167, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 151, 167, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Precision sharp corners and borders */
+    .precision-border {
+      border: 1px solid #e2e8f0;
+      box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Custom scrollbar for sidebar */
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: #4a5568;
+      border-radius: 2px;
+    }
+    
+    /* Active menu item indicator */
+    .nav-active {
+      background-color: #FFC107;
+      color: #1A202C;
+      font-weight: 600;
+      clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden font-sans text-slate-800 blueprint-bg">
+<!-- BEGIN: Sidebar -->
+<aside class="w-64 bg-brand-dark text-slate-300 flex flex-col flex-shrink-0 z-50">
+<!-- Logo Section -->
+<div class="p-6 border-b border-slate-700">
+<img alt="PV-GRID Logo" class="h-16 w-auto object-contain brightness-110" src="https://lh3.googleusercontent.com/aida/AP1WRLsVa2dPGtK5EreNKZ4Bkk-2MvQShvb1IC3FaxKHfws0zsqfrmrocXZYpIVFOW_YbvQgiU4Uryp3rcEiCR5xHSZ5fhx4AZtSLRbdLatBbtiXF-7Yy8cnbhzYD28IQoYOb9HEsAzLZiyKMsnsQIyfvNGLbLzL4D80n3pTClGh6F1wOU7yua7PvGXNV1sGuXrqyfJWB-EphAjdPAYituZDOk5D4YCNJufEQitx8FScqXPjhD80tMHdzOVPTis"/>
+</div>
+<!-- Navigation -->
+<nav class="flex-1 overflow-y-auto sidebar-scroll py-4">
+<ul class="space-y-1 px-3">
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">dashboard</span>
+<span class="text-sm uppercase tracking-wider">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">store</span>
+<span class="text-sm uppercase tracking-wider">My Shop</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">shopping_cart</span>
+<span class="text-sm uppercase tracking-wider">Orders</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 nav-active transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">inventory_2</span>
+<span class="text-sm uppercase tracking-wider">Products</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">package_2</span>
+<span class="text-sm uppercase tracking-wider">Stock</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">auto_awesome</span>
+<span class="text-sm uppercase tracking-wider">Specials</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">payments</span>
+<span class="text-sm uppercase tracking-wider">Expenses</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">calendar_month</span>
+<span class="text-sm uppercase tracking-wider">Monthly</span>
+</a>
+</li>
+<li class="pt-4 mt-4 border-t border-slate-700">
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">assessment</span>
+<span class="text-sm uppercase tracking-wider">Reports</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 hover:bg-slate-800 transition-colors rounded-sm group" href="#">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-white">group</span>
+<span class="text-sm uppercase tracking-wider">Staff Users</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Bottom Actions -->
+<div class="p-4 border-t border-slate-700 space-y-2">
+<a class="flex items-center px-4 py-2 text-sm hover:text-brand-blue transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-xs">open_in_new</span> Live storefront
+      </a>
+<a class="flex items-center px-4 py-2 text-sm text-red-400 hover:text-red-300 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">logout</span> Logout
+      </a>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content -->
+<main class="flex-1 flex flex-col relative overflow-hidden">
+<!-- BEGIN: Top Bar -->
+<header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-40">
+<div class="flex items-center">
+<nav class="text-xs text-slate-500 mb-1 flex items-center">
+<span>Dashboard</span>
+<span class="material-symbols-outlined text-[10px] mx-2">chevron_right</span>
+<span class="text-slate-800 font-medium">Products</span>
+</nav>
+</div>
+<div class="flex items-center space-x-6">
+<!-- Search -->
+<div class="relative w-72">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 bg-slate-100 border-none rounded-sm text-sm focus:ring-1 focus:ring-brand-blue" placeholder="Jump anywhere... (⌘K)" type="text"/>
+</div>
+<!-- Notifications -->
+<button class="relative text-slate-500 hover:text-slate-800">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-brand-orange rounded-full border-2 border-white"></span>
+</button>
+<!-- User Profile -->
+<div class="flex items-center pl-6 border-l border-slate-200 cursor-pointer group">
+<div class="w-8 h-8 rounded-sm bg-orange-100 flex items-center justify-center text-brand-orange font-bold text-xs mr-3 border border-orange-200">
+            AD
+          </div>
+<div class="text-left">
+<p class="text-xs font-bold text-slate-800 leading-tight">Administrator</p>
+<p class="text-[10px] text-slate-500">test@pv-grid.rw</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 ml-2 group-hover:text-slate-600">expand_more</span>
+</div>
+</div>
+</header>
+<!-- END: Top Bar -->
+<!-- BEGIN: Scrollable Container -->
+<div class="flex-1 overflow-y-auto p-8">
+<!-- BEGIN: Action Bar -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+<div>
+<h1 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Products Management</h1>
+<div class="flex items-center text-xs text-slate-500">
+<button class="flex items-center hover:text-brand-blue mr-4">
+<span class="material-symbols-outlined text-xs mr-1">refresh</span> Data refreshed
+            </button>
+<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-sm">18 June 2026 at 20:41</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center px-4 py-2 border border-slate-300 rounded-sm text-sm font-medium hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-sm mr-2">download</span> Export CSV
+          </button>
+<button class="flex items-center px-5 py-2 bg-brand-yellow text-brand-dark rounded-sm text-sm font-bold shadow-sm hover:brightness-105 transition-all">
+<span class="material-symbols-outlined text-sm mr-2">add</span> Add New Product
+          </button>
+</div>
+</div>
+<!-- END: Action Bar -->
+<!-- BEGIN: Table Section -->
+<section class="bg-white precision-border rounded-sm overflow-hidden">
+<!-- Table Filters/Header -->
+<div class="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center space-x-6 text-sm">
+<button class="font-bold border-b-2 border-brand-orange text-brand-orange pb-1">All (1)</button>
+<button class="text-slate-500 hover:text-slate-800 pb-1">Published (1)</button>
+<button class="text-slate-500 hover:text-slate-800 pb-1">Drafts (0)</button>
+</div>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 text-xs border-slate-200 rounded-sm" placeholder="Search product..." type="text"/>
+</div>
+</div>
+<!-- Secondary Filters -->
+<div class="px-5 py-4 flex flex-wrap items-center gap-3 bg-white border-b border-slate-100">
+<select class="text-xs border-slate-200 rounded-sm min-w-[160px] focus:ring-brand-blue">
+<option>Filter by Stock Status</option>
+</select>
+<select class="text-xs border-slate-200 rounded-sm min-w-[160px] focus:ring-brand-blue">
+<option>Product Category</option>
+</select>
+<select class="text-xs border-slate-200 rounded-sm min-w-[160px] focus:ring-brand-blue">
+<option>Sort by: Best Seller</option>
+</select>
+<select class="text-xs border-slate-200 rounded-sm min-w-[140px] focus:ring-brand-blue">
+<option>Product Type</option>
+</select>
+<select class="text-xs border-slate-200 rounded-sm min-w-[140px] focus:ring-brand-blue">
+<option>Last Modified</option>
+</select>
+<button class="bg-brand-orange text-white px-6 py-1.5 rounded-sm text-xs font-bold hover:bg-orange-600 transition-colors">Apply &gt;</button>
+<button class="text-slate-500 text-xs px-4 py-1.5 hover:bg-slate-50 rounded-sm border border-transparent hover:border-slate-200">Clear</button>
+</div>
+<!-- The Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 text-[10px] uppercase tracking-widest text-slate-500 font-bold border-b border-slate-200">
+<th class="px-5 py-4 w-10 text-center"><input class="rounded-sm border-slate-300 text-brand-blue focus:ring-brand-blue" type="checkbox"/></th>
+<th class="px-5 py-4 w-12"><span class="material-symbols-outlined text-sm">image</span></th>
+<th class="px-5 py-4">Product Name</th>
+<th class="px-5 py-4">SKU</th>
+<th class="px-5 py-4">Stock</th>
+<th class="px-5 py-4">Price</th>
+<th class="px-5 py-4">Category</th>
+<th class="px-5 py-4">Type</th>
+<th class="px-5 py-4">Profit</th>
+<th class="px-5 py-4">Live</th>
+<th class="px-5 py-4">Date</th>
+<th class="px-5 py-4 text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<!-- Product Row 1 -->
+<tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors align-middle">
+<td class="px-5 py-6 text-center"><input class="rounded-sm border-slate-300 text-brand-blue" type="checkbox"/></td>
+<td class="px-5 py-6">
+<div class="w-10 h-10 bg-slate-100 border border-slate-200 rounded-sm flex items-center justify-center text-slate-300">
+<span class="material-symbols-outlined">image</span>
+</div>
+</td>
+<td class="px-5 py-6">
+<div class="flex flex-col">
+<span class="font-bold text-slate-900 uppercase text-xs tracking-tight">hjghvyvh</span>
+<span class="text-[10px] text-slate-400">hjghvyvh</span>
+</div>
+</td>
+<td class="px-5 py-6 font-mono text-[11px] text-slate-500">HJGHVY</td>
+<td class="px-5 py-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-sm text-[10px] font-bold bg-orange-50 text-orange-700 border border-orange-100">
+<span class="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2 animate-pulse"></span>
+                    Low Inventory (1)
+                  </span>
+</td>
+<td class="px-5 py-6 font-bold text-slate-900">RWF 500</td>
+<td class="px-5 py-6">
+<span class="text-brand-orange font-semibold hover:underline cursor-pointer">Projecteur Gacia</span>
+</td>
+<td class="px-5 py-6 text-slate-500">Simple</td>
+<td class="px-5 py-6 text-slate-400">—</td>
+<td class="px-5 py-6">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+<span class="ml-3 text-[10px] font-bold text-green-600 uppercase">Live</span>
+</label>
+</td>
+<td class="px-5 py-6">
+<div class="text-[10px]">
+<p class="text-slate-400">Last Modified</p>
+<p class="font-bold text-brand-orange">18 Jun 2026</p>
+</div>
+</td>
+<td class="px-5 py-6">
+<div class="flex items-center justify-center space-x-2">
+<button class="p-1.5 border border-slate-200 rounded-sm hover:bg-white hover:shadow-sm text-slate-500 hover:text-brand-blue">
+<span class="material-symbols-outlined text-lg">edit_note</span>
+</button>
+<button class="p-1.5 border border-slate-200 rounded-sm hover:bg-white hover:shadow-sm text-slate-500 hover:text-red-500">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+<button class="p-1.5 border border-slate-200 rounded-sm hover:bg-white hover:shadow-sm text-slate-500">
+<span class="material-symbols-outlined text-lg">more_horiz</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-slate-50/50 flex items-center justify-between border-t border-slate-200">
+<p class="text-xs text-slate-500">
+            Showing <span class="font-bold text-slate-800">1–1</span> of <span class="font-bold text-slate-800">1</span> products • 7 per screen • Page 1 of 1
+          </p>
+<div class="flex items-center space-x-2">
+<button class="px-4 py-1.5 text-xs font-medium text-slate-400 border border-slate-200 rounded-sm bg-slate-100 cursor-not-allowed" disabled="">Previous</button>
+<button class="px-4 py-1.5 text-xs font-medium text-slate-400 border border-slate-200 rounded-sm bg-slate-100 cursor-not-allowed" disabled="">Next</button>
+</div>
+</div>
+</section>
+<!-- END: Table Section -->
+<!-- Footer / Windows Status -->
+<div class="mt-auto pt-12 flex justify-end">
+<div class="text-right opacity-30 select-none">
+<h3 class="text-xl font-bold uppercase tracking-tighter">Activate Windows</h3>
+<p class="text-xs">Go to Settings to activate Windows.</p>
+</div>
+</div>
+</div>
+<!-- END: Scrollable Container -->
+</main>
+<!-- END: Main Content -->
+</body></html>

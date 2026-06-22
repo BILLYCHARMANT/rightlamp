@@ -1,4 +1,4 @@
-// Rightlamps — PostgreSQL on Railway (via DATABASE_URL in prisma.config.ts)
+// PV-GRID — PostgreSQL on Railway (via DATABASE_URL in prisma.config.ts)
 
 generator client {
   provider = "prisma-client"
@@ -11,7 +11,21 @@ datasource db {
 
 enum StaffRole {
   ADMIN
+  MAIN_STORE_MANAGER
+  BRANCH_MANAGER
+  BRANCH_SELLER
+  PARTNER_INVESTOR
+  /** @deprecated Legacy — treated as BRANCH_SELLER in app code. */
   STAFF
+}
+
+enum BranchActivityAction {
+  PRODUCT_ASSIGNED
+  PRODUCT_SOLD
+  STOCK_ADJUSTED
+  STAFF_ASSIGNED
+  STAFF_REMOVED
+  SHOP_UPDATED
 }
 
 /// Why shelf quantity changed — aligns Stock-In / Stock-Out / History tabs with append-only ledger.
@@ -30,10 +44,29 @@ model User {
   name         String?
   passwordHash String
   role         StaffRole @default(STAFF)
+  /** Profile photo — HTTPS URL or uploaded data URL. */
+  imageUrl     String?   @db.VarChar(2000)
+  phone        String?   @db.VarChar(64)
+  jobTitle     String?   @db.VarChar(120)
+  bio          String?   @db.Text
+  active       Boolean   @default(true)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
+  branchAssignments BranchStaffAssignment[]
+
   @@index([email])
+  @@index([active])
+}
+
+/// Staff-defined merchandising bucket — create before warehouse items.
+model ProductCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
 }
 
 /// Sellable item shown on the storefront when `published` is true.
@@ -41,34 +74,264 @@ model Product {
   id          String   @id @default(cuid())
   name        String
   slug        String   @unique
-  /** Optional merchandising bucket — set when creating a SKU in staff UI. */
+  /** Optional merchandising bucket — set when creating a product in staff UI. */
   category    String?  @db.VarChar(160)
   description String?  @db.Text
   priceCents  Int
-  currency    String   @default("TZS")
+  /** Optional landed cost for inventory valuation (falls back to price). */
+  costPriceCents Int?
+  currency    String   @default("RWF")
   stock       Int      @default(0)
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   stockMovements StockMovement[]
+  orderItems     OrderItem[]
+  accessories    ProductAccessory[]
+  branchInventory BranchInventory[]
 
   @@index([published])
 }
 
-/// Append-only movements — Rightlamps keeps qty on product; ledger captures receipts/removals for ops tabs + audit.
-model StockMovement {
-  id             String              @id @default(cuid())
-  productId      String
-  delta          Int
-  reason         StockMovementReason @default(OTHER)
-  note           String?             @db.VarChar(2000)
-  receiptStatus  String?             @db.VarChar(32)
-  createdAt      DateTime            @default(now())
-  createdByEmail String?             @db.VarChar(255)
+/// Optional add-on bundled with a product (bulbs, dimmers, mounts, etc.).
+model ProductAccessory {
+  id         String   @id @default(cuid())
+  productId  String
+  name       String
+  imageUrl   String?  @db.VarChar(500)
+  priceCents Int      @default(0)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
+  product   Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderUses OrderItemAccessory[]
+
+  @@index([productId, sortOrder])
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  FULFILLED
+  CANCELLED
+}
+
+/// Customer or staff-submitted order request — appears in admin/staff orders dashboard.
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     Int         @unique @default(autoincrement())
+  customerName    String
+  customerEmail   String?     @db.VarChar(255)
+  customerPhone   String?     @db.VarChar(64)
+  customerAddress String?     @db.VarChar(500)
+  channel         String      @db.VarChar(120)
+  status          OrderStatus @default(PENDING)
+  packed          Boolean     @default(false)
+  fulfilled       Boolean     @default(false)
+  paid            Boolean     @default(false)
+  totalCents      Int
+  currency        String      @default("RWF") @db.VarChar(3)
+  notes           String?     @db.Text
+  createdByEmail  String?     @db.VarChar(255)
+  /** Shop that fulfilled or recorded this sale — used for multi-branch analytics. */
+  branchId        String?
+  placedAt        DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  branch Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  items OrderItem[]
+
+  @@index([status])
+  @@index([placedAt(sort: Desc)])
+  @@index([branchId])
+}
+
+model OrderItem {
+  id             String  @id @default(cuid())
+  orderId        String
+  productId      String?
+  productName    String
+  productSlug    String  @db.VarChar(160)
+  quantity       Int
+  unitPriceCents Int
+  currency       String  @default("RWF") @db.VarChar(3)
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  accessories OrderItemAccessory[]
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+/// Snapshot of accessories chosen for an order line.
+model OrderItemAccessory {
+  id             String  @id @default(cuid())
+  orderItemId    String
+  accessoryId    String?
+  name           String
+  imageUrl       String? @db.VarChar(500)
+  quantity       Int     @default(1)
+  unitPriceCents Int     @default(0)
+  currency       String  @default("RWF") @db.VarChar(3)
+
+  orderItem OrderItem         @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  accessory ProductAccessory? @relation(fields: [accessoryId], references: [id], onDelete: SetNull)
+
+  @@index([orderItemId])
+}
+
+enum ReportStatus {
+  DRAFT
+  PUBLISHED
+}
+
+/// Vendor spend and operational bills — mirrors production `/api/expense`.
+model Expense {
+  id             String   @id @default(cuid())
+  title          String
+  vendor         String?  @db.VarChar(200)
+  amountCents    Int
+  currency       String   @default("RWF") @db.VarChar(3)
+  category       String?  @db.VarChar(120)
+  paidAt         DateTime @default(now())
+  note           String?  @db.Text
+  createdByEmail String?  @db.VarChar(255)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([paidAt(sort: Desc)])
+  @@index([category])
+}
+
+/// Staff-authored operational reports — mirrors `/api/report` flows.
+model OperationalReport {
+  id             String       @id @default(cuid())
+  title          String
+  periodStart    DateTime
+  periodEnd      DateTime
+  summary        String?      @db.Text
+  body           String?      @db.Text
+  status         ReportStatus @default(DRAFT)
+  createdByEmail String?      @db.VarChar(255)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([createdAt(sort: Desc)])
+  @@index([status])
+}
+
+/// Procurement partner — linked to inbound receipts when recorded.
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  contact   String?  @db.VarChar(200)
+  email     String?  @db.VarChar(255)
+  phone     String?  @db.VarChar(64)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  movements StockMovement[]
+
+  @@index([active])
+  @@index([name])
+}
+
+/// Shop or warehouse location — stock transfers reference a destination branch.
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?  @unique @db.VarChar(32)
+  location  String?  @db.VarChar(500)
+  phone     String?  @db.VarChar(64)
+  active    Boolean  @default(true)
+  /** Head office / primary warehouse flag for UI defaults. */
+  isMain    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transferMovements StockMovement[] @relation("TransferDestination")
+  staffAssignments  BranchStaffAssignment[]
+  inventory         BranchInventory[]
+  activityLogs      BranchActivityLog[]
+  orders            Order[]
+
+  @@index([active])
+  @@index([name])
+}
+
+/// Product quantity assigned to a shop from central stock.
+model BranchInventory {
+  id           String   @id @default(cuid())
+  branchId     String
+  productId    String
+  quantity     Int      @default(0)
+  quantitySold Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  branch  Branch  @relation(fields: [branchId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, productId])
+  @@index([branchId])
+  @@index([productId])
+}
+
+/// Per-shop audit trail for administrators.
+model BranchActivityLog {
+  id          String               @id @default(cuid())
+  branchId    String
+  action      BranchActivityAction
+  description String               @db.VarChar(2000)
+  userEmail   String?              @db.VarChar(255)
+  userName    String?              @db.VarChar(255)
+  createdAt   DateTime             @default(now())
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@index([branchId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+}
+
+/// Staff member assigned to manage a shop or branch location.
+model BranchStaffAssignment {
+  id        String   @id @default(cuid())
+  branchId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, userId])
+  @@index([branchId])
+  @@index([userId])
+}
+
+/// Append-only movements — PV-GRID keeps qty on product; ledger captures receipts/removals for ops tabs + audit.
+model StockMovement {
+  id                  String              @id @default(cuid())
+  productId           String
+  delta               Int
+  reason              StockMovementReason @default(OTHER)
+  note                String?             @db.VarChar(2000)
+  receiptStatus       String?             @db.VarChar(32)
+  supplierId          String?
+  /** When reason is TRANSFER — receiving shop or branch location. */
+  destinationBranchId String?
+  createdAt           DateTime            @default(now())
+  createdByEmail      String?             @db.VarChar(255)
+
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  supplier          Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  destinationBranch Branch?   @relation("TransferDestination", fields: [destinationBranchId], references: [id], onDelete: SetNull)
 
   @@index([productId, createdAt(sort: Desc)])
   @@index([createdAt(sort: Desc)])
+  @@index([supplierId])
+  @@index([destinationBranchId])
 }

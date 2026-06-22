@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Rightlamps — Lighting up your world",
-    template: "%s · Rightlamps",
+    default: "PV-GRID",
+    template: "%s · PV-GRID",
   },
   description:
-    "Renewable energy and lighting products from Right Lamp Shine Group. Shop the catalog or manage sales from the dashboard.",
+    "PV-GRID — electrical contracting, renewable energy, and an online shop for lighting and electrical products in Rwanda.",
 };
 
 /** Pearl light UI only — avoid UA “dark” presentation tinting the whole page. */
@@ -41,7 +41,7 @@ export default async function RootLayout({
       lang="en"
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-canvas text-ink">
+      <body className="flex min-h-full flex-col bg-white text-ink">
         <AuthProvider session={session}>{children}</AuthProvider>
       </body>
     </html>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback } from "react";
-import { Plus, Upload } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Download, Plus, RefreshCw } from "lucide-react";
 import type { ExplorerProduct } from "@/components/dashboard/dashboard-products-explorer";
 
 function csvEscape(value: string): string {
@@ -14,10 +14,13 @@ function buildProductsCsv(rows: ExplorerProduct[]): string {
     "name",
     "slug",
     "category",
+    "description",
     "price_cents",
+    "cost_price_cents",
     "currency",
     "stock",
     "published",
+    "created_at",
     "updated_at",
   ];
   const lines = rows.map((p) =>
@@ -25,10 +28,13 @@ function buildProductsCsv(rows: ExplorerProduct[]): string {
       csvEscape(p.name),
       csvEscape(p.slug),
       csvEscape((p.category ?? "").trim()),
+      csvEscape((p.description ?? "").trim()),
       String(p.priceCents),
+      p.costPriceCents != null ? String(p.costPriceCents) : "",
       csvEscape(p.currency),
       String(p.stock),
       p.published ? "true" : "false",
+      csvEscape(p.createdAt),
       csvEscape(p.updatedAt),
     ].join(","),
   );
@@ -40,47 +46,72 @@ type Props = {
   onOpenCreate: () => void;
 };
 
+function formatRefreshedAt(date: Date) {
+  return new Intl.DateTimeFormat("en-GB", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
 export function DashboardProductsManagementBar({
   products,
   onOpenCreate,
 }: Props) {
+  const [refreshedAt, setRefreshedAt] = useState(() => new Date());
+
   const onExport = useCallback(() => {
     const csv = buildProductsCsv(products);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "rightlamps-products.csv";
+    a.download = "pv-grid-products.csv";
     a.click();
     URL.revokeObjectURL(url);
   }, [products]);
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-ink md:text-3xl">
-          Product management
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Real-time control center for products.
-        </p>
+        <h1 className="font-[family-name:var(--font-hanken)] text-3xl font-black tracking-tight text-slate-900">
+          Products Management
+        </h1>
+        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+          <button
+            type="button"
+            onClick={() => setRefreshedAt(new Date())}
+            className="inline-flex items-center gap-1 transition hover:text-[var(--dash-teal)]"
+          >
+            <RefreshCw size={12} aria-hidden />
+            Data refreshed
+          </button>
+          {refreshedAt ? (
+            <span className="rounded-sm border border-slate-200 bg-slate-100 px-2 py-0.5 text-slate-600">
+              {formatRefreshedAt(refreshedAt)}
+            </span>
+          ) : null}
+        </div>
       </div>
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
+
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={onExport}
-          className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink shadow-sm shadow-ink/[0.02] transition hover:bg-surface"
+          className="dash-btn-ghost inline-flex items-center gap-2 px-4 py-2 text-sm"
         >
-          <Upload className="h-4 w-4 text-muted-foreground" aria-hidden />
-          Export
+          <Download size={15} className="text-slate-500" aria-hidden />
+          Export CSV
         </button>
         <button
           type="button"
           onClick={onOpenCreate}
-          className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand/20 ring-1 ring-brand/25 transition hover:bg-brand-hover"
+          className="dash-btn-primary inline-flex items-center gap-2 px-5 py-2 text-sm"
         >
-          <Plus className="h-4 w-4" aria-hidden />
-          New product
+          <Plus size={15} aria-hidden />
+          Add New Product
         </button>
       </div>
     </div>

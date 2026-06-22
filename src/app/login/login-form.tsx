@@ -5,15 +5,20 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-function safeCallbackUrl(raw: string | null): string {
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/dashboard";
+const STAFF_HOME = "/dashboard";
+
+/** Map production post-login paths to local staff routes. */
+function staffHomeFromCallback(raw: string | null): string {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return STAFF_HOME;
+  if (raw === "/pos" || raw.startsWith("/pos/")) return "/pos";
+  if (raw === "/admin" || raw.startsWith("/admin/")) return STAFF_HOME;
   return raw;
 }
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = safeCallbackUrl(searchParams.get("callbackUrl"));
+  const callbackUrl = staffHomeFromCallback(searchParams.get("callbackUrl"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -53,16 +58,7 @@ export function LoginForm() {
           Welcome Back
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Sign in to manage your inventory and orders — same intent as{" "}
-          <a
-            href="https://www.rightlamps.com/signin"
-            className="font-medium text-accent hover:text-accent-muted"
-            target="_blank"
-            rel="noreferrer"
-          >
-            rightlamps.com/signin
-          </a>
-          , routed here for the renovated staff dashboard (
+          Sign in to manage your inventory and orders — PV-GRID staff dashboard (
           <Link
             href="/"
             className="font-medium text-accent hover:text-accent-muted"
@@ -130,7 +126,7 @@ export function LoginForm() {
             npm run db:seed
           </code>{" "}
           — default admin is{" "}
-          <span className="font-medium text-ink">admin@rightlamps.rw</span>{" "}
+          <span className="font-medium text-ink">admin@pv-grid.rw</span>{" "}
           unless you set{" "}
           <code className="rounded bg-surface px-1 py-0.5 ring-1 ring-border">
             SEED_ADMIN_*

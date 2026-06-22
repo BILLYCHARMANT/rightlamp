@@ -10,9 +10,11 @@ export type StockProductDetail = {
   id: string;
   name: string;
   slug: string;
+  category: string | null;
   stock: number;
   published: boolean;
   priceCents: number;
+  costPriceCents: number | null;
   currency: string;
 };
 
@@ -38,8 +40,35 @@ export type StockMovementRow = {
   reason: StockMovementReasonCode;
   note: string | null;
   receiptStatus: string | null;
+  supplierId: string | null;
+  supplierName: string | null;
+  destinationBranchId: string | null;
+  destinationBranchName: string | null;
   createdAt: string;
   createdByEmail: string | null;
 };
+
+export type BranchRow = {
+  id: string;
+  name: string;
+  code: string | null;
+  location: string | null;
+  phone: string | null;
+  active: boolean;
+  isMain: boolean;
+};
+
+export type SupplierRow = {
+  id: string;
+  name: string;
+  contact: string | null;
+  email: string | null;
+  phone: string | null;
+  active: boolean;
+  receiptCount: number;
+  itemCount: number;
+};
+
+export type FlowPeriod = "daily" | "weekly" | "monthly" | "yearly";
 
 export type MovementFlowPoint = { label: string; in: number; out: number };

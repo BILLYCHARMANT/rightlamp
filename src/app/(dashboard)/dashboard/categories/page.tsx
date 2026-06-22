@@ -26,24 +26,22 @@ export default async function DashboardCategoriesPage() {
           /api/products
         </code>{" "}
         on{" "}
-        <a
+        <Link
           className="font-medium text-accent hover:text-accent-muted"
-          href="https://www.rightlamps.com/"
-          target="_blank"
-          rel="noreferrer"
+          href="/shop"
         >
-          rightlamps.com
-        </a>
+          PV-GRID
+        </Link>
         . Open a category on the storefront with one click.
       </p>
 
       {rows.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-surface px-6 py-14 text-center text-sm text-muted-foreground">
-          No categories loaded — check{" "}
+          No categories loaded — check catalog API origin (
           <code className="rounded bg-surface-elevated px-1 font-mono ring-1 ring-border">
             RIGHTLAMPS_API_ORIGIN
-          </code>{" "}
-          or network access.
+          </code>
+          ) or network access.
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated shadow-sm">
@@ -62,7 +60,7 @@ export default async function DashboardCategoriesPage() {
                 <span className="font-medium text-ink">{r.name}</span>
                 <div className="flex items-center gap-4">
                   <span className="tabular-nums text-sm text-muted-foreground">
-                    {r.count} SKUs
+                    {r.count} products
                   </span>
                   <Link
                     href={`/shop?category=${encodeURIComponent(r.name)}`}

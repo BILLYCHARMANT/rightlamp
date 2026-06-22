@@ -217,3 +217,55 @@ export const DEMO_TOP_SKUS: DemoSkuRank[] = [
   { rank: 4, name: "Outdoor flood 50 W", qty: 44, revenueRwf: 13200000 },
   { rank: 5, name: "Ceiling panel 600×600", qty: 31, revenueRwf: 18600000 },
 ];
+
+export type DemoDebt = {
+  id: string;
+  party: string;
+  amountCents: number;
+  currency: string;
+  dueAt: string;
+  status: "outstanding" | "paid";
+  paidAt?: string;
+  note?: string;
+};
+
+/** Sample receivables / payables — replace with ledger API. */
+export const DEMO_DEBTS: DemoDebt[] = [
+  {
+    id: "debt-1",
+    party: "Kigali Electrical Ltd",
+    amountCents: 420000000,
+    currency: "RWF",
+    dueAt: "2026-05-15T00:00:00.000Z",
+    status: "outstanding",
+    note: "B2B invoice RL-20481 balance",
+  },
+  {
+    id: "debt-2",
+    party: "Bright Homes Rwanda",
+    amountCents: 185000000,
+    currency: "RWF",
+    dueAt: "2026-05-20T00:00:00.000Z",
+    status: "outstanding",
+    note: "Delivery order partial payment",
+  },
+  {
+    id: "debt-3",
+    party: "City Properties Ltd",
+    amountCents: 85000000,
+    currency: "RWF",
+    dueAt: "2026-05-01T00:00:00.000Z",
+    status: "paid",
+    paidAt: "2026-05-02T10:00:00.000Z",
+    note: "Warehouse rent — settled",
+  },
+  {
+    id: "debt-4",
+    party: "Nyamirambo Workshop",
+    amountCents: 312000000,
+    currency: "RWF",
+    dueAt: "2026-04-28T00:00:00.000Z",
+    status: "outstanding",
+    note: "Overdue — follow up",
+  },
+];

@@ -1,11 +1,34 @@
+import { Hanken_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import type { Metadata } from "next";
 import {
   categoriesFromPublishedCatalog,
   getCachedPublishedCatalog,
 } from "@/lib/store/published-catalog";
-import { ProductCard } from "@/components/store/ProductCard";
-import { ShopFilters } from "@/components/store/ShopFilters";
-import { ShopPagination } from "@/components/store/ShopPagination";
-import { storeDisplay } from "@/components/store/store-fonts";
+import { ShopPageContent } from "@/components/store/shop/ShopPageContent";
+import { company } from "@/lib/company/site-content";
+
+const hanken = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-hanken",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  weight: ["500"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["400", "600"],
+});
+
+export const metadata: Metadata = {
+  title: "Shop",
+  description: `${company.shortName} technical catalog — electrical components, switchgear, solar arrays, and industrial-grade solutions.`,
+};
 
 type SearchParams = Promise<{
   q?: string;
@@ -32,15 +55,15 @@ export default async function ShopPage({
     products = await getCachedPublishedCatalog();
   } catch {
     return (
-      <main className="flex-1">
-        <h1
-          className={`${storeDisplay.className} text-3xl font-semibold text-ink`}
-        >
+      <main
+        className={`${hanken.variable} ${inter.variable} ${jetbrains.variable} mx-auto flex-1 max-w-7xl px-4 py-8 sm:px-6 sm:py-10`}
+      >
+        <h1 className="font-[family-name:var(--font-hanken)] text-3xl font-bold tracking-tight text-[#1c1b1b] sm:text-4xl">
           Shop
         </h1>
-        <p className="mt-4 rounded-2xl border border-border bg-surface px-5 py-4 text-sm text-muted-foreground">
+        <p className="mt-4 rounded-lg border border-[#E2E8F0] bg-white px-5 py-4 text-sm text-[#424754]">
           We couldn&apos;t load the catalog. Check{" "}
-          <code className="rounded-md bg-surface px-1.5 py-0.5 font-mono text-sm text-ink ring-1 ring-border">
+          <code className="rounded-md bg-[#f6f3f2] px-1.5 py-0.5 font-mono text-sm text-[#1c1b1b] ring-1 ring-[#E2E8F0]">
             DATABASE_URL
           </code>{" "}
           or try again shortly.
@@ -75,58 +98,18 @@ export default async function ShopPage({
   const categoryOptions = categoriesFromPublishedCatalog(products, 180);
 
   return (
-    <main className="flex-1">
-      <header className="mb-10 space-y-3">
-        <h1
-          className={`${storeDisplay.className} text-3xl font-semibold tracking-tight text-ink sm:text-4xl`}
-        >
-          Shop
-        </h1>
-        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Search and filter published SKUs from your staff dashboard — same data
-          as the catalog you manage under{" "}
-          <span className="font-medium text-ink">Products</span>, with Rightlamps
-          orange and cyan accents.
-        </p>
-      </header>
-
-      <ShopFilters
+    <main
+      className={`${hanken.variable} ${inter.variable} ${jetbrains.variable} flex-1 [--stitch-green:#10B981] [--stitch-primary:#c55316] [--stitch-yellow:#FAB40D]`}
+    >
+      <ShopPageContent
+        products={slice}
+        filteredCount={filtered.length}
+        catalogCount={products.length}
         categories={categoryOptions}
-        defaultQ={qRaw}
-        defaultCategory={category}
-      />
-
-      <p className="mb-8 text-sm font-medium text-muted-foreground">
-        Showing{" "}
-        <span className="font-semibold text-ink">{slice.length}</span> of{" "}
-        <span className="font-semibold text-ink">{filtered.length}</span>{" "}
-        products
-        {filtered.length !== products.length ? (
-          <span className="text-muted-foreground">
-            {" "}
-            ({products.length} published in catalog)
-          </span>
-        ) : null}
-        .
-      </p>
-
-      {slice.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface px-6 py-14 text-center text-muted-foreground">
-          No products match these filters. Try a broader search or reset filters.
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-          {slice.map((p) => (
-            <ProductCard key={p._id} product={p} />
-          ))}
-        </div>
-      )}
-
-      <ShopPagination
-        page={safePage}
-        totalPages={totalPages}
         q={qRaw}
         category={category}
+        page={safePage}
+        totalPages={totalPages}
       />
     </main>
   );

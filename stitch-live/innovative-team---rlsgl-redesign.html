@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html><html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>About Us | PV-GRID</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .technical-bg {
+            background-color: #fcf9f8;
+            background-image: radial-gradient(#005ac510 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .profile-mask {
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "background": "#fcf9f8",
+                      "error": "#ba1a1a",
+                      "secondary-fixed": "#6ffbbe",
+                      "secondary": "#006c49",
+                      "on-primary-container": "#fbfaff",
+                      "tertiary-container": "#976b00",
+                      "on-secondary-fixed": "#002113",
+                      "on-primary-fixed": "#001a42",
+                      "surface": "#fcf9f8",
+                      "power-yellow": "#FAB40D",
+                      "primary-fixed": "#d8e2ff",
+                      "surface-gray": "#F8FAFC",
+                      "tertiary": "#785400",
+                      "inverse-surface": "#313030",
+                      "surface-container-low": "#f6f3f2",
+                      "secondary-container": "#6cf8bb",
+                      "on-secondary-fixed-variant": "#005236",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f3f0ef",
+                      "outline": "#727786",
+                      "on-primary-fixed-variant": "#004396",
+                      "primary-container": "#106eea",
+                      "surface-container-high": "#ebe7e7",
+                      "on-tertiary": "#ffffff",
+                      "on-background": "#1c1b1b",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#f0edec",
+                      "inverse-primary": "#aec6ff",
+                      "surface-container-highest": "#e5e2e1",
+                      "on-secondary-container": "#00714d",
+                      "on-primary": "#ffffff",
+                      "outline-variant": "#c2c6d6",
+                      "surface-dim": "#dcd9d9",
+                      "surface-bright": "#fcf9f8",
+                      "secondary-fixed-dim": "#4edea3",
+                      "on-tertiary-fixed": "#271900",
+                      "energy-green": "#10B981",
+                      "on-tertiary-fixed-variant": "#5e4100",
+                      "on-surface": "#1c1b1b",
+                      "tertiary-fixed-dim": "#ffba27",
+                      "surface-tint": "#005ac5",
+                      "on-tertiary-container": "#fff9f6",
+                      "border-subtle": "#E2E8F0",
+                      "surface-container-lowest": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed": "#ffdea9",
+                      "surface-variant": "#e5e2e1",
+                      "primary-fixed-dim": "#aec6ff",
+                      "on-surface-variant": "#424754",
+                      "primary": "#0056be"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "section-padding": "80px",
+                      "section-padding-mobile": "48px",
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Hanken Grotesk"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "button": ["Inter"],
+                      "label-caps": ["JetBrains Mono"],
+                      "display-lg": ["Hanken Grotesk"],
+                      "display-lg-mobile": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "headline-sm": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-md": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                      "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-surface shadow-sm w-full h-20 sticky top-0 z-50 transition-all duration-300 ease-in-out">
+<div class="flex justify-between items-center px-gutter max-w-container-max mx-auto h-full">
+<div class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed">
+                RLS Group
+            </div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors" href="#">Home</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="#">About</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors" href="#">Services</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors" href="#">Team</a>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 font-button text-button rounded hover:bg-primary-container transition-all">
+                Get Quote
+            </button>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-[60vh] flex items-center bg-primary-container text-on-primary-container overflow-hidden">
+<div class="relative z-10 max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-2 gap-12 items-center py-section-padding">
+<div class="space-y-6">
+<span class="font-label-caps text-label-caps bg-energy-green/10 text-energy-green px-3 py-1 rounded">EST. 2010</span>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg max-w-xl">
+                        Powering Progress with Clean Energy Solutions
+                    </h1>
+<p class="font-body-lg text-body-lg opacity-90 max-w-lg">We help people to be aware of The use of modern and saving Lamp by using Clean energy technologies through mobilization campaigns and we participate in renewable energy research for a better exploitation of our natural resources</p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="bg-power-yellow text-on-tertiary-fixed px-8 py-4 font-button text-button rounded-lg shadow-lg hover:translate-y-[-2px] transition-all">
+                            Our Portfolio
+                        </button>
+<button class="border border-on-primary-container/30 px-8 py-4 font-button text-button rounded-lg hover:bg-on-primary-container/10 transition-all">
+                            Watch Video
+                        </button>
+</div>
+</div>
+<div class="relative">
+<div class="aspect-square rounded-xl overflow-hidden shadow-2xl border-4 border-white/10">
+<img class="w-full h-full object-cover transition-all duration-700 ease-out opacity-100 translate-y-0" data-alt="A professional group of electrical engineers and renewable energy specialists gathered for a boot camp training session. The environment is collaborative and focused, with technical diagrams visible in the background and modern electrical equipment on display. The lighting is bright and industrial, emphasizing technical precision and professional growth in the energy sector." src="https://lh3.googleusercontent.com/aida/AP1WRLt4MoEvBdwUglEORvaqLu1U6N2Ue0vxSGg_uKFZ1_Lmn1iTYiRw9K3P2rPS7e3WjKYO5JarGFB25Dfs5jCWfKmzf3-3oIx23slAGceFa6j8zgr0LbF5f5f9-hrd2ChfitRTN7rzyWUl976DPaM_00IhUkf7ujfm3b5hoUiiycL-4Yp91F5vjd67WiRpxyZYBHFH4SqZ1OD9WWp9HGnjWuV8FkmLQwnRHqY7iXSz4S7HuRe3cVkZF_VTpA">
+</div>
+<div class="absolute -bottom-6 -left-6 glass-card p-6 rounded-lg shadow-xl max-w-[240px]">
+<p class="font-headline-sm text-headline-sm text-primary">14+ Years</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Trusted Excellence in Electrical Engineering</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Our Story & Mission -->
+<section class="py-section-padding bg-surface">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+<div class="space-y-8">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary mb-4">Our Story</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">PV-GRID started in 2010. We were tired of seeing home and Business owner get price gouged for electric work so we started our own company 2010</p>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-energy-green text-3xl">verified</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm">Trusted Local Experts</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Serving commercial, residential, and industrial customers across Rwanda since 2010.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-energy-green text-3xl">eco</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm">Clean Energy Focus</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">We believe clean energy projects must not fail. We upgrade systems in the shortest time possible.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative bg-surface-gray p-8 rounded-xl border border-border-subtle">
+<img class="w-full h-64 object-cover rounded shadow-md mb-6 transition-all duration-700 ease-out opacity-100 translate-y-0" data-alt="A focused professional team meeting within a modern office setting. Engineers and project managers are reviewing technical blueprints and energy sustainability plans. The atmosphere is professional and collaborative, with natural light pouring into the room, reflecting the corporate and innovative spirit of an electrical engineering firm in Rwanda." src="https://lh3.googleusercontent.com/aida/AP1WRLvPbA1q-VNyvjHBUKb5jyPS94cnaphoVgV-8bqSrN41SfJveijDbd8iY5Tk7fC_vZjJ2gx5IkKnYcywI2DWkrzCs-ByDNMvihas0nmIA9QgFYFhmoYLlSupASBW6uCmF0sIuTNj88xvxiNJS_kqRqPDGGGDaj2wXwZyzLGQZEqmteKxGo1GQoRGWKyqssO8X0H9CIH-juG0K85ginloVvVQfdb4cy7xJDo5taXhedqVHLiQfGIBgXb2QnA">
+<h3 class="font-headline-sm text-headline-sm mb-2">Our Commitment</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">"We're as committed to our customers and parteners as we are to this business. They 're equally important. we 'll always strive to create a positive changes in the community."</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Values Bento Grid -->
+<section class="py-section-padding bg-surface-container-low">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="text-center mb-16">
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Quality. Value. Integrity.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">The pillars that define PV-GRID as Rwanda's leading independent electrical provider.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Value 1 -->
+<div class="bg-white p-8 rounded-xl shadow-sm border border-border-subtle hover:translate-y-[-4px] transition-all duration-300">
+<div class="w-12 h-12 bg-primary/10 rounded flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary">high_quality</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-3">Superior Quality</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            Delivering first-rate electrical systems and operations for utility and renewable asset markets.
+                        </p>
+</div>
+<!-- Value 2 -->
+<div class="bg-white p-8 rounded-xl shadow-sm border border-border-subtle hover:translate-y-[-4px] transition-all duration-300">
+<div class="w-12 h-12 bg-energy-green/10 rounded flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-energy-green">payments</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-3">Exceptional Value</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            Sustainable energy solutions that reduce load on the national grid while optimizing costs for our clients.
+                        </p>
+</div>
+<!-- Value 3 -->
+<div class="bg-white p-8 rounded-xl shadow-sm border border-border-subtle hover:translate-y-[-4px] transition-all duration-300">
+<div class="w-12 h-12 bg-power-yellow/10 rounded flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-power-yellow">handshake</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-3">Unyielding Integrity</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            Transparent partnerships and reliable rapid response support, available 24/7 for our valued partners.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- What We Do Asymmetric Layout -->
+<section class="py-section-padding overflow-hidden">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="flex flex-col md:flex-row gap-16 items-center">
+<div class="md:w-1/2 order-2 md:order-1">
+<div class="relative">
+<img class="rounded-xl shadow-2xl relative z-10 transition-all duration-700 ease-out opacity-100 translate-y-0" data-alt="An award ceremony and recognition event showcasing a certificate or plaque of achievement. The scene is celebratory and formal, featuring individuals in professional attire. This visual represents the industry recognition and excellence that PV-GRID has achieved in the electrical and renewable energy sector of Rwanda." src="https://lh3.googleusercontent.com/aida/AP1WRLuq3knH_z2kVMebtSS4tX5fZqkmnyWYLtkhlpip2FEGzG5yE5R6RYtwXa0UWFYe5vetViUoicLZY8soBc1qn3suIT5x6lE_4e1tuizVsZITN4YN0chKPfVYeiIJDyh424lrMNorXGw0CHaQKTk-JkVNRYdZLI_xCvhnesYzqOHogkGoHAO-TgcARsnLxJSuOZNGHGiPNjZGGYoLjKPrdUXE5T7E16iZk7-zRaI75IqjfBx4tTBJbZ8Ieb4">
+<div class="absolute -top-12 -right-12 w-48 h-48 bg-primary opacity-5 rounded-full blur-3xl"></div>
+</div>
+</div>
+<div class="md:w-1/2 order-1 md:order-2 space-y-8">
+<div>
+<span class="font-label-caps text-label-caps text-primary mb-2 block">OUR CAPABILITIES</span>
+<h2 class="font-headline-md text-headline-md mb-6">From Concept to Reality</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8">
+                                We transform your electrical and lighting ideas into functional infrastructure. Our engineering expertise covers the entire project lifecycle.
+                            </p>
+</div>
+<div class="space-y-6">
+<div class="flex gap-6 group">
+<div class="font-headline-sm text-headline-sm text-primary/20 group-hover:text-primary transition-colors">01</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm">Energising Sites</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Energising sites and de-energising sites ready for demolition.</p>
+</div>
+</div>
+<div class="flex gap-6 group">
+<div class="font-headline-sm text-headline-sm text-primary/20 group-hover:text-primary transition-colors">02</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm">Utility Installation</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Arranging the installation of electricity, gas for residential and commercial properties.</p>
+</div>
+</div>
+<div class="flex gap-6 group">
+<div class="font-headline-sm text-headline-sm text-primary/20 group-hover:text-primary transition-colors">03</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm">Infrastructure Refurbishment</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">For us, a clean energy project can not fail. For us the mature engineers allow existing systems to be upgraded and refurbished in the shortest time possible.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Redesigned Our Committee Section -->
+<section class="py-section-padding technical-bg relative overflow-hidden">
+<!-- Geometric decorative elements -->
+<div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48"></div>
+<div class="absolute bottom-0 left-0 w-96 h-96 bg-energy-green/5 rounded-full blur-[100px] -ml-48 -mb-48"></div>
+<div class="max-w-container-max mx-auto px-gutter relative z-10">
+<div class="flex flex-col lg:flex-row items-end justify-between mb-20 gap-8">
+<div class="max-w-2xl text-left">
+<span class="font-label-caps text-label-caps text-primary tracking-[0.2em] mb-4 block uppercase font-bold">Leadership &amp; Project Oversight</span>
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-background">
+                    Our <span class="text-primary italic">Committee</span>
+</h2>
+<div class="h-1.5 w-24 bg-primary mt-4 rounded-full"></div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md lg:text-right">
+                A dedicated multidisciplinary team driving excellence in every watt and wire across Rwanda's energy landscape.
+            </p>
+</div>
+<div class="relative grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-y-0">
+<!-- Member 1: Jean Damascene -->
+<div class="md:col-span-4 md:translate-y-8 group">
+<div class="glass-card p-4 rounded-xl border border-white/40 shadow-2xl transition-all duration-500 hover:-translate-y-4">
+<div class="aspect-[4/5] overflow-hidden profile-mask mb-6 relative">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<img alt="Jean Damascene" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-100 translate-y-0" src="https://lh3.googleusercontent.com/aida/AP1WRLvPbA1q-VNyvjHBUKb5jyPS94cnaphoVgV-8bqSrN41SfJveijDbd8iY5Tk7fC_vZjJ2gx5IkKnYcywI2DWkrzCs-ByDNMvihas0nmIA9QgFYFhmoYLlSupASBW6uCmF0sIuTNj88xvxiNJS_kqRqPDGGGDaj2wXwZyzLGQZEqmteKxGo1GQoRGWKyqssO8X0H9CIH-juG0K85ginloVvVQfdb4cy7xJDo5taXhedqVHLiQfGIBgXb2QnA">
+</div>
+<div class="px-2 pb-4">
+<p class="font-label-caps text-[10px] tracking-widest text-primary font-bold uppercase mb-1">Board Excellence</p>
+<h4 class="font-headline-md text-headline-sm text-on-surface mb-2">Jean Damascene</h4>
+<div class="flex items-center gap-2">
+<span class="h-px w-6 bg-primary/30"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Committee Chair</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Member 2: Marie Claire -->
+<div class="md:col-span-4 md:-translate-y-4 z-20 group">
+<div class="bg-primary/5 backdrop-blur-xl p-4 rounded-xl border border-primary/20 shadow-2xl transition-all duration-500 hover:-translate-y-4">
+<div class="aspect-[4/5] overflow-hidden profile-mask mb-6 bg-surface-container flex items-center justify-center relative">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent"></div>
+<span class="material-symbols-outlined text-primary/30 text-8xl group-hover:scale-110 transition-transform duration-500">person</span>
+</div>
+<div class="px-2 pb-4">
+<p class="font-label-caps text-[10px] tracking-widest text-primary font-bold uppercase mb-1">Strategic Operations</p>
+<h4 class="font-headline-md text-headline-sm text-on-surface mb-2">Marie Claire</h4>
+<div class="flex items-center gap-2">
+<span class="h-px w-6 bg-primary/30"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Project Manager</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Member 3: Emmanuel N. -->
+<div class="md:col-span-4 md:translate-y-12 group">
+<div class="glass-card p-4 rounded-xl border border-white/40 shadow-2xl transition-all duration-500 hover:-translate-y-4">
+<div class="aspect-[4/5] overflow-hidden profile-mask mb-6 bg-surface-container flex items-center justify-center relative">
+<div class="absolute inset-0 bg-gradient-to-br from-energy-green/20 to-transparent"></div>
+<span class="material-symbols-outlined text-primary/30 text-8xl group-hover:scale-110 transition-transform duration-500">engineering</span>
+</div>
+<div class="px-2 pb-4">
+<p class="font-label-caps text-[10px] tracking-widest text-primary font-bold uppercase mb-1">Technical Innovation</p>
+<h4 class="font-headline-md text-headline-sm text-on-surface mb-2">Emmanuel N.</h4>
+<div class="flex items-center gap-2">
+<span class="h-px w-6 bg-primary/30"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Lead Engineer</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Why Choose Us Cards -->
+<section class="py-section-padding bg-inverse-surface text-inverse-on-surface">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="text-center mb-16">
+<h2 class="font-headline-md text-headline-md mb-4">Why Choose Us</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="text-center space-y-4">
+<span class="material-symbols-outlined text-5xl text-energy-green">favorite</span>
+<h3 class="font-headline-sm text-headline-sm">We Love What We Do</h3>
+<p class="font-body-md text-body-md opacity-80">Our builders come to work smiling and ready to build your dream. They have a passion for remodeling.</p>
+</div>
+<div class="text-center space-y-4">
+<span class="material-symbols-outlined text-5xl text-energy-green">diversity_3</span>
+<h3 class="font-headline-sm text-headline-sm">We Truly Care</h3>
+<p class="font-body-md text-body-md opacity-80">We believe in partnership and trust, working with you to create a space that meets your vision.</p>
+</div>
+<div class="text-center space-y-4">
+<span class="material-symbols-outlined text-5xl text-energy-green">verified_user</span>
+<h3 class="font-headline-sm text-headline-sm">Our Promise</h3>
+<p class="font-body-md text-body-md opacity-80">Always providing value and outstanding service, regardless of budget or design constraints.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action -->
+<section class="py-section-padding bg-primary text-on-primary">
+<div class="max-w-container-max mx-auto px-gutter flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="max-w-2xl text-center md:text-left">
+<h2 class="font-headline-md text-headline-md mb-4">Ready to Start Your Next Project?</h2>
+<p class="font-body-lg text-body-lg opacity-90">PV-GRID is willing and able to assist you with every issue related to electricity in your building.</p>
+</div>
+<button class="bg-power-yellow text-on-tertiary-fixed px-10 py-5 font-button text-button rounded-xl shadow-xl hover:scale-105 transition-all">
+                    Request a Free Quote
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-inverse-surface border-t border-border-subtle w-full py-section-padding">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-gutter max-w-container-max mx-auto">
+<div class="space-y-6">
+<div class="font-headline-sm text-headline-sm font-bold text-primary">RLS Group</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Helping people embrace modern energy technologies for a better exploitation of our natural resources.
+                </p>
+<div class="space-y-2 font-body-md text-body-md text-on-surface-variant">
+<p class=""><strong>Phone:</strong> +250788810785</p>
+<p class=""><strong>Email:</strong> PV-GRIDtd22@gmail.com</p>
+</div>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline-sm text-headline-sm text-primary">Useful Links</h4>
+<ul class="space-y-2 font-body-md text-body-md">
+<li class=""><a class="text-on-surface-variant hover:text-primary underline transition-all" href="#">Home</a></li>
+<li class=""><a class="text-primary dark:text-secondary-fixed" href="#">About us</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-primary underline transition-all" href="#">Services</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-primary underline transition-all" href="#">Team</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-primary underline transition-all" href="#">Contact</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline-sm text-headline-sm text-primary">Our Services</h4>
+<ul class="space-y-2 font-body-md text-body-md text-on-surface-variant">
+<li class="">Electrical Maintenance</li>
+<li class="">Electrical Installation</li>
+<li class="">Lighting Design</li>
+<li class="">Extraction of Biogas</li>
+<li class="">Research and Implementation</li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline-sm text-headline-sm text-primary">Join Our Newsletter</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">We are here to hear you and provide all response.</p>
+<form class="space-y-2">
+<input class="w-full bg-white border border-border-subtle px-4 py-3 rounded focus:border-primary outline-none transition-all" placeholder="Your email address" type="email">
+<button class="w-full bg-primary text-on-primary font-button text-button py-3 rounded hover:opacity-90 transition-opacity">Subscribe</button>
+</form>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter mt-16 pt-8 border-t border-on-surface/10 text-center">
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">
+                © 2024 PV-GRID. All rights reserved.
+            </p>
+</div>
+</footer>
+<script>
+        // Simple scroll reveal effect for images
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('img').forEach(img => {
+            img.classList.add('transition-all', 'duration-700', 'ease-out', 'opacity-0', 'translate-y-10');
+            observer.observe(img);
+        });
+    </script>
+
+
+</body></html>

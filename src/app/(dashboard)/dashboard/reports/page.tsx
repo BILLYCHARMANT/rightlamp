@@ -12,7 +12,7 @@ export default function DashboardReportsPage() {
   return (
     <div className="space-y-8 p-4 md:p-8">
       <p className="max-w-3xl text-sm text-muted-foreground">
-        Weekly revenue rhythm plus SKU ranking — common retail ops split. Figures are
+        Weekly revenue rhythm plus top-selling products — common retail ops split. Figures are
         illustrative until sales aggregates connect to warehouse or POS feeds.
       </p>
 

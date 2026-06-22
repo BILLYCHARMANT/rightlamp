@@ -3,9 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatRetailPrice } from "@/lib/rightlamps/format-price";
 import { getPublishedProductBySlug } from "@/lib/store/published-catalog";
-import { storeDisplay } from "@/components/store/store-fonts";
 
-type Params = Promise<{ slug: string }>;
+import type { PageParams } from "@/types/next-page";
+
+type Params = PageParams<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   const product = await getPublishedProductBySlug(decoded);
   if (!product) return { title: "Product not found" };
   return {
-    title: `${product.name} · Rightlamps`,
+    title: `${product.name} · PV-GRID`,
     description: product.description ?? product.name,
   };
 }
@@ -33,7 +34,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
   const priceCurrency = product.currency ?? "RWF";
 
   return (
-    <main className="flex-1">
+    <main className="mx-auto flex-1 max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <Link
         href="/shop"
         className="inline-flex text-sm font-semibold text-accent hover:text-accent-muted"
@@ -42,7 +43,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
       </Link>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
-        <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-surface ring-1 ring-brand/10">
+        <div className="relative aspect-square overflow-hidden rounded-[var(--radius)] border border-border bg-surface-muted shadow-card">
           {product.image && product.image !== "/brand/logo.png" ? (
             <Image
               src={product.image}
@@ -54,7 +55,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             />
           ) : (
             <Image
-              src="/brand/logo.png"
+              src="/brand/logo.svg"
               alt=""
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -66,13 +67,11 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
         <div className="flex flex-col">
           {product.category ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
               {product.category}
             </p>
           ) : null}
-          <h1
-            className={`${storeDisplay.className} mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl`}
-          >
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             {product.name}
           </h1>
           {product.brand ? (

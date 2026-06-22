@@ -1,12 +1,9 @@
 import Link from "next/link";
-import { storeDisplay } from "@/components/store/store-fonts";
 
 export default function SignInPage() {
   return (
     <main className="mx-auto max-w-md flex-1 py-4 text-center sm:py-8">
-      <h1
-        className={`${storeDisplay.className} text-3xl font-semibold text-ink`}
-      >
+      <h1 className="text-3xl font-bold tracking-tight text-ink">
         Sign in
       </h1>
       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">

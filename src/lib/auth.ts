@@ -2,6 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { normalizeStaffRole, type StaffRoleCode } from "@/lib/dashboard/rbac";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -29,10 +30,12 @@ export const authOptions: NextAuthOptions = {
             email: true,
             passwordHash: true,
             role: true,
+            active: true,
           },
         });
 
         if (!user?.passwordHash) return null;
+        if (!user.active) return null;
 
         const ok = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!ok) return null;
@@ -41,7 +44,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           name: user.name ?? user.email?.split("@")[0] ?? "User",
           email: user.email,
-          role: user.role,
+          role: normalizeStaffRole(user.role),
         };
       },
     }),
@@ -50,14 +53,14 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as { role?: string }).role ?? "STAFF";
+        token.role = normalizeStaffRole(user.role);
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.id = token.id;
+        session.user.role = token.role as StaffRoleCode;
       }
       return session;
     },

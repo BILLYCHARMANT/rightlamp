@@ -15,13 +15,13 @@ async function fetchProductsUncached(): Promise<RightlampsProduct[]> {
     headers: { Accept: "application/json" },
   });
   if (!res.ok) {
-    throw new Error(`Rightlamps products API failed: ${res.status}`);
+    throw new Error(`PV-GRID products API failed: ${res.status}`);
   }
   const text = await res.text();
   const clean = text.replace(/^\uFEFF/, "").trim();
   const data = JSON.parse(clean) as unknown;
   if (!Array.isArray(data)) {
-    throw new Error("Rightlamps products API returned non-array JSON");
+    throw new Error("PV-GRID products API returned non-array JSON");
   }
   return data as RightlampsProduct[];
 }

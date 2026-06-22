@@ -5,7 +5,7 @@ export function DashboardHomeIntro() {
         Operations floor
       </p>
       <h2 className="mt-2 text-xl font-bold tracking-tight text-ink md:text-2xl">
-        Same workflow Rightlamps crews already know — surfaced faster.
+        Same workflow PV-GRID crews already know — surfaced faster.
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
         Columns in the rail match production admin areas (orders through reports). Use{" "}

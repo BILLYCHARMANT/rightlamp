@@ -1,0 +1,12 @@
+.chart-placeholder {
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.dash-analytics ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dash-analytics ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Value Analytics | Professional Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#ffb59c",
+                        "on-tertiary-container": "#e8f6ff",
+                        "background": "#fcf8ff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#7015e2",
+                        "outline": "#7c7487",
+                        "on-primary-fixed": "#270058",
+                        "surface-container-low": "#f5f2fc",
+                        "on-secondary-container": "#641c00",
+                        "surface-bright": "#fcf8ff",
+                        "surface-container-highest": "#e4e1eb",
+                        "surface-container-high": "#eae7f1",
+                        "on-surface-variant": "#4b4455",
+                        "tertiary-container": "#00799b",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#faf1ff",
+                        "tertiary-fixed-dim": "#67d3ff",
+                        "on-secondary-fixed": "#390c00",
+                        "inverse-surface": "#303037",
+                        "outline-variant": "#cdc2d8",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#001f2a",
+                        "on-background": "#1b1b22",
+                        "primary-fixed-dim": "#d4bbff",
+                        "surface-tint": "#7825ea",
+                        "on-secondary-fixed-variant": "#822800",
+                        "inverse-on-surface": "#f2effa",
+                        "inverse-primary": "#d4bbff",
+                        "surface-container": "#efecf7",
+                        "secondary-fixed": "#ffdbcf",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#005f7a",
+                        "primary-fixed": "#ebdcff",
+                        "surface-dim": "#dbd9e3",
+                        "primary-container": "#8a3ffc",
+                        "surface-variant": "#e4e1eb",
+                        "on-primary-fixed-variant": "#5d00c2",
+                        "on-error": "#ffffff",
+                        "on-surface": "#1b1b22",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#fd7542",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#bde9ff",
+                        "secondary": "#a93805",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "surface": "#fcf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "title-sm": ["Plus Jakarta Sans"],
+                        "data-num": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-bold": ["11px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "data-num": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f4f7fe; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .active-nav-bg {
+            background: linear-gradient(135deg, #8a3ffc 0%, #7015e2 100%);
+            box-shadow: 0px 4px 12px rgba(112, 21, 226, 0.3);
+        }
+        .chart-gradient-fill {
+            fill: url(#gradient-fill);
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-hidden text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="w-60 flex-shrink-0 bg-surface flex flex-col border-r border-outline-variant/30 h-screen sticky top-0">
+<div class="px-lg py-xl">
+<h1 class="font-display-lg text-display-lg text-primary tracking-tighter">VALUE<br/><span class="text-on-surface-variant/60 text-title-sm font-label-bold uppercase tracking-widest -mt-2 block">Analytics</span></h1>
+</div>
+<nav class="flex-1 px-md space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">home</span>
+<span class="font-title-sm text-body-md">Home</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl active-nav-bg text-white transition-all shadow-lg scale-[1.02]" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-bold text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">assessment</span>
+<span class="font-title-sm text-body-md">Reports</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">person</span>
+<span class="font-title-sm text-body-md">Users</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors group justify-between" href="#">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+<span class="font-title-sm text-body-md">Messages</span>
+</div>
+<span class="bg-secondary-container text-on-secondary px-1.5 py-0.5 rounded-full text-[10px] font-bold">6</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">folder</span>
+<span class="font-title-sm text-body-md">Media</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors group justify-between" href="#">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+<span class="font-title-sm text-body-md">Comments</span>
+</div>
+<span class="bg-error text-on-error px-1.5 py-0.5 rounded-full text-[10px] font-bold">11</span>
+</a>
+</nav>
+<div class="p-md space-y-1 mb-xl">
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant/70 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-title-sm text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant/70 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-title-sm text-body-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-error/80 hover:bg-error-container/20 transition-colors mt-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="font-title-sm text-body-md">Log out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 h-screen overflow-y-auto scrollbar-hide bg-[#f4f7fe] px-margin-desktop py-lg">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center mb-lg">
+<div class="flex items-center gap-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface">Dashboard</h2>
+<div class="flex items-center bg-surface-container-low px-md py-sm rounded-xl gap-sm cursor-pointer hover:bg-surface-container transition-colors">
+<span class="text-body-md font-label-bold">Overview</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<!-- Search -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="bg-surface border-none rounded-full pl-xl pr-md py-sm w-48 text-body-md focus:ring-2 focus:ring-primary/20 transition-all focus:w-64 placeholder:text-outline-variant" placeholder="Search" type="text"/>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-xs">
+<button class="p-sm rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border-2 border-[#f4f7fe]"></span>
+</button>
+</div>
+<!-- User Profile -->
+<div class="flex items-center gap-sm bg-surface pl-xs pr-sm py-xs rounded-full border border-outline-variant/20 hover:border-outline-variant/50 cursor-pointer transition-colors ml-md">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Close-up professional headshot of Malena Bayer, a confident woman in a business casual blazer, with soft warm studio lighting against a clean, out-of-focus modern office background. High-quality corporate aesthetic with shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbPyzGh03_tEs9QQvNDnOBrvYBU4Kr75uCrm1YstP_CpvOg87xYJMHRiY-voYUacuV0fLtp5XQqRMfpN7fe9MIAmhIPoC2lfwC1O1ayR6qVehemQTQF9p3tLDBP8Ru3iOgPjxlLbnMDSXXdHZy756GGq4p2ZQmWPdhYE20cB-cCWWuVEeEhcF52laGKc7aGXQ1_1MNWExooOTlyFTPgcpWI6iPpaRAwqWHCT4Ov5F376SZ-a9eROdJBww-vubg3NLB30beblNzDoo"/>
+<span class="text-body-md font-label-bold px-xs">Malena Bayer</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+<button class="p-sm text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-12 gap-lg auto-rows-min">
+<!-- Metric Cards Row -->
+<div class="col-span-12 lg:col-span-3 glass-card rounded-3xl p-lg flex flex-col gap-sm relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-on-surface-variant text-body-sm font-label-bold uppercase tracking-wider">Sessions</p>
+<h3 class="text-display-lg font-data-num mt-xs">856</h3>
+</div>
+<div class="flex items-center bg-error-container/30 text-error px-sm py-0.5 rounded-full text-xs font-bold">
+<span class="material-symbols-outlined text-xs mr-1">arrow_downward</span> 12%
+                    </div>
+</div>
+<!-- Sparkline Placeholder -->
+<div class="h-16 mt-md w-full relative">
+<svg class="w-full h-full stroke-primary/30 fill-none" preserveaspectratio="none" viewbox="0 0 100 30">
+<path class="stroke-primary" d="M0,25 L10,22 L20,28 L30,15 L40,18 L50,10 L60,20 L70,12 L80,18 L90,15 L100,5" stroke-width="2"></path>
+</svg>
+</div>
+<div class="absolute right-md bottom-md opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer">
+<span>Last week</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-3 glass-card rounded-3xl p-lg flex flex-col gap-sm relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-on-surface-variant text-body-sm font-label-bold uppercase tracking-wider">Users</p>
+<h3 class="text-display-lg font-data-num mt-xs">523</h3>
+</div>
+<div class="flex items-center bg-green-100 text-green-700 px-sm py-0.5 rounded-full text-xs font-bold">
+<span class="material-symbols-outlined text-xs mr-1">arrow_upward</span> 23%
+                    </div>
+</div>
+<div class="h-16 mt-md w-full relative">
+<svg class="w-full h-full fill-none" preserveaspectratio="none" viewbox="0 0 100 30">
+<path class="stroke-secondary-container" d="M0,20 Q10,5 20,22 T40,15 T60,5 T80,18 T100,2" stroke-width="2"></path>
+</svg>
+</div>
+<div class="absolute right-md bottom-md opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer">
+<span>Last week</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-3 glass-card rounded-3xl p-lg flex flex-col gap-sm relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-on-surface-variant text-body-sm font-label-bold uppercase tracking-wider">Time spent</p>
+<h3 class="text-display-lg font-data-num mt-xs">9.56</h3>
+</div>
+<div class="flex items-center bg-blue-100 text-blue-700 px-sm py-0.5 rounded-full text-xs font-bold">
+<span class="material-symbols-outlined text-xs mr-1">arrow_upward</span> 8%
+                    </div>
+</div>
+<div class="h-16 mt-md w-full relative">
+<svg class="w-full h-full fill-none" preserveaspectratio="none" viewbox="0 0 100 30">
+<path class="stroke-tertiary-container" d="M0,28 L15,10 L30,22 L45,5 L60,15 L75,12 L90,20 L100,8" stroke-width="2"></path>
+</svg>
+</div>
+<div class="absolute right-md bottom-md opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer">
+<span>Last week</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Devices Donut Chart Card -->
+<div class="col-span-12 lg:col-span-3 row-span-2 glass-card rounded-3xl p-lg flex flex-col h-full">
+<div class="flex justify-between items-center mb-lg">
+<h4 class="font-title-sm text-on-surface">Devices</h4>
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer">
+<span>Today</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center py-md">
+<div class="relative w-40 h-40">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#E2E8F0" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#7015e2" stroke-dasharray="49, 100" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#fd7542" stroke-dasharray="36, 100" stroke-dashoffset="-49" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#ba1a1a" stroke-dasharray="15, 100" stroke-dashoffset="-85" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<p class="text-body-sm text-outline-variant uppercase font-label-bold leading-none">Total</p>
+<h5 class="text-display-lg font-data-num">545</h5>
+</div>
+</div>
+</div>
+<div class="space-y-sm mt-md">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-body-md text-on-surface-variant">Desktop</span>
+</div>
+<span class="text-body-md font-label-bold">305 / 49%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="text-body-md text-on-surface-variant">Mobile</span>
+</div>
+<span class="text-body-md font-label-bold">158 / 36%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-body-md text-on-surface-variant">Tablet</span>
+</div>
+<span class="text-body-md font-label-bold">49 / 15%</span>
+</div>
+</div>
+</div>
+<!-- Site Traffic Large Area Chart -->
+<div class="col-span-12 lg:col-span-6 glass-card rounded-3xl p-lg flex flex-col gap-md">
+<div class="flex flex-wrap justify-between items-center gap-md">
+<h4 class="font-title-sm text-on-surface">Site traffic</h4>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-body-sm font-label-bold text-on-surface-variant">New Visitor</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span class="text-body-sm font-label-bold text-on-surface-variant">Returning visitor</span>
+</div>
+</div>
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer bg-surface-container-low px-md py-1 rounded-full hover:bg-surface-container-high transition-colors">
+<span>This year</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+</div>
+<div class="flex-1 min-h-[300px] mt-md relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 300">
+<defs>
+<lineargradient id="grad-primary" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#7015e2;stop-opacity:0.2"></stop>
+<stop offset="100%" style="stop-color:#7015e2;stop-opacity:0"></stop>
+</lineargradient>
+<lineargradient id="grad-secondary" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#00799b;stop-opacity:0.2"></stop>
+<stop offset="100%" style="stop-color:#00799b;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="#E2E8F0" stroke-dasharray="4" stroke-width="1" x1="0" x2="800" y1="50" y2="50"></line>
+<line stroke="#E2E8F0" stroke-dasharray="4" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
+<line stroke="#E2E8F0" stroke-dasharray="4" stroke-width="1" x1="0" x2="800" y1="150" y2="150"></line>
+<line stroke="#E2E8F0" stroke-dasharray="4" stroke-width="1" x1="0" x2="800" y1="200" y2="200"></line>
+<line stroke="#E2E8F0" stroke-dasharray="4" stroke-width="1" x1="0" x2="800" y1="250" y2="250"></line>
+<!-- Returning Visitors Path -->
+<path d="M0,200 C50,220 100,100 150,150 C200,200 250,50 300,100 C350,150 400,250 450,180 C500,110 550,130 600,80 C650,30 700,150 800,50" fill="none" stroke="#00799b" stroke-linecap="round" stroke-width="3"></path>
+<path d="M0,200 C50,220 100,100 150,150 C200,200 250,50 300,100 C350,150 400,250 450,180 C500,110 550,130 600,80 C650,30 700,150 800,50 L800,300 L0,300 Z" fill="url(#grad-secondary)"></path>
+<!-- New Visitors Path -->
+<path d="M0,250 C100,230 200,100 300,220 C400,340 500,100 600,180 C700,260 800,100 800,50" fill="none" stroke="#7015e2" stroke-linecap="round" stroke-width="3"></path>
+<path d="M0,250 C100,230 200,100 300,220 C400,340 500,100 600,180 C700,260 800,100 800,50 L800,300 L0,300 Z" fill="url(#grad-primary)"></path>
+<!-- Tooltip Indicator -->
+<g transform="translate(600, 80)">
+<circle fill="#ffffff" r="5" stroke="#00799b" stroke-width="2"></circle>
+<rect fill="white" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.1))" height="35" rx="8" width="60" x="-30" y="-55"></rect>
+<text class="text-[12px] font-bold fill-on-surface" text-anchor="middle" x="0" y="-38">680</text>
+<text class="text-[10px] fill-outline-variant" text-anchor="middle" x="0" y="-28">Aug 24</text>
+</g>
+</svg>
+<!-- X-Axis Labels -->
+<div class="flex justify-between mt-xs text-[10px] text-outline-variant font-label-bold px-md uppercase">
+<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+</div>
+</div>
+</div>
+<!-- Real-time Data Bar List -->
+<div class="col-span-12 lg:col-span-3 glass-card rounded-3xl p-lg flex flex-col">
+<h4 class="font-title-sm text-on-surface mb-lg">Real-time Data</h4>
+<div class="space-y-lg flex-1">
+<div class="space-y-xs">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Online visitors</span>
+<span class="font-data-num text-lg">545</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-[10px] text-outline-variant font-label-bold text-right uppercase">Max 680</p>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">New visitors</span>
+<span class="font-data-num text-lg">421</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary/60 rounded-full" style="width: 60%"></div>
+</div>
+<p class="text-[10px] text-outline-variant font-label-bold text-right uppercase">Max 568</p>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Sessions</span>
+<span class="font-data-num text-lg">984</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary/40 rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-[10px] text-outline-variant font-label-bold text-right uppercase">Max 1.25k</p>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Page views</span>
+<span class="font-data-num text-lg">134</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary/20 rounded-full" style="width: 40%"></div>
+</div>
+<p class="text-[10px] text-outline-variant font-label-bold text-right uppercase">Max 257</p>
+</div>
+</div>
+</div>
+<!-- Bottom Left: Traffic from Social -->
+<div class="col-span-12 lg:col-span-4 glass-card rounded-3xl p-lg flex flex-col">
+<div class="flex justify-between items-center mb-lg">
+<h4 class="font-title-sm text-on-surface">Traffic from social</h4>
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer">
+<span>Last week</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative w-32 h-32 flex-shrink-0">
+<svg class="w-full h-full transform rotate-45" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#7015e2" stroke-dasharray="45, 100" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#fd7542" stroke-dasharray="20, 100" stroke-dashoffset="-45" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#00799b" stroke-dasharray="15, 100" stroke-dashoffset="-65" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#ba1a1a" stroke-dasharray="10, 100" stroke-dashoffset="-80" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#67d3ff" stroke-dasharray="10, 100" stroke-dashoffset="-90" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<p class="text-[10px] text-outline-variant font-label-bold leading-none">Total</p>
+<h5 class="text-lg font-data-num">1578</h5>
+</div>
+</div>
+<div class="flex-1 space-y-sm">
+<div class="flex justify-between text-[11px] font-label-bold">
+<div class="flex items-center gap-xs"><span class="w-1.5 h-1.5 rounded-full bg-error"></span> YouTube</div>
+<span class="text-on-surface-variant">710 / 45%</span>
+</div>
+<div class="flex justify-between text-[11px] font-label-bold">
+<div class="flex items-center gap-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> Instagram</div>
+<span class="text-on-surface-variant">316 / 20%</span>
+</div>
+<div class="flex justify-between text-[11px] font-label-bold">
+<div class="flex items-center gap-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> LinkedIn</div>
+<span class="text-on-surface-variant">237 / 15%</span>
+</div>
+<div class="flex justify-between text-[11px] font-label-bold">
+<div class="flex items-center gap-xs"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span> Facebook</div>
+<span class="text-on-surface-variant">174 / 11%</span>
+</div>
+<div class="flex justify-between text-[11px] font-label-bold">
+<div class="flex items-center gap-xs"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span> Twitter</div>
+<span class="text-on-surface-variant">142 / 9%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Center: Middle time on site -->
+<div class="col-span-12 lg:col-span-5 glass-card rounded-3xl p-lg flex flex-col">
+<div class="flex justify-between items-center mb-lg">
+<h4 class="font-title-sm text-on-surface">Middle time on site</h4>
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer">
+<span>Last 14 days</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="flex-1 flex items-end justify-between gap-2 px-md">
+<!-- Bar chart elements -->
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[40%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[55%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[45%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[70%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[60%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[85%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[40%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[90%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-all rounded-t-lg h-full bottom-0"></div>
+<!-- Tooltip for active bar -->
+<div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow-lg flex flex-col items-center">
+<span class="text-[12px] font-bold">12.51</span>
+<span class="text-[8px] text-outline-variant font-label-bold">min</span>
+<div class="absolute -bottom-1 w-2 h-2 bg-white rotate-45"></div>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[65%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[75%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-t-lg relative group h-[80%]">
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary transition-colors rounded-t-lg h-full bottom-0"></div>
+</div>
+</div>
+<div class="flex justify-between mt-sm px-md text-[10px] text-outline-variant font-label-bold uppercase">
+<span>30 Jan</span><span>1 Feb</span><span>2 Feb</span><span>3 Feb</span><span>4 Feb</span><span>5 Feb</span><span>6 Feb</span><span>7 Feb</span><span>8 Feb</span><span>9 Feb</span><span>10 Feb</span>
+</div>
+</div>
+</div>
+<!-- Bottom Right: Pages Table/List -->
+<div class="col-span-12 lg:col-span-3 glass-card rounded-3xl p-lg flex flex-col">
+<div class="flex justify-between items-center mb-lg">
+<h4 class="font-title-sm text-on-surface">Pages</h4>
+<div class="flex items-center gap-xs text-body-sm font-label-bold text-outline-variant cursor-pointer">
+<span>Last month</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+<div class="space-y-md flex-1">
+<div class="space-y-xs">
+<div class="flex justify-between text-[11px] font-label-bold">
+<span class="text-on-surface">Homepage</span>
+<span class="text-outline-variant">98 083</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 90%"></div>
+</div>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-[11px] font-label-bold">
+<span class="text-on-surface">Catalog</span>
+<span class="text-outline-variant">58 325</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-[11px] font-label-bold">
+<span class="text-on-surface">Products</span>
+<span class="text-outline-variant">51 387</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 58%"></div>
+</div>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-[11px] font-label-bold">
+<span class="text-on-surface">Gallery</span>
+<span class="text-outline-variant">32 301</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-[11px] font-label-bold">
+<span class="text-on-surface">Video</span>
+<span class="text-outline-variant">28 845</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-[11px] font-label-bold">
+<span class="text-on-surface">Reservation</span>
+<span class="text-outline-variant">23 845</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 35%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Info -->
+<footer class="mt-lg py-md text-center">
+<p class="text-body-sm text-outline-variant">© 2024 Value Analytics. Professional Enterprise Intelligence Platform.</p>
+</footer>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Simple search input interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('shadow-md');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('shadow-md');
+        });
+    </script>
+</body></html>

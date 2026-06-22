@@ -7,7 +7,8 @@ type Props = {
   title: string;
   onClose: () => void;
   children: React.ReactNode;
-  footer: React.ReactNode;
+  footer?: React.ReactNode;
+  maxWidthClass?: string;
 };
 
 /**
@@ -20,6 +21,7 @@ export function PodShellModal({
   onClose,
   children,
   footer,
+  maxWidthClass = "max-w-2xl",
 }: Props) {
   if (!isOpen) return null;
 
@@ -32,7 +34,7 @@ export function PodShellModal({
       }}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-border bg-surface-elevated shadow-2xl"
+        className={`flex max-h-[90vh] w-full ${maxWidthClass} flex-col overflow-hidden rounded-xl border border-border bg-surface-elevated shadow-2xl`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="pod-shell-modal-title"
@@ -57,9 +59,11 @@ export function PodShellModal({
 
         <div className="min-h-0 flex-1 overflow-y-auto p-6">{children}</div>
 
-        <div className="flex shrink-0 gap-3 border-t border-border bg-surface p-6">
-          {footer}
-        </div>
+        {footer ? (
+          <div className="flex shrink-0 gap-3 border-t border-border bg-surface p-6">
+            {footer}
+          </div>
+        ) : null}
       </div>
     </div>
   );

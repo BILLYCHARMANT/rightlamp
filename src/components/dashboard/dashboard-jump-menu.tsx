@@ -11,6 +11,7 @@ import {
   type DashboardNavItem,
   type DashboardNavSectionId,
 } from "@/lib/dashboard/nav-config";
+import { useSession } from "next-auth/react";
 
 function sectionSort(a: DashboardNavItem, b: DashboardNavItem): number {
   const ia = DASHBOARD_NAV_ITEMS.indexOf(a);
@@ -27,8 +28,12 @@ function DashboardJumpMenuDialog({
 }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { data: session } = useSession();
 
-  const filtered = useMemo(() => dashboardJumpMatches(query), [query]);
+  const filtered = useMemo(
+    () => dashboardJumpMatches(query, session?.user?.role),
+    [query, session?.user?.role],
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<DashboardNavSectionId, DashboardNavItem[]>();
@@ -169,14 +174,11 @@ export function DashboardJumpShell() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="hidden items-center gap-2 rounded-xl border border-border bg-surface-elevated/80 px-3 py-2 text-left text-xs text-muted-foreground shadow-sm transition hover:border-brand/25 hover:text-ink lg:flex lg:min-w-[200px]"
+        className="hidden items-center gap-2 rounded-sm bg-slate-100 px-3 py-1.5 text-left text-xs text-muted-foreground transition hover:bg-slate-200/80 hover:text-ink lg:flex lg:w-72"
         aria-label="Open jump menu"
       >
-        <Search size={15} aria-hidden className="shrink-0 opacity-70" />
-        <span className="flex-1 truncate">Jump anywhere…</span>
-        <kbd className="rounded border border-border bg-canvas px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-          ⌘K
-        </kbd>
+        <Search size={14} aria-hidden className="shrink-0 opacity-70" />
+        <span className="flex-1 truncate">Jump anywhere… (⌘K)</span>
       </button>
 
       <DashboardJumpMenuDialog open={open} onClose={() => setOpen(false)} />

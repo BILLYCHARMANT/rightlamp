@@ -24,7 +24,7 @@ export function DashboardOverviewMetrics({ stats }: Props) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <DashboardMetricCard
           icon={Layers}
-          label="Catalog SKUs"
+          label="Products in catalog"
           value={stats.totalSkus}
           highlight={false}
         />

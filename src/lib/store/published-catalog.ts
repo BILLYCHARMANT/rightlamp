@@ -1,6 +1,7 @@
 import "server-only";
 
 import { unstable_cache } from "next/cache";
+import { normalizeCurrency } from "@/lib/dashboard/constants";
 import { prisma } from "@/lib/db";
 import type { RightlampsProduct } from "@/lib/rightlamps/types";
 
@@ -15,7 +16,7 @@ export type PublishedProductRow = {
   stock: number;
 };
 
-/** Maps dashboard `Product` rows to the storefront card shape (legacy Rightlamps field names). */
+/** Maps dashboard `Product` rows to the storefront card shape (legacy PV-GRID field names). */
 export function prismaProductToStorefrontProduct(
   row: PublishedProductRow,
 ): RightlampsProduct {
@@ -27,7 +28,7 @@ export function prismaProductToStorefrontProduct(
     category: row.category ?? undefined,
     image: "/brand/logo.png",
     price: row.priceCents / 100,
-    currency: row.currency,
+    currency: normalizeCurrency(row.currency),
     countInStock: row.stock,
   };
 }
@@ -53,7 +54,7 @@ async function fetchPublishedCatalogUncached(): Promise<RightlampsProduct[]> {
 /** Invalidate with `revalidateTag` when dashboard inventory changes. */
 export const PUBLISHED_CATALOG_CACHE_TAG = "store-published-catalog-v1";
 
-/** Published SKUs from Prisma — same source as the staff dashboard catalog. */
+/** Published products from Prisma — same source as the staff dashboard catalog. */
 export const getCachedPublishedCatalog = unstable_cache(
   fetchPublishedCatalogUncached,
   [PUBLISHED_CATALOG_CACHE_TAG],

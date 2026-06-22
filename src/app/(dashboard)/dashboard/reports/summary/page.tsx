@@ -1,11 +1,22 @@
-import { DashboardAdminPlaceholder } from "@/components/dashboard/dashboard-admin-placeholder";
+import { ReportSummaryDashboard } from "@/components/dashboard/report-summary-dashboard";
+import {
+  getOperationsSummary,
+  listReports,
+} from "@/lib/dashboard/operations-queries";
+import { fetchReportSummary } from "@/lib/rightlamps/server-api";
 
-export default function DashboardReportSummaryPage() {
+export default async function DashboardReportSummaryPage() {
+  const [summary, reports, productionSummary] = await Promise.all([
+    getOperationsSummary(),
+    listReports(),
+    fetchReportSummary(),
+  ]);
+
   return (
-    <DashboardAdminPlaceholder
-      primaryHref="/dashboard/reports/summary"
-      productionPath="/admin/reportSummary"
-      description="Condensed report totals (`/api/report/summary` on Rightlamps)."
+    <ReportSummaryDashboard
+      summary={summary}
+      reports={reports}
+      productionSummary={productionSummary}
     />
   );
 }

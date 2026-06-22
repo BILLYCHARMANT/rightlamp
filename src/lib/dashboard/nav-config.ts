@@ -1,19 +1,15 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
-  CalendarDays,
-  FilePlus,
   LayoutDashboard,
+  MapPin,
   Package,
-  PieChart,
-  Receipt,
   ShoppingBag,
-  Sparkles,
   Store,
   UsersRound,
   Warehouse,
 } from "lucide-react";
-
+import { canAccessNavHref, type StaffRoleCode } from "@/lib/dashboard/rbac";
 export type DashboardNavSectionId =
   | "overview"
   | "sales"
@@ -38,7 +34,6 @@ export const DASHBOARD_SECTION_ORDER: DashboardNavSectionId[] = [
   "overview",
   "sales",
   "catalog",
-  "finance",
   "insights",
   "team",
 ];
@@ -53,9 +48,11 @@ export type DashboardNavItem = {
   keywords?: string[];
   /** When false, item is used for titles / routing only (not shown in sidebar or jump). */
   showInNav?: boolean;
+  /** If set, only these roles see the item. When omitted, all dashboard roles may see it. */
+  roles?: StaffRoleCode[];
 };
 
-/** Mirrors Rightlamps admin IA — order matters for `find` title fallback */
+/** Mirrors PV-GRID admin IA — order matters for `find` title fallback */
 export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
   {
     href: "/dashboard",
@@ -66,12 +63,13 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
     keywords: ["home", "overview"],
   },
   {
-    href: "/dashboard/my-shop",
-    label: "My shop",
+    href: "/dashboard/my-shops",
+    label: "My Shops",
     icon: Store,
     section: "sales",
-    match: (path) => path.startsWith("/dashboard/my-shop"),
-    keywords: ["shop", "storefront", "vendor"],
+    match: (path) => path.startsWith("/dashboard/my-shops"),
+    keywords: ["shops", "branches", "multi-branch", "inventory", "profit"],
+    roles: ["ADMIN", "MAIN_STORE_MANAGER", "PARTNER_INVESTOR", "BRANCH_MANAGER"],
   },
   {
     href: "/dashboard/orders",
@@ -87,7 +85,7 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
     icon: Package,
     section: "catalog",
     match: (path) => path.startsWith("/dashboard/products"),
-    keywords: ["sku", "inventory list", "create", "add sku", "quick create"],
+    keywords: ["product", "inventory list", "create", "add product", "quick create"],
   },
   {
     href: "/dashboard/stock",
@@ -98,53 +96,31 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
     keywords: ["warehouse", "quantity"],
   },
   {
-    href: "/dashboard/specials",
-    label: "Specials",
-    icon: Sparkles,
+    href: "/dashboard/branches",
+    label: "Branches",
+    icon: MapPin,
     section: "catalog",
-    match: (path) => path.startsWith("/dashboard/specials"),
-    keywords: ["promo", "offers"],
-  },
-  {
-    href: "/dashboard/expenses",
-    label: "Expenses",
-    icon: Receipt,
-    section: "finance",
-    match: (path) => path.startsWith("/dashboard/expenses"),
-    keywords: ["bills", "spend"],
-  },
-  {
-    href: "/dashboard/monthly",
-    label: "Monthly",
-    icon: CalendarDays,
-    section: "finance",
-    match: (path) => path.startsWith("/dashboard/monthly"),
-    keywords: ["calendar", "close"],
+    match: (path) => path.startsWith("/dashboard/branches"),
+    keywords: ["locations", "shops", "transfer", "warehouse sites"],
   },
   {
     href: "/dashboard/reports",
     label: "Reports",
     icon: BarChart3,
     section: "insights",
-    match: (path) =>
-      path === "/dashboard/reports" || path === "/dashboard/reports/",
-    keywords: ["analytics", "charts"],
-  },
-  {
-    href: "/dashboard/reports/summary",
-    label: "Report summary",
-    icon: PieChart,
-    section: "insights",
-    match: (path) => path.startsWith("/dashboard/reports/summary"),
-    keywords: ["totals", "rollup"],
-  },
-  {
-    href: "/dashboard/reports/new",
-    label: "Create report",
-    icon: FilePlus,
-    section: "insights",
-    match: (path) => path.startsWith("/dashboard/reports/new"),
-    keywords: ["write", "export"],
+    match: (path) => path.startsWith("/dashboard/reports"),
+    keywords: [
+      "analytics",
+      "charts",
+      "summary",
+      "create report",
+      "rollup",
+      "expenses",
+      "bills",
+      "spend",
+      "monthly",
+      "calendar",
+    ],
   },
   {
     href: "/dashboard/users",
@@ -153,11 +129,16 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
     section: "team",
     match: (path) => path.startsWith("/dashboard/users"),
     keywords: ["roles", "accounts"],
+    roles: ["ADMIN"],
   },
 ];
 
 /** Prefer longest href prefix match so nested routes resolve correctly */
 export function getDashboardTitle(path: string): string {
+  if (path.startsWith("/dashboard/reports")) return "Reports";
+  if (path.startsWith("/dashboard/my-shops/")) return "Shop details";
+  if (path.startsWith("/dashboard/my-shops")) return "My Shops";
+
   let best: DashboardNavItem | undefined;
   let bestLen = -1;
   for (const item of DASHBOARD_NAV_ITEMS) {
@@ -170,8 +151,14 @@ export function getDashboardTitle(path: string): string {
   return best?.label ?? "Dashboard overview";
 }
 
-export function dashboardJumpMatches(query: string): DashboardNavItem[] {
-  const visible = DASHBOARD_NAV_ITEMS.filter((i) => i.showInNav !== false);
+export function getVisibleNavItems(role?: string | null): DashboardNavItem[] {
+  return DASHBOARD_NAV_ITEMS.filter(
+    (item) => item.showInNav !== false && canAccessNavHref(role, item.href),
+  );
+}
+
+export function dashboardJumpMatches(query: string, role?: string | null): DashboardNavItem[] {
+  const visible = getVisibleNavItems(role);
   const q = query.trim().toLowerCase();
   if (!q) return [...visible];
   const tokens = q.split(/\s+/).filter(Boolean);
@@ -187,37 +174,7 @@ export function dashboardJumpMatches(query: string): DashboardNavItem[] {
 
 /** Related hubs for placeholder screens — speeds routine cross-navigation */
 export const DASHBOARD_RELATED_HUBS: Record<string, string[]> = {
-  "/dashboard/expenses": [
-    "/dashboard/monthly",
-    "/dashboard/reports/summary",
-    "/dashboard/orders",
-  ],
-  "/dashboard/monthly": [
-    "/dashboard/expenses",
-    "/dashboard/reports",
-    "/dashboard/reports/summary",
-  ],
-  "/dashboard/my-shop": [
-    "/dashboard/products",
-    "/dashboard/orders",
-    "/dashboard/specials",
-  ],
-  "/dashboard/specials": [
-    "/dashboard/products",
-    "/dashboard/my-shop",
-    "/dashboard/orders",
-  ],
-  "/dashboard/products": ["/dashboard/stock", "/dashboard/specials"],
-  "/dashboard/reports/summary": [
-    "/dashboard/reports",
-    "/dashboard/reports/new",
-    "/dashboard/monthly",
-  ],
-  "/dashboard/reports/new": [
-    "/dashboard/reports",
-    "/dashboard/reports/summary",
-    "/dashboard/expenses",
-  ],
+  "/dashboard/products": ["/dashboard/stock", "/dashboard/branches"],
 };
 
 export function getDashboardRelatedLinks(

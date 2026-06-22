@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { RightlampsProduct } from "@/lib/rightlamps/types";
 import { formatRetailPrice } from "@/lib/rightlamps/format-price";
-import { storeDisplay } from "@/components/store/store-fonts";
 
 export function ProductCard({ product }: { product: RightlampsProduct }) {
   const href = `/shop/${encodeURIComponent(product.slug)}`;
@@ -18,9 +17,9 @@ export function ProductCard({ product }: { product: RightlampsProduct }) {
   return (
     <Link
       href={href}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface-elevated transition hover:border-brand/28 hover:shadow-lg hover:shadow-brand/8"
+      className="group flex h-full flex-col overflow-hidden rounded-[var(--radius)] border border-border bg-white shadow-card transition hover:-translate-y-0.5 hover:shadow-card-lg"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-surface">
+      <div className="relative aspect-[4/3] overflow-hidden bg-surface-muted">
         {product.image ? (
           <Image
             src={product.image}
@@ -37,9 +36,7 @@ export function ProductCard({ product }: { product: RightlampsProduct }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <h3
-          className={`${storeDisplay.className} line-clamp-2 min-h-[3rem] text-lg font-semibold leading-snug text-ink`}
-        >
+        <h3 className="line-clamp-2 min-h-[3rem] text-base font-bold leading-snug text-ink">
           {product.name}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
@@ -48,7 +45,7 @@ export function ProductCard({ product }: { product: RightlampsProduct }) {
 
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-border pt-4">
           <div>
-            <p className="text-base font-bold tracking-tight text-brand/92">
+            <p className="text-base font-bold tracking-tight text-brand">
               {formatRetailPrice(
                 product.price,
                 product.currency ?? "RWF",
@@ -58,7 +55,7 @@ export function ProductCard({ product }: { product: RightlampsProduct }) {
               {stock}
             </p>
           </div>
-          <span className="shrink-0 rounded-full bg-brand/92 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-ink ring-1 ring-brand/15 transition group-hover:bg-brand-hover">
+          <span className="shrink-0 rounded-lg bg-accent px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition group-hover:bg-accent-hover">
             View
           </span>
         </div>

@@ -23,7 +23,7 @@ export function ShopPagination({
   if (totalPages <= 1) return null;
 
   const pill =
-    "rounded-full px-5 py-2.5 text-sm font-semibold transition";
+    "rounded-lg px-5 py-2.5 text-sm font-semibold transition";
 
   return (
     <nav
@@ -31,24 +31,24 @@ export function ShopPagination({
       aria-label="Pagination"
     >
       {page <= 1 ? (
-        <span className={`${pill} text-muted-foreground`}>Previous</span>
+        <span className={`${pill} text-[#727786]`}>Previous</span>
       ) : (
         <Link
           href={href(page - 1)}
-          className={`${pill} border border-border bg-surface-elevated text-ink hover:border-brand`}
+          className={`${pill} border border-[#E2E8F0] bg-white text-[#1c1b1b] hover:border-[#c55316]`}
         >
           Previous
         </Link>
       )}
-      <span className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">
+      <span className="rounded-lg border border-[#E2E8F0] bg-[#f6f3f2] px-4 py-2 text-sm font-medium text-[#424754]">
         Page {page} of {totalPages}
       </span>
       {page >= totalPages ? (
-        <span className={`${pill} text-muted-foreground`}>Next</span>
+        <span className={`${pill} text-[#727786]`}>Next</span>
       ) : (
         <Link
           href={href(page + 1)}
-          className={`${pill} border border-border bg-surface-elevated text-ink hover:border-brand`}
+          className={`${pill} border border-[#E2E8F0] bg-white text-[#1c1b1b] hover:border-[#c55316]`}
         >
           Next
         </Link>

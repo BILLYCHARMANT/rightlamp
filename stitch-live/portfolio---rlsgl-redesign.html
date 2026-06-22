@@ -1,0 +1,384 @@
+﻿<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portfolio | PV-GRID</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#5e4100",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffba27",
+                        "surface-dim": "#dcd9d9",
+                        "outline-variant": "#c2c6d6",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#424754",
+                        "surface-tint": "#005ac5",
+                        "inverse-on-surface": "#f3f0ef",
+                        "primary-fixed": "#d8e2ff",
+                        "surface-container-high": "#ebe7e7",
+                        "inverse-primary": "#aec6ff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#271900",
+                        "on-tertiary-container": "#fff9f6",
+                        "border-subtle": "#E2E8F0",
+                        "surface-container-low": "#f6f3f2",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#fbfaff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#106eea",
+                        "outline": "#727786",
+                        "surface-bright": "#fcf9f8",
+                        "power-yellow": "#FAB40D",
+                        "energy-green": "#10B981",
+                        "surface-container-highest": "#e5e2e1",
+                        "tertiary-fixed": "#ffdea9",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed": "#001a42",
+                        "surface-container": "#f0edec",
+                        "tertiary": "#785400",
+                        "on-surface": "#1c1b1b",
+                        "surface": "#fcf9f8",
+                        "secondary": "#006c49",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#002113",
+                        "primary-fixed-dim": "#aec6ff",
+                        "tertiary-container": "#976b00",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-variant": "#e5e2e1",
+                        "secondary-container": "#6cf8bb",
+                        "inverse-surface": "#313030",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-primary-fixed-variant": "#004396",
+                        "primary": "#0056be",
+                        "on-background": "#1c1b1b",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-gray": "#F8FAFC"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "section-padding-mobile": "48px",
+                        "section-padding": "80px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "button": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "display-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-md": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                        "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .perspective-grid {
+            mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+        }
+        .card-zoom:hover img {
+            transform: scale(1.05);
+        }
+        .filter-btn.active {
+            @apply bg-primary text-white;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<header class="bg-surface sticky top-0 z-50 border-b border-border-subtle h-20 flex items-center shadow-sm">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto">
+<a class="font-display-lg text-display-lg font-bold text-primary flex items-center gap-2" href="index.html">
+<span class="material-symbols-outlined text-primary" style="font-size: 40px;">bolt</span>
+                PV-GRID
+            </a>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">About Us</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Our Services</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md" href="#">Portfolio</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="bg-primary text-white font-button px-6 py-3 rounded hover:bg-primary-container hover:shadow-lg transition-all active:scale-95">
+                    Get a Quote
+                </button>
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative bg-inverse-surface py-section-padding overflow-hidden">
+
+<div class="max-w-container-max mx-auto px-gutter relative z-10">
+<div class="max-w-2xl">
+<span class="font-label-caps text-label-caps text-energy-green mb-4 block">EXCELLENCE IN ENERGY</span>
+<h1 class="font-display-lg text-display-lg text-on-primary-container mb-6">Our Impactful Projects</h1>
+<p class="font-body-lg text-body-lg text-outline-variant mb-10 leading-relaxed">
+                        Transforming conceptual energy challenges into high-performance industrial realities. Explore our track record of reliability across electrical infrastructure and renewable research.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg">
+<span class="material-symbols-outlined text-energy-green" style="font-variation-settings: 'FILL' 1">check_circle</span>
+<span class="text-white font-label-caps">500+ Projects</span>
+</div>
+<div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg">
+<span class="material-symbols-outlined text-power-yellow" style="font-variation-settings: 'FILL' 1">verified</span>
+<span class="text-white font-label-caps">ISO Certified</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Portfolio Gallery Section -->
+<section class="bg-surface-gray py-section-padding">
+<div class="max-w-container-max mx-auto px-gutter">
+<!-- Filters -->
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+<h2 class="font-headline-md text-headline-md text-on-surface">Portfolio Showcase</h2>
+<div class="flex flex-wrap gap-2">
+<button class="filter-btn active font-button px-5 py-2 rounded-full border border-border-subtle bg-white text-on-surface hover:border-primary transition-all">All</button>
+<button class="filter-btn font-button px-5 py-2 rounded-full border border-border-subtle bg-white text-on-surface hover:border-primary transition-all">Commercial</button>
+<button class="filter-btn font-button px-5 py-2 rounded-full border border-border-subtle bg-white text-on-surface hover:border-primary transition-all">Residential</button>
+<button class="filter-btn font-button px-5 py-2 rounded-full border border-border-subtle bg-white text-on-surface hover:border-primary transition-all">Industrial</button>
+<button class="filter-btn font-button px-5 py-2 rounded-full border border-border-subtle bg-white text-on-surface hover:border-primary transition-all">Shop</button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-base">
+<!-- Main Featured Item -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-lg bg-white border border-border-subtle card-zoom">
+<div class="h-[480px] w-full overflow-hidden">
+<img alt="" class="w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLuxo8CtofYqfYZWSgrb_PuAqPy9FbEUE_r_vkdqNZwxaZjOBbD43MrI95bWwqCIWkKdZadtYCz9ay8cEyLRSRPB3xFH1fyrP9IqRzfXFe4sdEDVrCzLBwbH6Rnj7xfpI086jFl724gsls2AVC1VqKcXD5qaUL0yvpmJo903LOHZkXiIdQrlGqRKilS3kv-v4kIXUgXrrArE-9zJ0ClQZwVk8KG4R3uuoXdg5WN_jQsbDWdw3VxPRr-k_QQ"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+<span class="font-label-caps text-label-caps text-energy-green mb-2">INDUSTRIAL</span>
+<h3 class="font-headline-sm text-headline-sm text-white">Industrial Grid System</h3>
+<p class="text-white/80 mt-2 max-w-md">Large scale power distribution unit engineered for heavy manufacturing output and resilience.</p>
+</div>
+<div class="absolute top-4 left-4">
+<span class="bg-primary text-white font-label-caps px-3 py-1 rounded">FEATURED</span>
+</div>
+</div>
+<!-- Secondary Items Column -->
+<div class="md:col-span-4 flex flex-col gap-base">
+<div class="group relative overflow-hidden rounded-lg bg-white border border-border-subtle h-[236px] card-zoom">
+<img alt="" class="w-full h-full object-cover transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLtNQkvUn-WoaXYfpz1l4H6STViDZ0RYRP73vJgnebN-m47QMr8kdEdHCB_vYSOzv6QLu2IhVq6UmfR2OP_Bz12_O7GbUveKJd1l1-PPFcLyj8OEQY-VTNtG3LTvKPXhPluABQE3KCWRwGv-gj7Yw13ftfXoEefiKZrxDD5v0l5UOgzaH6QNE5xuMs9y0JoNJuVx2XRtKcyvXys8kVX1pQS5A9CnnQe3Qi-WX9nRGIB9TZiMPCEcbfQ284U"/>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-sm border-t border-border-subtle">
+<span class="font-label-caps text-label-caps text-primary mb-1 block">RESIDENTIAL</span>
+<h4 class="font-button text-on-surface">Residential Solar Hub</h4>
+</div>
+</div>
+<div class="group relative overflow-hidden rounded-lg bg-white border border-border-subtle h-[236px] card-zoom">
+<img alt="" class="w-full h-full object-cover transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLsfYuFmQD_f5LdCGo0epb_oSdpNJQdDIYkXZQKQOEnjNhbFgd3vWdDuiocO0Bz4FzgTdJZHjPSNA6am9AkS4dbuzUfX1MrMcooqQc0T2JRNfeiyEzFC5fNDTWvlDbmfxTKiY_PjuGuRSGhQoxqJVL91wL2es6Y9hI_8XO36t7uBCYJeoAPb39LG1HJdn7QiNYVgVZp1vhY8UHzkinZoNnEmWx-mFKKfntz-no48aNCEkyoWqQk3Maaw3QI"/>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-sm border-t border-border-subtle">
+<span class="font-label-caps text-label-caps text-primary mb-1 block">RESEARCH</span>
+<h4 class="font-button text-on-surface">Renewable Innovation Lab</h4>
+</div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-lg bg-white border border-border-subtle h-[320px] card-zoom">
+<img alt="" class="w-full h-full object-cover transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLsS_1aPr1LxtqllX280yb5lBK-OCa7_3RcxVYWVdQFS7QEhXZ0aNK_IhUUWHb6abwejxUuwGA53hgOmJWvD03ZAsFguVBj49_GWsdrQ5DlGQOVbD7boQCgxhCOZq4CTjKZXfUpWZWgR1UC79Z5v5zD3B23dEbsJ46UMIyUU24tjoROvXq-roAPsSNpXbyeBBLfUXPXG1ONs8cKxMAaCc2SpmWwjpJp6g36FVZEZ8dEVZ1izuSHYjCxfIwg"/>
+<div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="font-label-caps text-label-caps text-white mb-2">TECHNICAL</span>
+<h4 class="text-white font-headline-sm">Advanced Fieldwork</h4>
+<a class="mt-4 flex items-center gap-2 text-white font-button group/link" href="#">
+                                View Details <span class="material-symbols-outlined transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-lg bg-white border border-border-subtle h-[320px] card-zoom">
+<div class="absolute top-4 right-4 z-10">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+</div>
+<img class="w-full h-full object-cover transition-transform duration-500" data-alt="A clean, high-angle interior shot of a commercial electrical room with neatly organized conduit piping and primary breaker boxes. The lighting is crisp and cool, emphasizing industrial precision. The overall aesthetic is professional and modern with white walls and silver metal finishes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTA88hScQJBViHizy1s6HZsPjiW1ruzWcZPL1hDchil5NqDQFTw0a--aFsAT3BsiEO9IyohbLr4BG0ODoVBidF-djcvOfPwe-zAZft79r58zcxNRDXLx29efNgkdHznfkXk0o1i5tss8blaAePuURqHo3pmReDp9cQH72pF-DU5MbpCLVVwiscvV6GrVvjaNBSSMC4KVEZEdjBU5XMjIQYJ5s8M8zxYf1B-U1H-SVIjAFLY_CzGm_MA9yijv1eDZk6ME-yxKWPzx8"/>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-border-subtle">
+<span class="font-label-caps text-label-caps text-primary">COMMERCIAL</span>
+<h4 class="font-button text-on-surface">Corporate Center Electrics</h4>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-lg bg-white border border-border-subtle h-[320px] card-zoom">
+<img class="w-full h-full object-cover transition-transform duration-500" data-alt="A focused close-up of a high-tech smart meter display showing energy consumption metrics with a glowing digital interface. The background is softly blurred showing an electrical panel. The style is sharp, clean, and futuristic, representing modern energy monitoring systems for industrial clients." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXIGJnP6YDWidDvb49FuTV7LbLNPw-kGPINAVOipTESdkOdnNN121v_cRrJScBrckGsvmI9W_d_lmqjRLIZ974yHLHl872BT3hnKOaUVeuuqCKhBt7MRx1HxDZ3Uqbe1vW_IXO7zQA6yNXiAnvDgLa0NXAjZjvWsn7O7_y4INcBOzS80uPrFZ9mqySj9l7__ZDG4ReQvwZPr2yF-fBEcr_J6Ow1ZvhMN2nDz6RXJCKYRbNz0KDSkjHPxCKTFyOAISYxp5JhgPqDkc"/>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-border-subtle">
+<span class="font-label-caps text-label-caps text-secondary">SUSTAINABILITY</span>
+<h4 class="font-button text-on-surface">Smart Grid Implementation</h4>
+</div>
+</div>
+</div>
+<!-- View More CTA -->
+<div class="mt-16 text-center">
+<button class="inline-flex items-center gap-2 px-8 py-4 bg-transparent border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all rounded shadow-sm">
+                        LOAD MORE PROJECTS
+                        <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Punctuality / Trust Section -->
+<section class="py-section-padding bg-surface">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="grid md:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-6">Built on Precision and Punctuality</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8">
+                            We are always punctual because we respect your time. When it comes to professional residential and commercial electrical services, count on PV-GRID to deliver with technical excellence.
+                        </p>
+<div class="space-y-4 mb-10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div>
+<h4 class="font-button">24/7 Rapid Response</h4>
+<p class="text-sm text-on-surface-variant">Maintenance support available around the clock.</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-energy-green/10 flex items-center justify-center text-energy-green">
+<span class="material-symbols-outlined">nature_people</span>
+</div>
+<div>
+<h4 class="font-button">Clean Energy Mission</h4>
+<p class="text-sm text-on-surface-variant">Active mobilization for sustainable tech.</p>
+</div>
+</div>
+</div>
+<button class="bg-primary text-white font-button px-8 py-4 rounded hover:shadow-xl transition-all">
+                            Partner With Us
+                        </button>
+</div>
+<div class="relative">
+<div class="absolute -top-4 -left-4 w-24 h-24 bg-power-yellow opacity-10 rounded-full blur-2xl"></div>
+<div class="absolute -bottom-4 -right-4 w-32 h-32 bg-primary opacity-10 rounded-full blur-2xl"></div>
+<img class="w-full aspect-[4/3] object-cover rounded shadow-2xl relative z-10 border border-border-subtle" data-alt="A professional electrical engineer in a clean white uniform and yellow safety helmet, seen from behind, meticulously working on a modern electrical wiring panel. The setting is a brightly lit, clean industrial environment. The focus is on the precision and technical expertise of the fieldwork." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQIJNu04rHzrXT0iRaBeXQTrPCiyjCZtkWWgItKIxa3OBQzW910yW8Cl2vRfqq_aekdDkSAjBDcKwMfiAKAbi6WsK6odV0dHN1wfGaL4jgu5w5oN_Eg6udsenqfDKI79ISA2oKeoZx0a5_Trfs25DLVIBGI8f9Ft2jwfilqt8-IVn8pt3NA8aqs8aA9V-nal7lVPq3KgRTXa6L7cTBmdRaeMFX8kQadK6aKGy0L2aCP7pNhWQKWvlVnwLoqwqcGerRecdbpSwym5w"/>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container dark:bg-inverse-surface border-t border-border-subtle">
+<div class="max-w-container-max mx-auto px-gutter py-section-padding">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+<!-- Brand Info -->
+<div class="col-span-1 md:col-span-1">
+<a class="font-headline-sm text-headline-sm font-bold text-primary mb-6 block" href="#">PV-GRID</a>
+<p class="text-on-surface-variant mb-6 text-sm">
+                        PV-GRID helps people be aware of modern saving lamps and clean energy technologies through research and implementation.
+                    </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded bg-white border border-border-subtle flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">public</span>
+</a>
+<a class="w-10 h-10 rounded bg-white border border-border-subtle flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</a>
+</div>
+</div>
+<!-- Links Column 1 -->
+<div>
+<h5 class="font-button mb-6 text-on-surface">Useful Links</h5>
+<ul class="space-y-3">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Home</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">About Us</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Services</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Portfolio</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Team</a></li>
+</ul>
+</div>
+<!-- Links Column 2 -->
+<div>
+<h5 class="font-button mb-6 text-on-surface">Our Services</h5>
+<ul class="space-y-3">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Electrical Maintenance</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Electrical Installation</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Lighting Design</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Extraction of Biogas</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Renewable Research</a></li>
+</ul>
+</div>
+<!-- Contact Info -->
+<div>
+<h5 class="font-button mb-6 text-on-surface">Newsletter</h5>
+<p class="text-on-surface-variant text-sm mb-4">Join our list for energy efficiency tips and project updates.</p>
+<div class="flex gap-2">
+<input class="flex-1 bg-white border border-border-subtle rounded px-4 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none transition-all" placeholder="Your Email" type="email"/>
+<button class="bg-primary text-white p-2 rounded">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center gap-base border-t border-border-subtle pt-8">
+<p class="text-on-surface-variant text-sm text-center md:text-left">
+                    © 2024 PV-GRID. All rights reserved. Electrical Engineering &amp; Renewable Energy Excellence.
+                </p>
+<div class="flex gap-6">
+<a class="text-on-surface-variant hover:text-on-surface text-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-on-surface text-sm" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-on-surface text-sm" href="#">Safety Standards</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Simple Filter Interactivity
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-primary', 'text-white'));
+                btn.classList.add('active', 'bg-primary', 'text-white');
+            });
+        });
+
+        // Tonal Layering Micro-interaction
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'transform 0.3s ease';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

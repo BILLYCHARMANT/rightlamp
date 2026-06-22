@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Value Analytics Dashboard</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'vivid-purple': '#6366f1',
+            'vivid-orange': '#f97316',
+            'vivid-teal': '#14b8a6',
+            'dashboard-bg': '#f8fafc',
+            'sidebar-text': '#64748b',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f1f5f9;
+    }
+    .chart-placeholder {
+      background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+    .scroll-hide::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800">
+<div class="flex h-screen overflow-hidden">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-64 bg-white border-r border-slate-200 flex flex-col p-6 overflow-y-auto" data-purpose="sidebar-navigation">
+<div class="mb-10 px-2 flex items-center gap-2">
+<div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold">V</div>
+<div class="font-bold text-xl tracking-tight">VALUE <span class="text-xs block text-slate-400 -mt-1 uppercase tracking-widest font-normal">Analytics</span></div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Users</span>
+</a>
+<a class="flex items-center justify-between gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Messages</span>
+</div>
+<span class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">6</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Media</span>
+</a>
+<a class="flex items-center justify-between gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Comments</span>
+</div>
+<span class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">12</span>
+</a>
+</nav>
+<div class="pt-10 border-t border-slate-100 mt-10 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-sidebar-text hover:bg-slate-50 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Log out</span>
+</a>
+</div>
+<!-- Theme Switcher -->
+<div class="mt-auto pt-6 flex items-center justify-between">
+<div class="flex bg-slate-100 p-1 rounded-lg">
+<button class="p-1.5"><svg class="w-4 h-4 text-slate-400" fill="currentColor" viewbox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg></button>
+<button class="p-1.5 bg-white rounded shadow-sm"><svg class="w-4 h-4 text-orange-500" fill="currentColor" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg></button>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-dashboard-bg overflow-y-auto scroll-hide">
+<!-- BEGIN: MainHeader -->
+<header class="flex items-center justify-between px-8 py-4 bg-transparent" data-purpose="top-header">
+<div class="flex items-center gap-6">
+<h1 class="text-2xl font-bold text-slate-800">Dashboard</h1>
+<div class="flex items-center gap-2">
+<div class="relative">
+<select class="appearance-none bg-white border border-slate-200 rounded-lg px-4 py-1.5 pr-8 text-sm font-medium text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+<option>Overview</option>
+</select>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+<svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 bg-white border border-slate-200 rounded-lg text-slate-500 hover:text-indigo-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="p-2 bg-white border border-slate-200 rounded-lg text-slate-500 hover:text-indigo-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="p-2 bg-white border border-slate-200 rounded-lg text-slate-500 hover:text-indigo-600 relative">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="absolute top-1 right-1 w-2 h-2 bg-red-500 border border-white rounded-full"></span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<input class="pl-10 pr-4 py-1.5 w-64 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Search" type="text"/>
+</div>
+<div class="flex items-center gap-2 pl-4 border-l border-slate-200">
+<img alt="Profile" class="w-8 h-8 rounded-full border border-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMSW_35rs3i8uILj_NOFaSMLT_DWq7ofP9PrWuV4SqrRvcfBsPQVnAiG-0jwr04Iq1hePerMVkTgFUXHRTFNJ0OdEhdm8RuBbkuYU2X-LKvmXO4jMytjC9Nv8NaQI_YzNoG4PBJV_8MLifkdhFPh7dE6olGnkLiS6iRi8WSmiyTn-tfDVZnlxC_uBIY3IXToKsZ3F8aYNG2-288Dq5JR-WxVdBOkqRwQaE3jh6CNFwAQTyyIejvtd6DMnyn_gxhfOxgk2fwzLHbA4"/>
+<span class="text-sm font-semibold text-slate-700">Malena Bayer</span>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<button class="ml-2 p-1.5 bg-white border border-slate-200 rounded-lg text-slate-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<div class="p-8 space-y-6">
+<!-- Top Statistics Grid -->
+<div class="grid grid-cols-12 gap-6">
+<!-- BEGIN: SessionCard -->
+<div class="col-span-3 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between h-48">
+<div class="flex justify-between items-start">
+<h3 class="text-slate-500 font-medium text-sm">Sessions</h3>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>Last week</option>
+</select>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="text-3xl font-bold text-slate-800">856</div>
+<div class="text-orange-500 text-xs font-semibold flex items-center gap-0.5 mt-1">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+                  12%
+                </div>
+</div>
+<!-- Mini Sparkline Placeholder -->
+<div class="w-24 h-12 chart-placeholder flex items-end">
+<svg class="w-full h-full text-orange-500 overflow-visible" viewbox="0 0 100 40">
+<path d="M0 35 Q 20 10, 40 25 T 80 15 T 100 30" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- END: SessionCard -->
+<!-- BEGIN: UsersCard -->
+<div class="col-span-3 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between h-48">
+<div class="flex justify-between items-start">
+<h3 class="text-slate-500 font-medium text-sm">Users</h3>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>Last week</option>
+</select>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="text-3xl font-bold text-slate-800">523</div>
+<div class="text-red-500 text-xs font-semibold flex items-center gap-0.5 mt-1">
+<svg class="w-3 h-3 rotate-180" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+                  23%
+                </div>
+</div>
+<div class="w-24 h-12 chart-placeholder flex items-end">
+<svg class="w-full h-full text-red-500 overflow-visible" viewbox="0 0 100 40">
+<path d="M0 30 Q 15 5, 30 20 T 60 10 T 100 25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- END: UsersCard -->
+<!-- BEGIN: TimeSpentCard -->
+<div class="col-span-3 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between h-48">
+<div class="flex justify-between items-start">
+<h3 class="text-slate-500 font-medium text-sm">Time spent</h3>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>Last week</option>
+</select>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="text-3xl font-bold text-slate-800">9.56</div>
+<div class="text-indigo-500 text-xs font-semibold flex items-center gap-0.5 mt-1">
+<svg class="w-3 h-3 rotate-180" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+                  8%
+                </div>
+</div>
+<div class="w-24 h-12 chart-placeholder flex items-end">
+<svg class="w-full h-full text-indigo-500 overflow-visible" viewbox="0 0 100 40">
+<path d="M0 38 Q 25 30, 50 20 T 100 5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- END: TimeSpentCard -->
+<!-- BEGIN: DevicesCard -->
+<div class="col-span-3 row-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+<div class="flex justify-between items-start mb-6">
+<h3 class="text-slate-800 font-bold text-sm">Devices</h3>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>Today</option>
+</select>
+</div>
+<div class="flex flex-col items-center justify-center py-4">
+<!-- Radial Donut Chart -->
+<div class="relative w-40 h-40">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#f1f5f9" stroke-width="12"></circle>
+<!-- Segment Desktop (Orange) -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#f97316" stroke-dasharray="123 251" stroke-dashoffset="0" stroke-linecap="round" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+<!-- Segment Mobile (Purple) -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#6366f1" stroke-dasharray="90 251" stroke-dashoffset="-130" stroke-linecap="round" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+<!-- Segment Tablet (Red) -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#ef4444" stroke-dasharray="38 251" stroke-dashoffset="-225" stroke-linecap="round" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-xs text-slate-400 font-medium">Total</span>
+<span class="text-2xl font-bold text-slate-800">545</span>
+</div>
+</div>
+</div>
+<div class="mt-6 space-y-3">
+<div class="flex justify-between items-center text-xs">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-orange-500"></div>
+<span class="text-slate-500">Desktop</span>
+</div>
+<span class="text-slate-800 font-bold">265 / 49%</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+<span class="text-slate-500">Mobile</span>
+</div>
+<span class="text-slate-800 font-bold">198 / 36%</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-red-500"></div>
+<span class="text-slate-500">Tablet</span>
+</div>
+<span class="text-slate-800 font-bold">82 / 15%</span>
+</div>
+</div>
+</div>
+<!-- END: DevicesCard -->
+<!-- BEGIN: RealTimeDataCard -->
+<div class="col-span-3 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+<h3 class="text-slate-800 font-bold text-sm mb-4">Real-time Data</h3>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-[11px] mb-1">
+<span class="text-slate-500">Online visitors <span class="font-bold text-slate-800 ml-1">545</span></span>
+<span class="text-slate-300">max 632</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+<div class="bg-indigo-500 h-full rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[11px] mb-1">
+<span class="text-slate-500">New visitors <span class="font-bold text-slate-800 ml-1">421</span></span>
+<span class="text-slate-300">max 560</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+<div class="bg-indigo-500 h-full rounded-full" style="width: 70%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[11px] mb-1">
+<span class="text-slate-500">Sessions <span class="font-bold text-slate-800 ml-1">984</span></span>
+<span class="text-slate-300">max 1256</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+<div class="bg-indigo-500 h-full rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[11px] mb-1">
+<span class="text-slate-500">Page views <span class="font-bold text-slate-800 ml-1">134</span></span>
+<span class="text-slate-300">max 287</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+<div class="bg-indigo-500 h-full rounded-full" style="width: 45%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- END: RealTimeDataCard -->
+<!-- BEGIN: SiteTrafficCard -->
+<div class="col-span-6 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-slate-800 font-bold text-sm">Site traffic</h3>
+<div class="flex items-center gap-4 mt-1">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+<span class="text-[10px] text-slate-400">New Visitor</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+<span class="text-[10px] text-slate-400">Returning visitor</span>
+</div>
+</div>
+</div>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>This year</option>
+</select>
+</div>
+<div class="h-44 w-full relative">
+<!-- Y-Axis Labels -->
+<div class="absolute left-0 inset-y-0 flex flex-col justify-between text-[9px] text-slate-300 pointer-events-none pb-6">
+<span>1000</span>
+<span>800</span>
+<span>600</span>
+<span>400</span>
+<span>200</span>
+<span>0</span>
+</div>
+<!-- Simple SVG Area Chart -->
+<div class="ml-8 h-full">
+<svg class="w-full h-full" viewbox="0 0 500 150">
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.2"></stop>
+<stop offset="100%" style="stop-color:#6366f1;stop-opacity:0"></stop>
+</lineargradient>
+<lineargradient id="grad2" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#22d3ee;stop-opacity:0.2"></stop>
+<stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+<!-- Paths -->
+<path d="M0 150 L0 100 Q 50 60, 100 80 T 200 40 T 300 100 T 400 60 T 500 50 L 500 150 Z" fill="url(#grad1)"></path>
+<path d="M0 100 Q 50 60, 100 80 T 200 40 T 300 100 T 400 60 T 500 50" fill="none" stroke="#6366f1" stroke-width="2"></path>
+<path d="M0 150 L0 130 Q 80 110, 150 120 T 250 80 T 350 110 T 500 90 L 500 150 Z" fill="url(#grad2)"></path>
+<path d="M0 130 Q 80 110, 150 120 T 250 80 T 350 110 T 500 90" fill="none" stroke="#22d3ee" stroke-width="2"></path>
+</svg>
+<!-- Tooltip Point -->
+<div class="absolute top-10 left-[68%] -translate-x-1/2">
+<div class="w-3 h-3 bg-white border-2 border-indigo-500 rounded-full"></div>
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border border-slate-100 shadow-lg p-2 rounded text-center min-w-[60px]">
+<div class="text-[10px] font-bold text-slate-800">680</div>
+<div class="text-[8px] text-slate-400">Aug 24</div>
+</div>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute bottom-0 left-8 right-0 flex justify-between text-[9px] text-slate-300">
+<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+</div>
+</div>
+</div>
+<!-- END: SiteTrafficCard -->
+<!-- BEGIN: SocialTrafficCard -->
+<div class="col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+<div class="flex justify-between items-start mb-6">
+<h3 class="text-slate-800 font-bold text-sm">Traffic from social</h3>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>Last week</option>
+</select>
+</div>
+<div class="flex items-center gap-8">
+<div class="relative w-36 h-36">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#f1f5f9" stroke-width="10"></circle>
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#f43f5e" stroke-dasharray="110 251" stroke-dashoffset="0" stroke-linecap="round" stroke-width="10" transform="rotate(-90 50 50)"></circle>
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#fb923c" stroke-dasharray="60 251" stroke-dashoffset="-115" stroke-linecap="round" stroke-width="10" transform="rotate(-90 50 50)"></circle>
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#6366f1" stroke-dasharray="40 251" stroke-dashoffset="-180" stroke-linecap="round" stroke-width="10" transform="rotate(-90 50 50)"></circle>
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#0ea5e9" stroke-dasharray="30 251" stroke-dashoffset="-225" stroke-linecap="round" stroke-width="10" transform="rotate(-90 50 50)"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-[10px] text-slate-400 font-medium">Total</span>
+<span class="text-xl font-bold text-slate-800">1578</span>
+</div>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+<span class="text-slate-500">YouTube</span>
+</div>
+<span class="text-slate-800 font-semibold">732 / 45%</span>
+</div>
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
+<span class="text-slate-500">Instagram</span>
+</div>
+<span class="text-slate-800 font-semibold">326 / 20%</span>
+</div>
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+<span class="text-slate-500">LinkedIn</span>
+</div>
+<span class="text-slate-800 font-semibold">237 / 15%</span>
+</div>
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+<span class="text-slate-500">Facebook</span>
+</div>
+<span class="text-slate-800 font-semibold">174 / 11%</span>
+</div>
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
+<span class="text-slate-500">Twitter</span>
+</div>
+<span class="text-slate-800 font-semibold">142 / 9%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- END: SocialTrafficCard -->
+<!-- BEGIN: MiddleTimeCard -->
+<div class="col-span-5 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<h3 class="text-slate-800 font-bold text-sm">Middle time on site</h3>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>Last 14 days</option>
+</select>
+</div>
+<div class="flex-1 flex items-end justify-between gap-1 pb-4">
+<!-- Bars -->
+<div class="flex-1 bg-indigo-100 rounded-t-sm h-12"></div>
+<div class="flex-1 bg-indigo-200 rounded-t-sm h-16"></div>
+<div class="flex-1 bg-indigo-300 rounded-t-sm h-24"></div>
+<div class="flex-1 bg-indigo-400 rounded-t-sm h-20"></div>
+<div class="flex-1 bg-indigo-500 rounded-t-sm h-28"></div>
+<div class="flex-1 bg-indigo-600 rounded-t-sm h-32"></div>
+<div class="flex-1 bg-indigo-700 rounded-t-sm h-36"></div>
+<div class="flex-1 bg-indigo-600 rounded-t-sm h-24"></div>
+<!-- Tooltip Bar -->
+<div class="flex-1 bg-indigo-800 rounded-t-sm h-32 relative">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white border border-slate-100 shadow p-1 rounded text-center min-w-[40px]">
+<div class="text-[9px] font-bold">12.51</div>
+<div class="text-[7px] text-slate-400">min</div>
+</div>
+</div>
+<div class="flex-1 bg-indigo-500 rounded-t-sm h-20"></div>
+<div class="flex-1 bg-indigo-400 rounded-t-sm h-24"></div>
+<div class="flex-1 bg-indigo-300 rounded-t-sm h-28"></div>
+</div>
+<div class="flex justify-between text-[8px] text-slate-400 px-1">
+<span>30 Jan</span><span>31</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7 Feb</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
+</div>
+</div>
+<!-- END: MiddleTimeCard -->
+<!-- BEGIN: PagesCard -->
+<div class="col-span-3 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-slate-800 font-bold text-sm">Pages</h3>
+<select class="text-xs text-slate-400 bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+<option>Last month</option>
+</select>
+</div>
+<div class="space-y-4 max-h-[300px] overflow-y-auto pr-2 scroll-hide">
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">Homepage</span>
+<span class="text-slate-800 font-semibold">58 085</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 90%"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">Catalog</span>
+<span class="text-slate-800 font-semibold">38 325</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 65%"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">Products</span>
+<span class="text-slate-800 font-semibold">31 387</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 55%"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">Gallery</span>
+<span class="text-slate-800 font-semibold">28 258</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 48%"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">Video</span>
+<span class="text-slate-800 font-semibold">18 567</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 35%"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">Reservation</span>
+<span class="text-slate-800 font-semibold">11 353</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 25%"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">Monitoring</span>
+<span class="text-slate-800 font-semibold">11 113</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 22%"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span class="text-slate-500">News</span>
+<span class="text-slate-800 font-semibold">7 556</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full"><div class="bg-red-400 h-full rounded-full" style="width: 15%"></div></div>
+</div>
+</div>
+</div>
+<!-- END: PagesCard -->
+</div>
+</div>
+</main>
+</div>
+</body></html>

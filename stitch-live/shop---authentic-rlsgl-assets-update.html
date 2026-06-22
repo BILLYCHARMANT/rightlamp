@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html><html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VoltEngine Shop | PV-GRID Advanced Components</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#ffba27",
+                    "surface-container": "#f0edec",
+                    "surface-bright": "#fcf9f8",
+                    "on-surface-variant": "#424754",
+                    "on-background": "#1c1b1b",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#5e4100",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#004396",
+                    "primary-container": "#106eea",
+                    "inverse-primary": "#aec6ff",
+                    "surface-variant": "#e5e2e1",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-gray": "#F8FAFC",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-primary-fixed": "#001a42",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#002113",
+                    "tertiary-fixed": "#ffdea9",
+                    "surface-tint": "#005ac5",
+                    "inverse-on-surface": "#f3f0ef",
+                    "on-secondary-fixed-variant": "#005236",
+                    "background": "#fcf9f8",
+                    "secondary-fixed-dim": "#4edea3",
+                    "secondary-container": "#6cf8bb",
+                    "primary-fixed": "#d8e2ff",
+                    "border-subtle": "#E2E8F0",
+                    "outline": "#727786",
+                    "surface-container-low": "#f6f3f2",
+                    "surface": "#fcf9f8",
+                    "on-tertiary-fixed": "#271900",
+                    "on-surface": "#1c1b1b",
+                    "surface-container-high": "#ebe7e7",
+                    "outline-variant": "#c2c6d6",
+                    "inverse-surface": "#313030",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#6ffbbe",
+                    "primary": "#0056be",
+                    "primary-fixed-dim": "#aec6ff",
+                    "power-yellow": "#FAB40D",
+                    "on-secondary-container": "#00714d",
+                    "on-primary-container": "#fbfaff",
+                    "tertiary-container": "#976b00",
+                    "tertiary": "#785400",
+                    "secondary": "#006c49",
+                    "energy-green": "#10B981",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#fff9f6",
+                    "surface-dim": "#dcd9d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "section-padding": "80px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "section-padding-mobile": "48px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": ["Hanken Grotesk"],
+                    "button": ["Inter"],
+                    "headline-sm": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "label-caps": ["JetBrains Mono"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .grid-pattern {
+            background-image: radial-gradient(circle, #E2E8F0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .zoom-hover:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-surface-gray font-body-md text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 right-0 z-50 h-20 bg-surface border-b border-subtle"><div class="bg-on-background text-surface-variant py-2 border-b border-white/10 hidden md:block"><div class="max-w-container-max mx-auto px-gutter flex justify-between items-center font-label-caps text-[10px]"><div class="flex gap-6"><span class="">PV-GRIDtd22@gmail.com</span><span class="">+250788810785</span></div><span class="">Monday-Sunday 24/7 Support</span></div></div>
+<div class="flex justify-between items-center w-full px-base md:px-gutter max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md font-bold text-primary">PV-GRID.</span>
+<div class="hidden lg:flex gap-6"><a class="text-primary border-b-2 border-primary font-bold pb-1 font-body-md text-body-md" href="#">Home</a><div class="group relative flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md cursor-pointer"><span class="">About</span><span class="material-symbols-outlined text-sm">expand_more</span><div class="absolute top-full left-0 pt-4 hidden group-hover:block w-48"><div class="bg-surface border border-subtle shadow-xl rounded-lg overflow-hidden"><a href="#" class="block px-4 py-2 hover:bg-surface-variant text-on-surface-variant">About Us</a><a href="#" class="block px-4 py-2 hover:bg-surface-variant text-on-surface-variant">Testimonials</a></div></div></div><a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md" href="#">Services</a><a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md" href="#">Portfolio</a><a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md" href="#">Team</a><a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md" href="#">Events</a><a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md" href="#">Blog</a><a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md" href="#">Contact</a></div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-subtle rounded-lg text-body-md w-64 focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Search components..." type="text">
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-all">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<button class="bg-primary text-on-primary px-4 py-2 font-button text-button rounded-lg hover:opacity-90 transition-all scale-95 active:opacity-80">Get Quote</button>
+</div>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative h-[500px] overflow-hidden bg-on-background flex items-center transition-all duration-1000 opacity-100">
+<div class="absolute inset-0 z-0 opacity-40">
+<img class="w-full h-full object-cover" data-alt="A high-tech industrial environment showing a sophisticated electrical control panel with intricate blue wiring and glowing digital readouts. The lighting is dramatic, with cool blue tones and a bright orange lens flare indicating precision engineering and energy flow. Minimalist architectural composition with clean lines." src="https://lh3.googleusercontent.com/aida/AP1WRLtraaROltpQnCYRHwqLzqSGlIUabaKdAFLDMHVuvhXpOmByhMV9g6F-8iQA-6v0jsmeUgRrIQay_BLZxfDUIxMm_-JNR5hN24Cb8HKZ02CJA3iXrRP-ztwR4gBu8XVJdzcoCrq09sHihKlvywUQX0UaWHdy8PEfzfIMXTLZayI4rT7aO_9k3X6QnzXZXrrX60y7aI0D3GWUb1-xMAprU6grpLbdvLRuacoPsFxSRNpnn8-bus-FKLgOfw">
+</div>
+<div class="absolute inset-0 bg-gradient-to-r from-on-background via-on-background/80 to-transparent"></div>
+<div class="relative z-10 w-full max-w-container-max mx-auto px-gutter">
+<div class="max-w-2xl space-y-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full">
+<span class="material-symbols-outlined text-primary text-[16px]">verified</span>
+<span class="font-label-caps text-label-caps text-primary-fixed-dim">TECHNICAL CATALOG 2024</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-surface-container-lowest leading-tight">
+                        Engineering Excellence<br>in Every Component
+                    </h1>
+<p class="font-body-lg text-body-lg text-surface-variant max-w-xl">
+                        PV-GRID delivers precision-engineered electrical infrastructure. From smart grid controls to industrial-grade switchgear, we empower global energy systems with technical excellence.
+                    </p>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-8 py-4 font-button text-button rounded hover:translate-y-[-2px] transition-all shadow-lg">
+                            Explore Catalog
+                        </button>
+<button class="bg-transparent border border-surface-variant text-surface-variant px-8 py-4 font-button text-button rounded hover:bg-surface-variant/10 transition-all">
+                            Technical Support
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Product Workspace -->
+<div class="max-w-container-max mx-auto px-gutter py-section-padding flex flex-col lg:flex-row gap-12">
+<!-- SideNavBar -->
+<aside class="w-full lg:w-64 flex-shrink-0">
+<div class="sticky top-28 space-y-8">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-primary mb-1">Product Categories</h2>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Technical Specifications</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 p-3 bg-primary text-on-primary font-bold rounded-lg transition-transform translate-x-1" href="#">Get Quote</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">solar_power</span>
+<span class="font-label-caps text-label-caps">Solar Arrays</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="font-label-caps text-label-caps">Switchgear</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">battery_charging_full</span>
+<span class="font-label-caps text-label-caps">Battery Storage</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-caps text-label-caps">Grid Controls</span>
+</a>
+</nav>
+<div class="p-6 bg-surface-container rounded-xl border border-subtle">
+<span class="material-symbols-outlined text-primary mb-4 block">description</span>
+<h4 class="font-headline-sm text-[18px] mb-2">Technical Guide</h4>
+<p class="text-body-md text-on-surface-variant mb-4">Complete 2024 Engineering Specifications.</p>
+<button class="w-full py-2 border border-primary text-primary font-button text-button rounded hover:bg-primary/5 transition-colors">
+                            Download Catalog
+                        </button>
+</div>
+</div>
+</aside>
+<!-- Product Grid -->
+<div class="flex-grow">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-background">Precision Transformers</h3>
+<p class="text-on-surface-variant">Industrial-grade voltage regulation solutions.</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-subtle rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">view_module</span>
+</button>
+<button class="p-2 border border-subtle rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">view_list</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Product Card 1 -->
+<div class="bg-surface border border-subtle rounded-lg overflow-hidden flex flex-col group shadow-sm hover:shadow-md transition-all">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high zoom-hover">
+<img class="w-full h-full object-cover transition-transform duration-500" data-alt="A professional assortment of electrical engineering tools including pliers, wire strippers, and voltage testers laid out on a clean white surface. The composition is balanced and sterile, highlighting the precision and technical nature of electrical work. Soft industrial lighting and high-contrast details." src="https://lh3.googleusercontent.com/aida/AP1WRLvXC0NvNRWGBIMSebaRNPl2cTvtaHYfZsDarVuSYZM-8jbm66zzggM1aD_jvzufIG7dMd97XjfKQ7SBDJuBwwHR9hCSXdm-ChC3YpSrMrKLaXtUSmhucCm5YD_ZPAEm0aQUholXmFRnIycrRUhVSwhdiBdPfW8DVWX5s-vUb0FdSGHSzqP9TsnN_gHetcTg7pa3JSVOwg1zdq_zudYSb-Mi4nPN5PaeeN33vJFc-wRx4TW0KVY2VL3OJDQ">
+<div class="absolute top-4 right-4 flex flex-col gap-2">
+<span class="bg-energy-green text-on-primary px-3 py-1 font-label-caps text-[10px] rounded-full">IN STOCK</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label-caps text-label-caps text-primary uppercase">Maintenance Kit</span>
+<h4 class="font-headline-sm text-headline-sm mt-1">PV-GRID Pro-Tech Series</h4>
+</div>
+<span class="font-headline-sm text-primary">$1,249.00</span>
+</div>
+<div class="grid grid-cols-2 gap-4 py-4 border-y border-subtle mb-6">
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-outline">CERTIFICATION</span>
+<span class="font-body-md font-semibold">Phase 3 Certified</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-outline">MATERIAL</span>
+<span class="font-body-md font-semibold">Industrial Grade</span>
+</div>
+</div>
+<div class="flex gap-3 mt-auto">
+<button class="flex-grow py-3 border border-primary text-primary font-button text-button rounded hover:bg-primary/5 transition-all">View Specs</button>
+<button class="flex-grow py-3 bg-primary text-on-primary font-button text-button rounded hover:opacity-90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add_task</span>
+                                    Add to Quote
+                                </button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface border border-subtle rounded-lg overflow-hidden flex flex-col group shadow-sm hover:shadow-md transition-all">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high zoom-hover">
+<img class="w-full h-full object-cover transition-transform duration-500" data-alt="A macro shot of complex electrical wiring inside a modern distribution box. The blue and red wires are neatly organized and labeled with yellow technical tags. The focal point is a series of circuit breakers and digital voltage readouts. The image conveys professional end-to-end electrical contracting expertise." src="https://lh3.googleusercontent.com/aida/AP1WRLty5c8TU2A0OXf8MqTVmS4NUSZ2TtU8l0BKcqbfUN8k9g1CDE93mLpBJyhcnII_THVkVQZHtk31Bwdq2EiLOkOqKD7zW_7Adt8Rvqc8xto8MwlTsXnCz0FkUV-bCD3QS0o0FI840kYzTW7UZYC0FrkDAnlZKsI5ifAkwfwvFt6AmX_3-SD2yE9iCN_kqlmqcY8nFDCSPI_nNEOaOYqTAYgeN9DQNIvo066aNvEzgQvImlp_NM8DBcFzow">
+<div class="absolute top-4 right-4 flex flex-col gap-2">
+<span class="bg-power-yellow text-on-tertiary-fixed px-3 py-1 font-label-caps text-[10px] rounded-full">PRE-ORDER</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label-caps text-label-caps text-primary uppercase">Smart Switchgear</span>
+<h4 class="font-headline-sm text-headline-sm mt-1">VoltEngine Grid-X</h4>
+</div>
+<span class="font-headline-sm text-primary">$4,850.00</span>
+</div>
+<div class="grid grid-cols-2 gap-4 py-4 border-y border-subtle mb-6">
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-outline">VOLTAGE</span>
+<span class="font-body-md font-semibold">480V Rated</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-outline">EFFICIENCY</span>
+<span class="font-body-md font-semibold">98.4% Nominal</span>
+</div>
+</div>
+<div class="flex gap-3 mt-auto">
+<button class="flex-grow py-3 border border-primary text-primary font-button text-button rounded hover:bg-primary/5 transition-all">View Specs</button>
+<button class="flex-grow py-3 bg-primary text-on-primary font-button text-button rounded hover:opacity-90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add_task</span>
+                                    Add to Quote
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Featured Innovation Section -->
+<section class="bg-on-background py-section-padding relative overflow-hidden transition-all duration-1000 opacity-100">
+<div class="grid-pattern absolute inset-0 opacity-5 pointer-events-none"></div>
+<div class="max-w-container-max mx-auto px-gutter relative z-10">
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<div class="w-full lg:w-1/2">
+<div class="inline-block px-4 py-1 bg-energy-green/20 border border-energy-green/30 rounded text-energy-green font-label-caps text-label-caps mb-8">
+                            FEATURED INNOVATION
+                        </div>
+<h2 class="font-display-lg text-display-lg text-surface-container-lowest mb-6">
+                            Next-Gen Smart Grid Controller
+                        </h2>
+<p class="font-body-lg text-body-lg text-surface-variant mb-8">
+                            Leading provider of end-to-end electrical contracting, PV-GRID introduces the SC-5000. Optimized for renewable energy integration with real-time AI grid balancing and military-grade encryption.
+                        </p>
+<div class="grid grid-cols-2 gap-8 mb-10">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-energy-green" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<div>
+<h5 class="text-on-primary font-bold">Ultra Fast</h5>
+<p class="text-on-surface-variant text-sm">3ms Response Time</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-energy-green" style="font-variation-settings: 'FILL' 1;">eco</span>
+<div>
+<h5 class="text-on-primary font-bold">Sustainable</h5>
+<p class="text-on-surface-variant text-sm">Carbon Optimized</p>
+</div>
+</div>
+</div>
+<button class="bg-energy-green text-on-primary px-10 py-5 font-button text-button rounded hover:opacity-90 transition-all flex items-center gap-3">
+                            Reserve For Your Facility
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="w-full lg:w-1/2 relative">
+<div class="rounded-xl overflow-hidden shadow-2xl border border-white/10 glass-panel">
+<img class="w-full aspect-[4/3] object-cover" data-alt="An electrical technician in a red polo and blue jumpsuit installing large solar panels on a rooftop in an urban setting. The perspective is from above, showing the technical precision of the installation against the backdrop of a town with various buildings. The scene highlights PV-GRID's commitment to sustainable infrastructure and clean energy solutions." src="https://lh3.googleusercontent.com/aida/AP1WRLtraaROltpQnCYRHwqLzqSGlIUabaKdAFLDMHVuvhXpOmByhMV9g6F-8iQA-6v0jsmeUgRrIQay_BLZxfDUIxMm_-JNR5hN24Cb8HKZ02CJA3iXrRP-ztwR4gBu8XVJdzcoCrq09sHihKlvywUQX0UaWHdy8PEfzfIMXTLZayI4rT7aO_9k3X6QnzXZXrrX60y7aI0D3GWUb1-xMAprU6grpLbdvLRuacoPsFxSRNpnn8-bus-FKLgOfw">
+</div>
+<!-- UI Decoration -->
+<div class="absolute -bottom-6 -left-6 bg-surface p-6 rounded-lg border border-subtle shadow-xl hidden md:block">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-3 h-3 bg-energy-green rounded-full"></div>
+<span class="font-label-caps text-label-caps">ACTIVE SYSTEM</span>
+</div>
+<div class="text-2xl font-bold text-primary">99.9% Uptime</div>
+<div class="text-xs text-outline">Operational Stability Verified</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-on-background border-t border-outline"><div class="max-w-container-max mx-auto px-gutter py-section-padding grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"><div class="space-y-6"><span class="font-headline-md text-headline-md font-bold text-primary block">PV-GRID.</span><p class="text-surface-variant text-body-md">PV-GRID help people to be aware of The use of modern and saving Lamp by using Clean energy technologies through mobilization campaigns and we participate in renewable energy research for a better exploitation of our natural resources.</p><div class="space-y-2 text-surface-variant text-body-md"><p class=""><strong>Phone:</strong> +250788810785</p><p class=""><strong>Email:</strong> PV-GRIDtd22@gmail.com</p></div></div><div class="space-y-6"><h4 class="text-on-primary font-bold font-headline-sm text-[18px]">Useful Links</h4><ul class="space-y-3 text-surface-variant text-body-md"><li class=""><a href="#" class="hover:text-primary transition-colors">Home</a></li><li class=""><a href="#" class="hover:text-primary transition-colors">About us</a></li><li class=""><a href="#" class="hover:text-primary transition-colors">Services</a></li><li class=""><a href="#" class="hover:text-primary transition-colors">Team</a></li><li class=""><a href="#" class="hover:text-primary transition-colors">Contact</a></li></ul></div><div class="space-y-6"><h4 class="text-on-primary font-bold font-headline-sm text-[18px]">Our Services</h4><ul class="space-y-3 text-surface-variant text-body-md"><li class="">Electrical Maintenance</li><li class="">Electrical Installation</li><li class="">Lighting Design</li><li class="">Extraction of Biogas</li><li class="">Research and Implementation</li></ul></div><div class="space-y-6"><h4 class="text-on-primary font-bold font-headline-sm text-[18px]">Join Our Newsletter</h4><p class="text-surface-variant text-body-md">If you have any queries PV-GRID we are here to hear you and provide all response</p><div class="flex gap-2"><input type="email" placeholder="Your email" class="bg-surface-container-low border border-white/10 rounded px-4 py-2 flex-grow text-body-md focus:outline-none"><button class="bg-primary text-on-primary px-4 py-2 rounded font-button text-button">Join</button></div></div></div><div class="max-w-container-max mx-auto px-gutter pb-8"><div class="w-full h-px bg-outline/20 mb-8"></div><p class="text-surface-variant opacity-60 text-center text-body-md">(C) 2020 PV-GRID</p></div></footer>
+</main>
+<script>
+        // Micro-interactions and hover effects
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.96)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = '';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = '';
+            });
+        });
+
+        // Simple scroll reveal
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
+            observer.observe(section);
+        });
+    </script>
+
+
+</body></html>

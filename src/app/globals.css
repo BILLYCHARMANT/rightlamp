@@ -1,62 +1,940 @@
 @import "tailwindcss";
 
 /*
- * Brand palette — Rightlamps / Right Lamp Shine Group (logo-derived).
- * Light-first: warm off-whites (never pure #fff) + orange + cyan.
+ * PV-GRID storefront — UNIPOD-inspired layout with brand accents.
+ * Reference: https://unipod.ur.ac.rw/
  */
 :root {
-  /* Pearl / porcelain tones — reads as white without harsh glare.
-   * Named --canvas / --ink (not --background) so nothing can shadow Tailwind-style tokens. */
-  --canvas: #f4f3f0;
-  /* Primary copy — slightly deeper than pure gray-black for contrast on pearl */
-  --ink: #121110;
-  /* Light wash for gradient stops / subtle fills (`to-muted`, etc.) — not for body text */
-  --muted: #dcdad6;
-  /* Secondary copy — must stay readable on --canvas (do not use --muted for text) */
-  --muted-foreground: #454038;
-  --surface: #ebe9e4;
-  --surface-elevated: #f9f8f6;
-  --border: #d4d1cb;
-  /* Softer “burnt” orange — less fluorescent than #ff6600, easier on the eyes */
+  --navy: #0b2545;
+  --navy-deep: #071a33;
+  --primary: #13315c;
+  --canvas: #f1f5f9;
+  --section-white: #ffffff;
+  --section-muted: #d4dae3;
+  --ink: #0f172a;
+  --muted-foreground: #475569;
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+  --border: #e2e8f0;
   --brand-primary: #c55316;
   --brand-primary-hover: #d46320;
-  --brand-accent: #00bfff;
-  --brand-accent-muted: #3bc8ff;
+  --brand-accent: #c55316;
+  --brand-accent-hover: #a84310;
+  --brand-accent-muted: #f4a261;
+  --brand-warm: #f4a261;
   --danger: #dc2626;
   --success: #16a34a;
+  --radius: 14px;
+  --shadow:
+    0 2px 6px rgba(11, 37, 69, 0.1),
+    0 8px 22px rgba(11, 37, 69, 0.14),
+    0 18px 40px rgba(11, 37, 69, 0.1);
+  --shadow-lg:
+    0 4px 10px rgba(11, 37, 69, 0.12),
+    0 16px 36px rgba(11, 37, 69, 0.18),
+    0 32px 64px rgba(11, 37, 69, 0.16);
+  --stitch-card-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.1),
+    0 8px 20px rgba(15, 23, 42, 0.16),
+    0 18px 44px rgba(15, 23, 42, 0.14);
+  --stitch-card-shadow-hover:
+    0 4px 10px rgba(15, 23, 42, 0.12),
+    0 14px 32px rgba(15, 23, 42, 0.2),
+    0 28px 56px rgba(15, 23, 42, 0.18);
+  /** PV-GRID logo palette — orange primary, no stitch blue */
+  --stitch-primary: #c55316;
+  --stitch-primary-hover: #a84310;
+  --stitch-primary-container: #fde8d8;
+  --stitch-primary-muted: #f4a261;
+  --stitch-green: #10b981;
+  --stitch-yellow: #fab40d;
+  --dash-sidebar: #1a202c;
+  --dash-canvas: #f8fafc;
+  --dash-container: #e2e8f0;
+  --dash-accent-yellow: #ffc107;
+  --dash-teal: #0097a7;
+  --dash-radius-shell: 4px;
+  --dash-radius-card: 4px;
+  --dash-radius-stat: 4px;
+  --dash-card-border: #e2e8f0;
+  --dash-card-ring: transparent;
+  --dash-card-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.05);
+  --dash-stat-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.05);
+  --dash-table-border: #e2e8f0;
+  --dash-table-header-bg: #f8fafc;
+  --dash-table-row-hover: #f8fafc;
 }
 
-/*
- * Tailwind v4’s preset includes names like `background` / `foreground` that can
- * shadow custom tokens — use unique keys so `bg-canvas` / `text-ink` always match our palette.
- */
 @theme inline {
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-primary: var(--primary);
   --color-canvas: var(--canvas);
+  --color-section-white: var(--section-white);
+  --color-section-muted: var(--section-muted);
   --color-ink: var(--ink);
-  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-elevated: var(--surface);
   --color-border: var(--border);
   --color-brand: var(--brand-primary);
   --color-brand-hover: var(--brand-primary-hover);
   --color-accent: var(--brand-accent);
+  --color-accent-hover: var(--brand-accent-hover);
   --color-accent-muted: var(--brand-accent-muted);
+  --color-brand-warm: var(--brand-warm);
   --color-danger: var(--danger);
   --color-success: var(--success);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --radius-card: var(--radius);
 }
 
 html {
-  background-color: var(--canvas);
+  background-color: var(--section-white);
   color: var(--ink);
   color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
   min-height: 100dvh;
-  background-color: var(--canvas);
+  background-color: var(--section-white);
   color: var(--ink);
   font-family: var(--font-sans);
+}
+
+@layer utilities {
+  .shadow-card {
+    box-shadow: var(--shadow);
+  }
+  .shadow-card-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  /** White card surfaces — stronger lift on tinted page backgrounds */
+  .store-card {
+    box-shadow: var(--stitch-card-shadow);
+    transition:
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .store-card:hover {
+    box-shadow: var(--stitch-card-shadow-hover);
+  }
+
+  /** Stitch dashboard — blueprint canvas + precision card surfaces */
+  .dash-blueprint-bg {
+    background-color: var(--dash-canvas);
+    background-image:
+      linear-gradient(rgba(0, 151, 167, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 151, 167, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .dash-nav-active {
+    background-color: var(--dash-accent-yellow);
+    color: #1a202c;
+    font-weight: 600;
+    clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%);
+  }
+
+  .dash-sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .dash-sidebar-scroll::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 2px;
+  }
+
+  .dash-grid-box {
+    overflow: hidden;
+    border-radius: var(--dash-radius-card);
+    border: 1px solid var(--dash-card-border);
+    background: #ffffff;
+    box-shadow: var(--dash-card-shadow);
+  }
+
+  .dash-stat-card {
+    overflow: hidden;
+    border-radius: var(--dash-radius-stat);
+    border: 1px solid var(--dash-card-border);
+    background: #ffffff;
+    box-shadow: var(--dash-stat-shadow);
+  }
+
+  .dash-btn-primary {
+    border-radius: var(--dash-radius-card);
+    background: var(--dash-accent-yellow);
+    color: #1a202c;
+    font-weight: 700;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: filter 0.15s ease;
+  }
+
+  .dash-btn-primary:hover {
+    filter: brightness(1.05);
+  }
+
+  .dash-btn-ghost {
+    border-radius: var(--dash-radius-card);
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    font-weight: 500;
+    transition: background-color 0.15s ease;
+  }
+
+  .dash-btn-ghost:hover {
+    background: #f8fafc;
+  }
+
+  .dash-btn-apply {
+    border-radius: var(--dash-radius-card);
+    background: var(--brand-primary);
+    color: #ffffff;
+    font-weight: 700;
+    transition: background-color 0.15s ease;
+  }
+
+  .dash-btn-apply:hover {
+    background: var(--brand-primary-hover);
+  }
+
+  /**
+   * Dashboard data tables — visible row + column grid lines.
+   * Add dash-data-table--flush when the parent card already has a border.
+   */
+  .dash-data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    background: #ffffff;
+    border: 1px solid var(--dash-table-border);
+    border-radius: var(--dash-radius-card);
+    overflow: hidden;
+  }
+
+  .dash-data-table--flush {
+    border: none;
+    border-radius: 0;
+  }
+
+  .dash-data-table thead {
+    background: var(--dash-table-header-bg);
+  }
+
+  .dash-data-table thead th {
+    padding: 0.85rem 1.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+    border-bottom: 1px solid var(--dash-table-border);
+    border-right: 1px solid var(--dash-table-border);
+    vertical-align: middle;
+  }
+
+  .dash-data-table thead th:last-child {
+    border-right: none;
+  }
+
+  .dash-data-table tbody td {
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--dash-table-border);
+    border-right: 1px solid var(--dash-table-border);
+    vertical-align: middle;
+  }
+
+  .dash-data-table tbody td:last-child {
+    border-right: none;
+  }
+
+  .dash-data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .dash-data-table tbody tr {
+    background: #ffffff;
+    transition: background-color 0.12s ease;
+  }
+
+  .dash-data-table tbody tr:hover {
+    background: var(--dash-table-row-hover);
+  }
+
+  .dash-data-table tbody tr.is-selected {
+    background: color-mix(in srgb, var(--brand-primary) 7%, #ffffff);
+  }
+
+  .dash-data-table tbody tr.is-selected:hover {
+    background: color-mix(in srgb, var(--brand-primary) 10%, #ffffff);
+  }
+
+  .gradient-navy {
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+  }
+  .gradient-navy-h {
+    background: linear-gradient(90deg, var(--navy) 0%, var(--primary) 100%);
+  }
+
+  /*
+   * UNIPOD-style cards — white surfaces; brand color on icon badges only.
+   * Reference: https://unipod.ur.ac.rw/
+   */
+  .rlsgl-surface-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .rlsgl-metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .rlsgl-feature-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.25s ease,
+      border-color 0.2s ease;
+  }
+
+  .rlsgl-feature-card::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand-accent), var(--brand-accent-hover));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s ease;
+  }
+
+  .rlsgl-feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(197, 83, 22, 0.35);
+  }
+
+  .rlsgl-feature-card:hover::after {
+    transform: scaleX(1);
+  }
+
+  .rlsgl-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+
+  .rlsgl-icon-badge--sm {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .rlsgl-icon-badge--md {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    font-size: 18px;
+  }
+
+  .rlsgl-icon-badge--navy {
+    background: rgba(11, 37, 69, 0.1);
+    color: var(--navy);
+  }
+
+  .rlsgl-icon-badge--warm {
+    background: rgba(244, 162, 97, 0.18);
+    color: #c77638;
+  }
+
+  .rlsgl-icon-badge--accent {
+    background: rgba(197, 83, 22, 0.12);
+    color: var(--brand-accent);
+  }
+
+  .rlsgl-icon-badge--accent-dk {
+    background: rgba(168, 67, 16, 0.14);
+    color: var(--brand-accent-hover);
+  }
+
+  .rlsgl-final-cta {
+    background:
+      radial-gradient(
+        1200px 600px at 20% 0%,
+        rgba(197, 83, 22, 0.28),
+        transparent 60%
+      ),
+      radial-gradient(
+        900px 500px at 90% 100%,
+        rgba(244, 162, 97, 0.16),
+        transparent 60%
+      ),
+      linear-gradient(135deg, var(--navy) 0%, var(--primary) 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rlsgl-feature-card,
+    .rlsgl-feature-card::after {
+      transition: none !important;
+    }
+
+    .rlsgl-feature-card:hover {
+      transform: none !important;
+    }
+
+    .rlsgl-feature-card:hover::after {
+      transform: scaleX(1) !important;
+    }
+  }
+
+  /* Storefront motion — services page & sections */
+  @keyframes rlsgl-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes rlsgl-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes rlsgl-scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes rlsgl-slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: rlsgl-fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-fade-in {
+    animation: rlsgl-fade-in 0.65s ease-out both;
+  }
+
+  .animate-scale-in {
+    animation: rlsgl-scale-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-slide-in-right {
+    animation: rlsgl-slide-in-right 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  /* Card / grid motion */
+  @keyframes rlsgl-card-rise {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes rlsgl-icon-pop {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.12);
+    }
+  }
+
+  .animate-card-grid {
+    animation: rlsgl-card-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-on-scroll {
+    animation: rlsgl-fade-in-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-on-scroll-scale {
+    animation: rlsgl-scale-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .service-card {
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.35s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .service-card-image {
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .service-card:hover .service-card-image {
+    transform: scale(1.07);
+  }
+
+  .service-card:hover .service-card-icon {
+    animation: rlsgl-icon-pop 0.5s ease;
+  }
+
+  .feature-grid-box {
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease,
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+  }
+
+  .feature-grid-box:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+
+  .feature-grid-box:hover .feature-grid-icon {
+    animation: rlsgl-icon-pop 0.45s ease;
+  }
+
+  /* Stitch export — stitch_rlsgl_about_page_redesign */
+  .stitch-innovative-card {
+    box-shadow: var(--stitch-card-shadow);
+    transition:
+      transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .stitch-innovative-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--stitch-card-shadow-hover);
+  }
+
+  .stitch-glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--stitch-card-shadow);
+  }
+
+  .stitch-edge-marker {
+    position: relative;
+  }
+
+  .stitch-edge-marker::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid var(--stitch-primary);
+    border-left: 2px solid var(--stitch-primary);
+  }
+
+  .stitch-edge-marker::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    border-bottom: 2px solid var(--stitch-primary);
+    border-right: 2px solid var(--stitch-primary);
+  }
+
+  .stitch-technical-grid {
+    background-image:
+      linear-gradient(#e2e8f0 1px, transparent 1px),
+      linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .stitch-contact-field-shell {
+    position: relative;
+    padding-bottom: 3px;
+    background: linear-gradient(180deg, #fcf9f8 0%, #f6f3f2 100%);
+    border: 1px solid #dbe3ee;
+    border-bottom: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  /* Gradient fill guide — always visible, sits below the input */
+  .stitch-contact-field-shell::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    height: 2.5px;
+    background: linear-gradient(
+      90deg,
+      rgba(197, 83, 22, 0.45) 0%,
+      var(--stitch-primary) 22%,
+      var(--stitch-green) 50%,
+      var(--stitch-primary) 78%,
+      rgba(197, 83, 22, 0.45) 100%
+    );
+    box-shadow: 0 1px 8px rgba(197, 83, 22, 0.28);
+    pointer-events: none;
+    transition:
+      height 0.2s ease,
+      box-shadow 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .stitch-contact-field-shell:hover {
+    border-color: rgba(197, 83, 22, 0.32);
+  }
+
+  .stitch-contact-field-shell:hover::after {
+    height: 3px;
+    box-shadow: 0 2px 10px rgba(197, 83, 22, 0.32);
+  }
+
+  .stitch-contact-field-shell:focus-within {
+    padding-bottom: 4px;
+    border-color: rgba(197, 83, 22, 0.5);
+    box-shadow:
+      0 0 0 1px rgba(197, 83, 22, 0.16),
+      0 4px 14px rgba(197, 83, 22, 0.12);
+  }
+
+  .stitch-contact-field-shell:focus-within::after {
+    height: 3.5px;
+    background: linear-gradient(
+      90deg,
+      rgba(16, 185, 129, 0.55) 0%,
+      var(--stitch-primary) 20%,
+      var(--stitch-green) 50%,
+      var(--stitch-primary) 80%,
+      rgba(16, 185, 129, 0.55) 100%
+    );
+    box-shadow: 0 2px 14px rgba(197, 83, 22, 0.42);
+  }
+
+  .stitch-contact-field {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 1rem;
+    color: #1c1b1b;
+    outline: none;
+  }
+
+  .stitch-contact-field::placeholder {
+    color: #727786;
+  }
+
+  .stitch-contact-field-shell select.stitch-contact-field {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c55316' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.75rem;
+  }
+
+  .stitch-contact-field-shell textarea.stitch-contact-field {
+    resize: vertical;
+    min-height: 7rem;
+  }
+
+  .stitch-slanted-bg {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+  }
+
+  .stitch-offset-border {
+    position: relative;
+  }
+
+  .stitch-offset-border::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: -12px;
+    bottom: -12px;
+    border: 2px solid var(--stitch-primary);
+    z-index: -1;
+    transition: all 0.3s ease;
+  }
+
+  .stitch-offset-border:hover::before {
+    top: 8px;
+    left: 8px;
+    right: -8px;
+    bottom: -8px;
+  }
+
+  .stitch-technical-bg {
+    background-color: #fcf9f8;
+    background-image: radial-gradient(#c5531610 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .stitch-profile-mask {
+    clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+  }
+
+  .stitch-reveal {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition:
+      opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .stitch-reveal.stitch-reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .service-image {
+    transition: transform 0.5s ease;
+  }
+
+  .group:hover .service-image {
+    transform: scale(1.05);
+  }
+
+  @keyframes stitch-hero-pulse {
+    0%,
+    100% {
+      transform: scale(1.05);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+  }
+
+  .stitch-hero-pulse {
+    animation: stitch-hero-pulse 10s ease-in-out infinite;
+  }
+
+  /* Stitch export — portfolio_rlsgl_redesign */
+  .stitch-portfolio-card {
+    box-shadow: var(--stitch-card-shadow);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .stitch-portfolio-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--stitch-card-shadow-hover);
+  }
+
+  @supports (animation-timeline: view()) {
+    .animate-on-scroll {
+      opacity: 0;
+      animation: rlsgl-fade-in-up linear both;
+      animation-timeline: view();
+      animation-range: entry 8% entry 42%;
+    }
+
+    .animate-on-scroll-scale {
+      opacity: 0;
+      animation: rlsgl-scale-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 45%;
+    }
+
+    .animate-card-grid {
+      opacity: 0;
+      animation: rlsgl-card-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 6% entry 40%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-up,
+    .animate-fade-in,
+    .animate-scale-in,
+    .animate-slide-in-right,
+    .animate-on-scroll,
+    .animate-on-scroll-scale,
+    .animate-card-grid,
+    .service-card,
+    .feature-grid-box {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+
+    .service-card:hover .service-card-icon,
+    .feature-grid-box:hover .feature-grid-icon {
+      animation: none !important;
+    }
+  }
+}
+
+/*
+ * Section bands — Clezol-style white / gray (outside @layer, always wins).
+ */
+section.rlsgl-band--white {
+  background-color: #ffffff !important;
+}
+
+section.rlsgl-band--muted {
+  background-color: #d4dae3 !important;
+}
+
+section.rlsgl-band--fade-white-to-muted {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #ffffff 52%,
+    #d4dae3 100%
+  ) !important;
+}
+
+section.rlsgl-band--fade-muted-to-white {
+  background: linear-gradient(
+    180deg,
+    #d4dae3 0%,
+    #e2e7ef 16%,
+    #ffffff 34%,
+    #ffffff 100%
+  ) !important;
+}
+
+section.rlsgl-band--muted-from-white {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e0e5ed 14%,
+    #d4dae3 32%,
+    #d4dae3 100%
+  ) !important;
+}
+
+section.rlsgl-band--contact {
+  background: radial-gradient(
+      1200px 600px at 20% 0%,
+      rgba(197, 83, 22, 0.28),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 90% 100%,
+      rgba(244, 162, 97, 0.16),
+      transparent 60%
+    ),
+    linear-gradient(135deg, #0b2545 0%, #13315c 100%) !important;
+}
+
+/* Portfolio marquee — outside @layer so animation + keyframes always apply */
+.portfolio-marquee {
+  overflow: hidden;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+.portfolio-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: portfolio-marquee-rtl 60s linear infinite;
+  will-change: transform;
+}
+
+.portfolio-marquee-track.is-paused {
+  animation-play-state: paused;
+}
+
+.portfolio-marquee-set {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1.25rem;
+}
+
+.portfolio-slide {
+  flex: 0 0 auto;
+  width: min(85vw, 18rem);
+}
+
+@media (min-width: 640px) {
+  .portfolio-slide {
+    width: 19rem;
+  }
+}
+
+@keyframes portfolio-marquee-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-marquee-track {
+    animation-duration: 120s !important;
+  }
 }

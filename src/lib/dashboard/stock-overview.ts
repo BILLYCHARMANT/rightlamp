@@ -3,50 +3,106 @@ import "server-only";
 import { LOW_STOCK_THRESHOLD } from "@/lib/dashboard/constants";
 import { formatMoneyFromCents } from "@/lib/dashboard/format-money";
 import type {
+  FlowPeriod,
   MovementFlowPoint,
   StockLowRow,
   StockMovementReasonCode,
   StockMovementRow,
   StockOverviewStats,
   StockProductDetail,
+  SupplierRow,
+  BranchRow,
 } from "@/lib/dashboard/stock-shared-types";
-import { movementsToWeeklyFlow } from "@/lib/inventory/stock-movements";
+import { buildAllPeriodFlows } from "@/lib/inventory/stock-flow";
 import { prisma } from "@/lib/db";
+
+function unitCostCents(p: {
+  costPriceCents: number | null;
+  priceCents: number;
+}): number {
+  return p.costPriceCents ?? p.priceCents;
+}
 
 export async function getStockManagementPayload(): Promise<{
   products: StockProductDetail[];
   stats: StockOverviewStats;
   inventoryValueDisplay: string;
+  costValueDisplay: string;
   lowOrOutList: StockLowRow[];
-  suppliersCount: number;
+  suppliers: SupplierRow[];
   movements: StockMovementRow[];
-  weeklyFlowLive: MovementFlowPoint[] | null;
+  flowByPeriod: Record<FlowPeriod, MovementFlowPoint[]>;
+  branches: BranchRow[];
 }> {
-  const products = await prisma.product.findMany({
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      stock: true,
-      published: true,
-      priceCents: true,
-      currency: true,
-    },
-  });
+  const [products, supplierRows, movementRows, branchRows] = await Promise.all([
+    prisma.product.findMany({
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        category: true,
+        stock: true,
+        published: true,
+        priceCents: true,
+        costPriceCents: true,
+        currency: true,
+      },
+    }),
+    prisma.supplier.findMany({
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        contact: true,
+        email: true,
+        phone: true,
+        active: true,
+        _count: { select: { movements: true } },
+      },
+    }),
+    prisma.stockMovement.findMany({
+      where: {
+        createdAt: { gte: new Date(Date.now() - 400 * 86400000) },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5000,
+      include: {
+        product: { select: { name: true } },
+        supplier: { select: { name: true } },
+        destinationBranch: { select: { name: true } },
+      },
+    }),
+    prisma.branch.findMany({
+      orderBy: [{ isMain: "desc" }, { name: "asc" }],
+      select: {
+        id: true,
+        name: true,
+        code: true,
+        location: true,
+        phone: true,
+        active: true,
+        isMain: true,
+      },
+    }),
+  ]);
 
   let unitsOnHand = 0;
   let lowStockCount = 0;
   let outOfStockCount = 0;
 
-  const valueByCurrency = new Map<string, number>();
+  const retailByCurrency = new Map<string, number>();
+  const costByCurrency = new Map<string, number>();
 
   for (const p of products) {
     unitsOnHand += p.stock;
-    const lineValue = p.priceCents * p.stock;
-    valueByCurrency.set(
+    retailByCurrency.set(
       p.currency,
-      (valueByCurrency.get(p.currency) ?? 0) + lineValue,
+      (retailByCurrency.get(p.currency) ?? 0) + p.priceCents * p.stock,
+    );
+    costByCurrency.set(
+      p.currency,
+      (costByCurrency.get(p.currency) ?? 0) + unitCostCents(p) * p.stock,
     );
     if (p.published) {
       if (p.stock === 0) outOfStockCount += 1;
@@ -54,10 +110,10 @@ export async function getStockManagementPayload(): Promise<{
     }
   }
 
-  const inventoryValueDisplay =
-    valueByCurrency.size === 0
+  const formatMap = (map: Map<string, number>) =>
+    map.size === 0
       ? "—"
-      : [...valueByCurrency.entries()]
+      : [...map.entries()]
           .map(([currency, cents]) => formatMoneyFromCents(cents, currency))
           .join(" · ");
 
@@ -75,25 +131,21 @@ export async function getStockManagementPayload(): Promise<{
       status: p.stock === 0 ? "out" : "low",
     }));
 
-  const ledgerSince = new Date();
-  ledgerSince.setDate(ledgerSince.getDate() - 112);
+  const flowRows = movementRows.map((m) => ({
+    createdAt: m.createdAt,
+    delta: m.delta,
+  }));
 
-  const movementRows = await prisma.stockMovement.findMany({
-    where: { createdAt: { gte: ledgerSince } },
-    orderBy: { createdAt: "desc" },
-    take: 4000,
-    include: { product: { select: { name: true } } },
-  });
-
-  const weeklyBuckets = movementsToWeeklyFlow(
-    movementRows.map((m) => ({
-      createdAt: m.createdAt,
-      delta: m.delta,
-    })),
-    8,
-  );
-
-  const flowHasSignal = weeklyBuckets.some((b) => b.in > 0 || b.out > 0);
+  const itemCountBySupplier = new Map<string, Set<string>>();
+  for (const m of movementRows) {
+    if (!m.supplierId) continue;
+    let set = itemCountBySupplier.get(m.supplierId);
+    if (!set) {
+      set = new Set<string>();
+      itemCountBySupplier.set(m.supplierId, set);
+    }
+    set.add(m.productId);
+  }
 
   const movements: StockMovementRow[] = movementRows.map((m) => ({
     id: m.id,
@@ -103,8 +155,33 @@ export async function getStockManagementPayload(): Promise<{
     reason: m.reason as StockMovementReasonCode,
     note: m.note,
     receiptStatus: m.receiptStatus,
+    supplierId: m.supplierId,
+    supplierName: m.supplier?.name ?? null,
+    destinationBranchId: m.destinationBranchId,
+    destinationBranchName: m.destinationBranch?.name ?? null,
     createdAt: m.createdAt.toISOString(),
     createdByEmail: m.createdByEmail,
+  }));
+
+  const suppliers: SupplierRow[] = supplierRows.map((s) => ({
+    id: s.id,
+    name: s.name,
+    contact: s.contact,
+    email: s.email,
+    phone: s.phone,
+    active: s.active,
+    receiptCount: s._count.movements,
+    itemCount: itemCountBySupplier.get(s.id)?.size ?? 0,
+  }));
+
+  const branches: BranchRow[] = branchRows.map((b) => ({
+    id: b.id,
+    name: b.name,
+    code: b.code,
+    location: b.location,
+    phone: b.phone,
+    active: b.active,
+    isMain: b.isMain,
   }));
 
   return {
@@ -115,10 +192,12 @@ export async function getStockManagementPayload(): Promise<{
       lowStockCount,
       outOfStockCount,
     },
-    inventoryValueDisplay,
+    inventoryValueDisplay: formatMap(retailByCurrency),
+    costValueDisplay: formatMap(costByCurrency),
     lowOrOutList,
-    suppliersCount: 0,
+    suppliers,
     movements,
-    weeklyFlowLive: flowHasSignal ? weeklyBuckets : null,
+    flowByPeriod: buildAllPeriodFlows(flowRows),
+    branches,
   };
 }
