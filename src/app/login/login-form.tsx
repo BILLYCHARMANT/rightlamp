@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { BRAND_LOGO, BRAND_LOGO_ALT } from "@/lib/company/brand-assets";
 
 const STAFF_HOME = "/dashboard";
 
@@ -33,6 +34,7 @@ export function LoginForm() {
         email,
         password,
         redirect: false,
+        callbackUrl,
       });
       if (res?.error) {
         setError(
@@ -42,8 +44,9 @@ export function LoginForm() {
         );
         return;
       }
-      router.push(callbackUrl);
-      router.refresh();
+      if (res?.ok) {
+        router.replace(callbackUrl);
+      }
     } catch {
       setError("Something went wrong. Try again.");
     } finally {
@@ -54,19 +57,19 @@ export function LoginForm() {
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-canvas px-4 py-16">
       <div className="w-full max-w-md rounded-2xl border border-border bg-surface-elevated p-8 shadow-xl shadow-ink/10">
-        <h1 className="text-2xl font-bold tracking-tight text-ink">
+        <h1 className="text-center text-2xl font-bold tracking-tight text-ink">
           Welcome Back
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Sign in to manage your inventory and orders — PV-GRID staff dashboard (
-          <Link
-            href="/"
-            className="font-medium text-accent hover:text-accent-muted"
-          >
-            storefront
-          </Link>
-          ).
-        </p>
+        <div className="mt-4 flex justify-center">
+          <Image
+            src={BRAND_LOGO}
+            alt={BRAND_LOGO_ALT}
+            width={220}
+            height={88}
+            className="h-20 w-auto object-contain"
+            priority
+          />
+        </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           {error ? (
@@ -109,30 +112,6 @@ export function LoginForm() {
             {loading ? "Signing in…" : "Sign In"}
           </button>
         </form>
-
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          Need a storefront account flow?{" "}
-          <Link
-            href="/sign-in"
-            className="font-semibold text-accent hover:text-accent-muted"
-          >
-            Customer sign-in (preview)
-          </Link>
-        </p>
-
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          First time? Run{" "}
-          <code className="rounded bg-surface px-1 py-0.5 font-mono text-sm text-ink ring-1 ring-border">
-            npm run db:seed
-          </code>{" "}
-          — default admin is{" "}
-          <span className="font-medium text-ink">admin@pv-grid.rw</span>{" "}
-          unless you set{" "}
-          <code className="rounded bg-surface px-1 py-0.5 ring-1 ring-border">
-            SEED_ADMIN_*
-          </code>{" "}
-          in <code className="rounded bg-surface px-1 py-0.5 ring-1 ring-border">.env.local</code>.
-        </p>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { ExternalLink, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { getVisibleNavItems } from "@/lib/dashboard/nav-config";
-import { stitchImages } from "@/lib/company/site-content";
+import { BRAND_LOGO, BRAND_LOGO_ALT } from "@/lib/company/brand-assets";
 import { useDashboardNav } from "@/components/dashboard/dashboard-nav-context";
 import { useSession } from "next-auth/react";
 
@@ -27,11 +27,11 @@ export function DashboardSidebar() {
       <div className="border-b border-slate-700 p-6">
         <Link href="/dashboard" className="mx-auto block w-fit">
           <Image
-            src={stitchImages.brandLogo}
-            alt="PV-GRID Logo"
+            src={BRAND_LOGO}
+            alt={BRAND_LOGO_ALT}
             width={200}
-            height={64}
-            className="h-16 w-auto object-contain brightness-110"
+            height={80}
+            className="h-20 w-auto max-w-[11rem] object-contain"
             priority
           />
         </Link>

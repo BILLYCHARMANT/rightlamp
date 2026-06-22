@@ -4,7 +4,7 @@ import "./dashboard-analytics.css";
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-vivid-analytics",
-  weight: ["400", "600", "700", "800"],
+  weight: ["600", "700"],
 });
 
 export default function DashboardHomeLayout({

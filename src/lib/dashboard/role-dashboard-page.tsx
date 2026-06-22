@@ -36,8 +36,10 @@ export async function RoleDashboardHome() {
     return <PartnerInvestorHome roleLabel={roleLabel} shops={shops} />;
   }
 
-  const home = await getDashboardHomePayload();
-  const branchIds = await getStaffBranchIds(session.id);
+  const [home, branchIds] = await Promise.all([
+    getDashboardHomePayload(),
+    getStaffBranchIds(session.id),
+  ]);
   const primaryBranchId = branchIds[0] ?? null;
   const primaryBranch = primaryBranchId
     ? await prisma.branch.findUnique({

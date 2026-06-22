@@ -1,3 +1,4 @@
+import type { DemoOrder } from "@/lib/dashboard/demo-data";
 import type { OrderRow } from "@/lib/dashboard/order-types";
 import { formatMoneyFromCents } from "@/lib/dashboard/format-money";
 import {
@@ -17,7 +18,7 @@ function formatDate(iso: string) {
   }
 }
 
-function sortedRecent(rows: OrderRow[], take: number) {
+function sortedRecent(rows: Array<OrderRow | DemoOrder>, take: number) {
   return [...rows]
     .sort((a, b) => new Date(b.placedAt).getTime() - new Date(a.placedAt).getTime())
     .slice(0, take);
@@ -27,7 +28,7 @@ export function DashboardHomeRecentOrders({
   orders,
   previewCount = 6,
 }: {
-  orders: OrderRow[];
+  orders: Array<OrderRow | DemoOrder>;
   previewCount?: number;
 }) {
   const rows = sortedRecent(orders, previewCount);

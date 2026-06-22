@@ -1,7 +1,9 @@
+import { BRAND_LOGO, BRAND_LOGO_ALT } from "@/lib/company/brand-assets";
+
 export const company = {
-  name: "PV-GRID",
+  name: "PV-GRID POWER SYSTEM Ltd",
   shortName: "PV-GRID",
-  tagline: "Lighting up your world with clean energy",
+  tagline: "Renewable Energy Here",
   phone: "+250788810785",
   phoneDisplay: "(+250) 788 810 785",
   email: "info@pv-grid.rw",
@@ -32,7 +34,7 @@ export const stitchImages = {
   portfolioCorporate: "/stitch/portfolio-corporate.jpg",
   portfolioSmartGrid: "/stitch/portfolio-smart-grid.jpg",
   portfolioTrust: "/stitch/portfolio-trust-engineer.jpg",
-  brandLogo: "/stitch/rlsgl-logo.png",
+  brandLogo: BRAND_LOGO,
 } as const;
 
 export const aboutHistory = {
@@ -769,7 +771,7 @@ export const shopPageCopy = {
 
 /** Stitch shared footer — about-us---official-branding-update.html */
 export const footerCopy = {
-  brandTitle: "PV-GRID",
+  brandTitle: "PV-GRID POWER SYSTEM Ltd",
   about:
     "Helping people embrace modern energy technologies for a better exploitation of our natural resources.",
   usefulLinks: [
@@ -790,9 +792,9 @@ export const footerCopy = {
   newsletterBody: "We are here to hear you and provide all response.",
   newsletterPlaceholder: "Your email address",
   newsletterCta: "Subscribe",
-  copyright: "© 2024 PV-GRID. All rights reserved.",
+  copyright: "© 2024 PV-GRID POWER SYSTEM Ltd. All rights reserved.",
   logo: stitchImages.brandLogo,
-  logoAlt: "PV-GRID Logo",
+  logoAlt: BRAND_LOGO_ALT,
 } as const;
 
 export const shopSidebarCategories = [

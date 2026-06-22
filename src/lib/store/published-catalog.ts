@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { normalizeCurrency } from "@/lib/dashboard/constants";
 import { prisma } from "@/lib/db";
 import type { RightlampsProduct } from "@/lib/rightlamps/types";
+import { BRAND_LOGO } from "@/lib/company/brand-assets";
 
 export type PublishedProductRow = {
   id: string;
@@ -26,7 +27,7 @@ export function prismaProductToStorefrontProduct(
     slug: row.slug,
     description: row.description ?? undefined,
     category: row.category ?? undefined,
-    image: "/brand/logo.png",
+    image: BRAND_LOGO,
     price: row.priceCents / 100,
     currency: normalizeCurrency(row.currency),
     countInStock: row.stock,

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BRAND_LOGO, BRAND_LOGO_ALT } from "@/lib/company/brand-assets";
 import { company, footerCopy } from "@/lib/company/site-content";
 
 /** Stitch about-us---official-branding-update.html footer */
@@ -12,14 +13,14 @@ export function StoreFooter() {
       <div className="mx-auto grid max-w-[1280px] gap-12 px-6 py-16 sm:px-12 lg:grid-cols-4">
         <div className="space-y-6">
           <Image
-            src={footerCopy.logo}
-            alt={footerCopy.logoAlt}
-            width={120}
-            height={40}
-            className="h-10 w-auto object-contain"
+            src={BRAND_LOGO}
+            alt={BRAND_LOGO_ALT}
+            width={200}
+            height={80}
+            className="h-16 w-auto object-contain"
           />
-          <p className="font-[family-name:var(--font-hanken)] text-lg font-bold text-[#c55316]">
-            {footerCopy.brandTitle}
+          <p className="font-[family-name:var(--font-hanken)] text-sm font-semibold text-[#00b4d8]">
+            {company.tagline}
           </p>
           <p className="text-sm leading-relaxed text-[#424754]">
             {footerCopy.about}

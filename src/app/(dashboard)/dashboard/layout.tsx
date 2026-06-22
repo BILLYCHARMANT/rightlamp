@@ -8,7 +8,7 @@ import { DashboardShellHeader } from "@/components/dashboard/dashboard-shell-hea
 const hanken = Hanken_Grotesk({
   subsets: ["latin"],
   variable: "--font-hanken",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "600", "700"],
 });
 
 const jetbrains = JetBrains_Mono({

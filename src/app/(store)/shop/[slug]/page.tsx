@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BRAND_LOGO, BRAND_LOGO_ALT } from "@/lib/company/brand-assets";
 import { formatRetailPrice } from "@/lib/rightlamps/format-price";
 import { getPublishedProductBySlug } from "@/lib/store/published-catalog";
 
@@ -44,7 +45,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
       <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
         <div className="relative aspect-square overflow-hidden rounded-[var(--radius)] border border-border bg-surface-muted shadow-card">
-          {product.image && product.image !== "/brand/logo.png" ? (
+          {product.image && product.image !== BRAND_LOGO ? (
             <Image
               src={product.image}
               alt={product.name}
@@ -55,11 +56,11 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             />
           ) : (
             <Image
-              src="/brand/logo.svg"
-              alt=""
+              src={BRAND_LOGO}
+              alt={BRAND_LOGO_ALT}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain p-12 opacity-95"
+              className="object-contain p-10"
               priority
             />
           )}

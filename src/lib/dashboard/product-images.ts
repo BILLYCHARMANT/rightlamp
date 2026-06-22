@@ -1,4 +1,6 @@
 /** Curated thumbnails for seeded / catalog slugs (lighting product photography). */
+import { BRAND_LOGO } from "@/lib/company/brand-assets";
+
 const PRODUCT_IMAGE_BY_SLUG: Record<string, string> = {
   "river-20w-led-panel":
     "https://images.unsplash.com/photo-1524484485831-a97fb0a4b104?w=240&h=240&fit=crop",
@@ -37,5 +39,5 @@ export function getProductImageUrl(
   const cat = (category ?? "").trim();
   if (cat && CATEGORY_FALLBACK[cat]) return CATEGORY_FALLBACK[cat]!;
 
-  return "/brand/logo.png";
+  return BRAND_LOGO;
 }

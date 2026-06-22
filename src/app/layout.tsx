@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { Inter, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/providers/auth-provider";
-import { authOptions } from "@/lib/auth";
+import { BRAND_LOGO, BRAND_LOGO_ALT } from "@/lib/company/brand-assets";
+import { company } from "@/lib/company/site-content";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,13 +15,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl),
   title: {
-    default: "PV-GRID",
-    template: "%s · PV-GRID",
+    default: company.shortName,
+    template: `%s · ${company.shortName}`,
   },
-  description:
-    "PV-GRID — electrical contracting, renewable energy, and an online shop for lighting and electrical products in Rwanda.",
+  description: `${company.name} — ${company.tagline}. Electrical contracting, renewable energy, and an online shop for lighting and electrical products in Rwanda.`,
+  icons: {
+    icon: BRAND_LOGO,
+    apple: BRAND_LOGO,
+  },
+  openGraph: {
+    title: company.name,
+    description: company.tagline,
+    images: [{ url: BRAND_LOGO, alt: BRAND_LOGO_ALT }],
+  },
 };
 
 /** Pearl light UI only — avoid UA “dark” presentation tinting the whole page. */
@@ -29,20 +40,18 @@ export const viewport = {
   colorScheme: "light",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
-
   return (
     <html
       lang="en"
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white text-ink">
-        <AuthProvider session={session}>{children}</AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

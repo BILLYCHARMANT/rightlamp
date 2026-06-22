@@ -63,7 +63,7 @@ export function StoreSiteHeader() {
             </span>
           </button>
 
-          <StoreBrandLogo showWordmark={true} shopVariant={onShop} />
+          <StoreBrandLogo showWordmark={false} shopVariant={onShop} />
 
           <nav
             className="mx-auto hidden items-center gap-6 lg:flex"

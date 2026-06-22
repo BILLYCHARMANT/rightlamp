@@ -1,8 +1,7 @@
 import "server-only";
 
-import { DEMO_DEBTS, DEMO_TOP_SKUS } from "@/lib/dashboard/demo-data";
-import type { OrderRow } from "@/lib/dashboard/order-types";
-import { fetchAllOrders } from "@/lib/dashboard/orders-queries";
+import { DEMO_DEBTS, DEMO_TOP_SKUS, type DemoOrder } from "@/lib/dashboard/demo-data";
+import { fetchOrdersForAnalytics } from "@/lib/dashboard/orders-queries";
 import { LOW_STOCK_THRESHOLD } from "@/lib/dashboard/constants";
 import type { ExpensePoint } from "@/lib/dashboard/financial-period";
 import { getProductImageUrl } from "@/lib/dashboard/product-images";
@@ -32,7 +31,7 @@ export type DashboardTopProduct = {
 };
 
 export type FinancialHomePayload = {
-  orders: OrderRow[];
+  orders: DemoOrder[];
   expenses: ExpensePoint[];
   debts: typeof DEMO_DEBTS;
   notifications: DashboardNotification[];
@@ -128,7 +127,7 @@ async function buildTopProducts(): Promise<DashboardTopProduct[]> {
 }
 
 export async function getFinancialHomePayload(): Promise<FinancialHomePayload> {
-  const [expenseRows, lowStock, orders, topProducts] = await Promise.all([
+  const [expenseRows, lowStock, openOrders, orders, topProducts] = await Promise.all([
     prisma.expense.findMany({
       orderBy: { paidAt: "desc" },
       select: { amountCents: true, paidAt: true, currency: true, title: true },
@@ -139,13 +138,12 @@ export async function getFinancialHomePayload(): Promise<FinancialHomePayload> {
         stock: { gt: 0, lte: LOW_STOCK_THRESHOLD },
       },
     }),
-    fetchAllOrders(),
+    prisma.order.count({
+      where: { status: { in: ["PENDING", "PROCESSING"] } },
+    }),
+    fetchOrdersForAnalytics(),
     buildTopProducts(),
   ]);
-
-  const openOrders = orders.filter(
-    (o) => o.status === "PENDING" || o.status === "PROCESSING",
-  ).length;
 
   const expenses: ExpensePoint[] = expenseRows.map((e) => ({
     amountCents: e.amountCents,

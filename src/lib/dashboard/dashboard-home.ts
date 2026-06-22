@@ -7,7 +7,7 @@ import {
   getDashboardOverviewStats,
   type DashboardOverviewStats,
 } from "@/lib/dashboard/overview-stats";
-import { fetchAllOrders, fetchRecentOrders } from "@/lib/dashboard/orders-queries";
+import { fetchRecentOrders } from "@/lib/dashboard/orders-queries";
 import { prisma } from "@/lib/db";
 
 export type DashboardHomeMovement = {
@@ -58,8 +58,19 @@ function weekAgo() {
 }
 
 export async function getDashboardHomePayload(): Promise<DashboardHomePayload> {
-  const [stats, products, movements, expenseAgg, allOrders, recentOrders] =
-    await Promise.all([
+  const weekStart = weekAgo();
+
+  const [
+    stats,
+    products,
+    movements,
+    expenseAgg,
+    pendingCount,
+    processingCount,
+    fulfilledWeekCount,
+    weekRevenueAgg,
+    recentOrders,
+  ] = await Promise.all([
     getDashboardOverviewStats(),
     prisma.product.findMany({
       select: {
@@ -82,7 +93,18 @@ export async function getDashboardHomePayload(): Promise<DashboardHomePayload> {
       _sum: { amountCents: true },
       _count: true,
     }),
-    fetchAllOrders(),
+    prisma.order.count({ where: { status: "PENDING" } }),
+    prisma.order.count({ where: { status: "PROCESSING" } }),
+    prisma.order.count({
+      where: { status: "FULFILLED", placedAt: { gte: weekStart } },
+    }),
+    prisma.order.aggregate({
+      where: {
+        placedAt: { gte: weekStart },
+        status: { in: ["FULFILLED", "PROCESSING"] },
+      },
+      _sum: { totalCents: true },
+    }),
     fetchRecentOrders(6),
   ]);
 
@@ -130,14 +152,8 @@ export async function getDashboardHomePayload(): Promise<DashboardHomePayload> {
     createdAt: m.createdAt.toISOString(),
   }));
 
-  const weekStart = weekAgo();
-  const weekOrders = allOrders.filter(
-    (o) => new Date(o.placedAt) >= weekStart,
-  );
-  const weekRevenueCents = weekOrders
-    .filter((o) => o.status === "FULFILLED" || o.status === "PROCESSING")
-    .reduce((s, o) => s + o.totalCents, 0);
-  const currency = normalizeCurrency(allOrders[0]?.currency ?? DEFAULT_CURRENCY);
+  const weekRevenueCents = weekRevenueAgg._sum.totalCents ?? 0;
+  const currency = normalizeCurrency(recentOrders[0]?.currency ?? DEFAULT_CURRENCY);
 
   const expenseCents = expenseAgg._sum.amountCents ?? 0;
   const expenseCurrency = DEFAULT_CURRENCY;
@@ -152,9 +168,9 @@ export async function getDashboardHomePayload(): Promise<DashboardHomePayload> {
       recentMovements,
     },
     orders: {
-      pending: allOrders.filter((o) => o.status === "PENDING").length,
-      processing: allOrders.filter((o) => o.status === "PROCESSING").length,
-      fulfilledWeek: weekOrders.filter((o) => o.status === "FULFILLED").length,
+      pending: pendingCount,
+      processing: processingCount,
+      fulfilledWeek: fulfilledWeekCount,
       weekRevenueDisplay: formatMoneyFromCents(weekRevenueCents, currency),
       recent: recentOrders,
     },

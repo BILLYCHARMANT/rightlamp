@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   serverExternalPackages: ["pg", "@prisma/adapter-pg"],
   redirects: async () => [
     { source: "/admin", destination: "/dashboard", permanent: false },

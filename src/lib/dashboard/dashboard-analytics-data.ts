@@ -72,7 +72,8 @@ function groupSum<T>(
 }
 
 export async function getDashboardAnalyticsPayload(): Promise<DashboardAnalyticsPayload> {
-  const [base, products, activeStaff, activeBranches, expenseRows] = await Promise.all([
+  const [base, products, activeStaff, activeBranches, expenseRows, statusGroups, channelGroups] =
+    await Promise.all([
     getFinancialHomePayload(),
     prisma.product.findMany({
       select: {
@@ -90,6 +91,15 @@ export async function getDashboardAnalyticsPayload(): Promise<DashboardAnalytics
     prisma.branch.count({ where: { active: true } }),
     prisma.expense.findMany({
       select: { category: true, amountCents: true },
+    }),
+    prisma.order.groupBy({
+      by: ["status"],
+      _count: { _all: true },
+    }),
+    prisma.order.groupBy({
+      by: ["channel"],
+      where: { status: { not: "CANCELLED" } },
+      _count: { _all: true },
     }),
   ]);
 
@@ -120,12 +130,24 @@ export async function getDashboardAnalyticsPayload(): Promise<DashboardAnalytics
           .map(([currency, cents]) => formatMoneyFromCents(cents, currency))
           .join(" · ");
 
-  const statusCounts = {
-    Pending: base.orders.filter((o) => o.status === "PENDING").length,
-    Processing: base.orders.filter((o) => o.status === "PROCESSING").length,
-    Fulfilled: base.orders.filter((o) => o.status === "FULFILLED").length,
-    Cancelled: base.orders.filter((o) => o.status === "CANCELLED").length,
+  const statusLabel: Record<string, string> = {
+    PENDING: "Pending",
+    PROCESSING: "Processing",
+    FULFILLED: "Fulfilled",
+    CANCELLED: "Cancelled",
   };
+  const statusCounts = {
+    Pending: 0,
+    Processing: 0,
+    Fulfilled: 0,
+    Cancelled: 0,
+  };
+  for (const row of statusGroups) {
+    const label = statusLabel[row.status] ?? row.status;
+    if (label in statusCounts) {
+      statusCounts[label as keyof typeof statusCounts] = row._count._all;
+    }
+  }
   const statusMax = Math.max(...Object.values(statusCounts), 1);
 
   const orderStatus: AnalyticsProgressRow[] = Object.entries(statusCounts).map(
@@ -136,11 +158,13 @@ export async function getDashboardAnalyticsPayload(): Promise<DashboardAnalytics
     }),
   );
 
-  const orderChannels = groupSum(
-    base.orders.filter((o) => o.status !== "CANCELLED"),
-    (o) => o.channel,
-    () => 1,
-  );
+  const orderChannels: AnalyticsSlice[] = channelGroups
+    .sort((a, b) => b._count._all - a._count._all)
+    .map((row, index) => ({
+      label: row.channel || "Other",
+      value: row._count._all,
+      color: SLICE_COLORS[index % SLICE_COLORS.length],
+    }));
 
   const expenseCategories = groupSum(
     expenseRows,

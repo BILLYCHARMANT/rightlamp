@@ -71,10 +71,8 @@ function getPrismaClient(): PrismaClient {
   }
 
   const client = createPrismaClient();
-  if (process.env.NODE_ENV !== "production") {
-    globalForPrisma.prisma = client;
-    globalForPrisma.prismaSchemaKey = PRISMA_SCHEMA_KEY;
-  }
+  globalForPrisma.prisma = client;
+  globalForPrisma.prismaSchemaKey = PRISMA_SCHEMA_KEY;
   return client;
 }
 

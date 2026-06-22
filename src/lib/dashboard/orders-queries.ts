@@ -1,6 +1,7 @@
 import "server-only";
 
-import { mapOrderToRow } from "@/lib/dashboard/order-mapper";
+import { formatOrderId, mapOrderToRow } from "@/lib/dashboard/order-mapper";
+import type { DemoOrder, DemoOrderStatus } from "@/lib/dashboard/demo-data";
 import type { OrderViewerScope } from "@/lib/dashboard/order-access";
 import type { OrderRow } from "@/lib/dashboard/order-types";
 import { prisma } from "@/lib/db";
@@ -54,6 +55,40 @@ export async function fetchRecentOrders(
       include: orderInclude,
     });
     return rows.map(mapOrderToRow);
+  } catch (e) {
+    if (isPrismaConnectionError(e)) return [];
+    throw e;
+  }
+}
+
+/** Lightweight order rows for charts and KPIs (no line items). */
+export async function fetchOrdersForAnalytics(
+  scope?: OrderViewerScope | null,
+): Promise<DemoOrder[]> {
+  try {
+    const rows = await prisma.order.findMany({
+      where: branchWhere(scope),
+      orderBy: { placedAt: "desc" },
+      select: {
+        orderNumber: true,
+        customerName: true,
+        channel: true,
+        totalCents: true,
+        currency: true,
+        status: true,
+        placedAt: true,
+      },
+    });
+    return rows.map((order) => ({
+      id: formatOrderId(order.orderNumber),
+      customer: order.customerName,
+      channel: order.channel,
+      lineSummary: "",
+      totalCents: order.totalCents,
+      currency: order.currency,
+      status: order.status as DemoOrderStatus,
+      placedAt: order.placedAt.toISOString(),
+    }));
   } catch (e) {
     if (isPrismaConnectionError(e)) return [];
     throw e;
