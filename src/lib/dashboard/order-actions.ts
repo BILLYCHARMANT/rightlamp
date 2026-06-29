@@ -8,7 +8,7 @@ import { OrderStatus as PrismaOrderStatus } from "@/generated/prisma/client";
 import { deriveOrderStatus, formatOrderId, mapOrderToRow, parseOrderDisplayId } from "@/lib/dashboard/order-mapper";
 import { getOrderViewerScope, canAccessOrderBranch } from "@/lib/dashboard/rbac-server";
 import { hasGlobalOrderAccess, normalizeStaffRole } from "@/lib/dashboard/rbac";
-import { validateActiveBranchId } from "@/lib/dashboard/order-branches";
+import { validateActiveBranchId, getActiveOrderBranches } from "@/lib/dashboard/order-branches";
 import { logBranchActivity } from "@/lib/dashboard/shop-activity";
 import type { OrderStatus } from "@/lib/dashboard/order-types";
 import type {
@@ -16,6 +16,11 @@ import type {
   OrderableProduct,
   OrderRow,
 } from "@/lib/dashboard/order-types";
+import {
+  buildRequestDetailsNotes,
+  resolveCustomerNameFromDetails,
+  validateOrderRequestDetails,
+} from "@/lib/orders/order-request-details";
 import { prisma } from "@/lib/db";
 
 export type OrderActionResult =
@@ -91,7 +96,7 @@ async function requireStaffSession(): Promise<{ ok: false; message: string } | n
 export async function getOrderableProducts(): Promise<OrderableProduct[]> {
   const rows = await prisma.product.findMany({
     where: { published: true },
-    orderBy: { name: "asc" },
+    orderBy: [{ name: "asc" }],
     select: {
       id: true,
       name: true,
@@ -99,6 +104,9 @@ export async function getOrderableProducts(): Promise<OrderableProduct[]> {
       priceCents: true,
       currency: true,
       stock: true,
+      familyId: true,
+      variantLabel: true,
+      family: { select: { name: true } },
       accessories: {
         orderBy: { sortOrder: "asc" },
         select: {
@@ -110,11 +118,31 @@ export async function getOrderableProducts(): Promise<OrderableProduct[]> {
       },
     },
   });
-  return rows;
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    priceCents: row.priceCents,
+    currency: row.currency,
+    stock: row.stock,
+    familyId: row.familyId,
+    familyName: row.family?.name ?? null,
+    variantLabel: row.variantLabel,
+    accessories: row.accessories,
+  }));
 }
 
 function validateRequest(input: OrderRequestInput): string | null {
-  const name = input.customerName.trim();
+  if (input.requestDetails) {
+    const detailsError = validateOrderRequestDetails(input.requestDetails);
+    if (detailsError) return detailsError;
+  }
+
+  const name = (
+    input.requestDetails
+      ? resolveCustomerNameFromDetails(input.requestDetails)
+      : input.customerName
+  ).trim();
   if (!name) return "Name is required.";
 
   const email = input.customerEmail.trim();
@@ -243,7 +271,9 @@ async function persistOrder(
   }
 
   let customerAddress = input.customerAddress?.trim() || null;
-  if (branchId) {
+  if (input.requestDetails?.deliveryAddress?.trim()) {
+    customerAddress = input.requestDetails.deliveryAddress.trim();
+  } else if (branchId) {
     const branch = await prisma.branch.findUnique({
       where: { id: branchId },
       select: { location: true },
@@ -253,13 +283,33 @@ async function persistOrder(
     }
   }
 
+  const productSummary = lines.resolved
+    .map((line) => `${line.quantity}× ${line.productName}`)
+    .join(" · ");
+
+  let notes = input.notes?.trim() || null;
+  if (input.requestDetails) {
+    const detailNotes = buildRequestDetailsNotes(
+      input.requestDetails,
+      productSummary,
+    );
+    notes = notes ? `${notes}\n\n${detailNotes}` : detailNotes;
+  }
+
+  const customerName = input.requestDetails
+    ? resolveCustomerNameFromDetails(input.requestDetails)
+    : input.customerName.trim();
+
   const order = await prisma.order.create({
     data: {
-      customerName: input.customerName.trim(),
+      customerName,
       customerEmail: input.customerEmail.trim(),
       customerPhone: input.customerPhone.trim(),
       customerAddress,
-      notes: input.notes?.trim() || null,
+      notes,
+      requestDetails: input.requestDetails
+        ? (input.requestDetails as object)
+        : undefined,
       channel,
       totalCents: lines.totalCents,
       currency: lines.currency,
@@ -299,12 +349,27 @@ async function persistOrder(
 export async function submitOrderRequest(
   input: OrderRequestInput,
 ): Promise<OrderActionResult> {
-  const branchCheck = await validateActiveBranchId(input.branchId);
-  if (!branchCheck.ok) {
-    return { ok: false, message: branchCheck.message };
-  }
+  try {
+    const activeBranches = await getActiveOrderBranches();
+    let branchId: string | null = null;
 
-  return persistOrder(input, "Web request", null, branchCheck.branchId);
+    if (activeBranches.length > 0) {
+      const branchCheck = await validateActiveBranchId(input.branchId);
+      if (!branchCheck.ok) {
+        return { ok: false, message: branchCheck.message };
+      }
+      branchId = branchCheck.branchId;
+    }
+
+    return await persistOrder(input, "Web order request", null, branchId);
+  } catch (error) {
+    console.error("submitOrderRequest failed:", error);
+    return {
+      ok: false,
+      message:
+        "Could not save your order request. Try again without large attachments or contact us directly.",
+    };
+  }
 }
 
 /** Staff dashboard — seller/admin records an order on behalf of a customer. */

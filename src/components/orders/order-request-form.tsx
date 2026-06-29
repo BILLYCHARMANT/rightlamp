@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useMemo, useState, useTransition } from "react";
 import { MapPin, Plus, Trash2 } from "lucide-react";
+import { OrderProductVariantPicker } from "@/components/orders/order-product-variant-picker";
 import { formatMoneyFromCents } from "@/lib/dashboard/format-money";
 import { formatBranchLocationOption } from "@/lib/dashboard/order-types";
 import type {
@@ -47,10 +48,17 @@ function emptyLine(productId = ""): LineDraft {
 const fieldLabel =
   "font-[family-name:var(--font-jetbrains)] text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500";
 
+export const orderRequestFieldLabel = fieldLabel;
+
 const fieldInput =
   "w-full border-0 border-b border-slate-200 bg-transparent px-0 py-2.5 text-sm text-ink placeholder:text-slate-400 transition focus:border-brand focus:outline-none focus:ring-0";
 
-function SectionTitle({
+export const orderRequestFieldInput = fieldInput;
+
+export const orderRequestFieldBox =
+  "w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/20";
+
+export function OrderRequestSectionTitle({
   children,
   hint,
 }: {
@@ -245,9 +253,9 @@ export function OrderRequestForm({
       <div className="grid gap-10 lg:grid-cols-5 lg:gap-12">
         {/* Contact — compact column */}
         <div className="lg:col-span-2">
-          <SectionTitle hint="How we reach you about this order.">
+          <OrderRequestSectionTitle hint="How we reach you about this order.">
             Contact
-          </SectionTitle>
+          </OrderRequestSectionTitle>
 
           <div className="space-y-5">
             <label className="block">
@@ -368,9 +376,9 @@ export function OrderRequestForm({
 
         {/* Products — main column */}
         <div className="lg:col-span-3">
-          <SectionTitle hint="Choose from published shop items. Add more lines if needed.">
+          <OrderRequestSectionTitle hint="Choose from published shop items. Add more lines if needed.">
             Products
-          </SectionTitle>
+          </OrderRequestSectionTitle>
 
           <div className="space-y-0">
             <div className="hidden grid-cols-[1fr_4.5rem_5.5rem_2rem] gap-3 border-b border-slate-100 pb-2 sm:grid">
@@ -396,32 +404,24 @@ export function OrderRequestForm({
                 return (
                   <li key={line.key} className="py-4">
                     <div className="grid gap-3 sm:grid-cols-[1fr_4.5rem_5.5rem_2rem] sm:items-end">
-                      <label className="block min-w-0">
+                      <div className="block min-w-0">
                         {index === 0 ? (
                           <span className={`${fieldLabel} sm:hidden`}>Item</span>
                         ) : null}
-                        <select
-                          required
-                          value={line.productId}
-                          onChange={(e) =>
-                            updateLine(line.key, {
-                              productId: e.target.value,
-                              accessoryIds: [],
-                            })
-                          }
-                          className="mt-1 w-full truncate rounded-sm border border-slate-200 bg-white px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/20 sm:mt-0"
-                        >
-                          <option value="" disabled>
-                            Select product
-                          </option>
-                          {products.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {p.name} · {formatMoneyFromCents(p.priceCents, p.currency)}
-                              {p.stock > 0 ? "" : " · out of stock"}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                        <div className="mt-1 sm:mt-0">
+                          <OrderProductVariantPicker
+                            products={products}
+                            selectedProductId={line.productId}
+                            onSelect={(productId) =>
+                              updateLine(line.key, {
+                                productId,
+                                accessoryIds: [],
+                              })
+                            }
+                            compact={variant === "dashboard"}
+                          />
+                        </div>
+                      </div>
 
                       <label className="block">
                         <span className={`${fieldLabel} sm:sr-only`}>Qty</span>

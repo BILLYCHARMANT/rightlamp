@@ -12,7 +12,7 @@ type Props = {
 export function OrdersTabs({ tab, onChange }: Props) {
   return (
     <nav
-      className="inline-flex flex-wrap gap-1 rounded-sm bg-slate-100 p-1"
+      className="flex max-w-full flex-nowrap gap-1 overflow-x-auto rounded-sm bg-slate-100 p-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Order views"
     >
       {ORDER_TABS.map((t) => {
@@ -22,7 +22,7 @@ export function OrdersTabs({ tab, onChange }: Props) {
             key={t.id}
             type="button"
             onClick={() => onChange(t.id)}
-            className={`rounded-sm px-3 py-1.5 text-xs font-bold transition sm:px-4 ${
+            className={`shrink-0 rounded-sm px-3 py-1.5 text-xs font-bold transition sm:px-4 ${
               active
                 ? "bg-white text-ink shadow-sm"
                 : "text-muted-foreground hover:text-ink"

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { FileText } from "lucide-react";
 import type { OrderRow } from "@/lib/dashboard/order-types";
 import type { OrderProgressField } from "@/lib/dashboard/order-actions";
 import { OrderStatusBadge } from "@/components/dashboard/order-status-badge";
@@ -12,6 +13,7 @@ import { formatMoneyFromCents } from "@/lib/dashboard/format-money";
 type Props = {
   order: OrderRow | null;
   onClose: () => void;
+  onViewRequestDocument?: () => void;
   onProgressChange?: (
     orderId: string,
     field: OrderProgressField,
@@ -23,6 +25,7 @@ type Props = {
 export function OrderDetailModal({
   order,
   onClose,
+  onViewRequestDocument,
   onProgressChange,
   progressDisabled = false,
 }: Props) {
@@ -37,13 +40,25 @@ export function OrderDetailModal({
       title={order.id}
       onClose={onClose}
       footer={
-        <button
-          type="button"
-          className="w-full rounded-sm bg-brand py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
-          onClick={onClose}
-        >
-          Close
-        </button>
+        <div className="flex flex-col gap-2">
+          {onViewRequestDocument ? (
+            <button
+              type="button"
+              onClick={onViewRequestDocument}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-sm border border-brand/30 bg-brand/5 py-2.5 text-sm font-semibold text-brand transition hover:bg-brand/10"
+            >
+              <FileText size={16} aria-hidden />
+              View order request form
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="w-full rounded-sm bg-brand py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
       }
     >
       <div className="space-y-4">

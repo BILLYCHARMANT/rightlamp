@@ -11,7 +11,14 @@ type Props = {
   viewLabel?: string;
   editLabel?: string;
   deleteLabel?: string;
+  variant?: "default" | "icons" | "segmented";
 };
+
+const segmentedBtn =
+  "inline-flex h-7 w-7 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-40";
+const segmentedNeutral =
+  "text-slate-500 hover:bg-white hover:text-[var(--dash-teal)]";
+const segmentedDanger = "text-red-500 hover:bg-red-50 hover:text-red-600";
 
 export function DashboardTableRowActions({
   onView,
@@ -24,15 +31,63 @@ export function DashboardTableRowActions({
   viewLabel = "View",
   editLabel = "Edit",
   deleteLabel = "Delete",
+  variant = "default",
 }: Props) {
+  if (variant === "icons" || variant === "segmented") {
+    return (
+      <div
+        className="inline-flex items-stretch overflow-hidden rounded-md border border-slate-200/90 bg-slate-100/80"
+        role="group"
+        aria-label="Row actions"
+      >
+        {showView && onView ? (
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={onView}
+            className={`${segmentedBtn} ${segmentedNeutral}`}
+            aria-label={viewLabel}
+            title={viewLabel}
+          >
+            <Eye size={13} strokeWidth={2} aria-hidden />
+          </button>
+        ) : null}
+        {showEdit && onEdit ? (
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={onEdit}
+            className={`${segmentedBtn} border-l border-slate-200/90 ${segmentedNeutral}`}
+            aria-label={editLabel}
+            title={editLabel}
+          >
+            <Pencil size={13} strokeWidth={2} aria-hidden />
+          </button>
+        ) : null}
+        {showDelete && onDelete ? (
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={onDelete}
+            className={`${segmentedBtn} border-l border-slate-200/90 ${segmentedDanger}`}
+            aria-label={deleteLabel}
+            title={deleteLabel}
+          >
+            <Trash2 size={13} strokeWidth={2} aria-hidden />
+          </button>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-wrap items-center justify-end gap-1.5">
+    <div className="flex flex-nowrap items-center justify-end gap-1.5">
       {showView && onView ? (
         <button
           type="button"
           disabled={disabled}
           onClick={onView}
-          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm transition hover:border-brand/30 disabled:opacity-50"
+          className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-ink shadow-sm transition hover:border-brand/30 disabled:opacity-50"
         >
           <Eye size={13} aria-hidden />
           {viewLabel}
@@ -43,7 +98,7 @@ export function DashboardTableRowActions({
           type="button"
           disabled={disabled}
           onClick={onEdit}
-          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm transition hover:border-brand/30 disabled:opacity-50"
+          className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-ink shadow-sm transition hover:border-brand/30 disabled:opacity-50"
         >
           <Pencil size={13} aria-hidden />
           {editLabel}
@@ -54,7 +109,7 @@ export function DashboardTableRowActions({
           type="button"
           disabled={disabled}
           onClick={onDelete}
-          className="inline-flex items-center gap-1 rounded-lg border border-danger/25 bg-white px-2.5 py-1.5 text-xs font-semibold text-danger shadow-sm transition hover:border-danger/40 disabled:opacity-50"
+          className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-danger/25 bg-white px-2 py-1 text-[11px] font-semibold text-danger shadow-sm transition hover:border-danger/40 disabled:opacity-50"
         >
           <Trash2 size={13} aria-hidden />
           {deleteLabel}

@@ -2,9 +2,9 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { normalizeCurrency } from "@/lib/dashboard/constants";
+import { getProductImageUrl } from "@/lib/dashboard/product-images";
 import { prisma } from "@/lib/db";
 import type { RightlampsProduct } from "@/lib/rightlamps/types";
-import { BRAND_LOGO } from "@/lib/company/brand-assets";
 
 export type PublishedProductRow = {
   id: string;
@@ -27,7 +27,7 @@ export function prismaProductToStorefrontProduct(
     slug: row.slug,
     description: row.description ?? undefined,
     category: row.category ?? undefined,
-    image: BRAND_LOGO,
+    image: getProductImageUrl(row.slug, row.category),
     price: row.priceCents / 100,
     currency: normalizeCurrency(row.currency),
     countInStock: row.stock,

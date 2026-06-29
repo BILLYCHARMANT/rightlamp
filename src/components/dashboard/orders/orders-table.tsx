@@ -29,6 +29,10 @@ type Props = {
   ) => void;
 };
 
+const thClass =
+  "px-2 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-500";
+const tdClass = "px-2 py-2.5 align-middle";
+
 export function OrdersTable({
   rows,
   selected,
@@ -47,10 +51,23 @@ export function OrdersTable({
   const someSelected = rows.some((o) => selected.has(o.id));
 
   return (
-    <table className="dash-data-table dash-data-table--flush w-full min-w-[880px] text-left text-sm">
+    <table className="dash-data-table dash-data-table--flush w-full table-fixed text-left text-sm">
+      <colgroup>
+        <col className="w-9" />
+        <col className="w-[4.5rem]" />
+        <col />
+        <col className="w-[5.5rem]" />
+        <col className="w-10" />
+        <col className="w-10" />
+        <col className="w-10" />
+        <col className="w-[5.5rem]" />
+        <col className="hidden w-[4.5rem] sm:table-column" />
+        <col className="hidden w-[4.5rem] xl:table-column" />
+        <col className="w-[5.5rem]" />
+      </colgroup>
       <thead>
         <tr>
-          <th className="w-10 px-3 py-3 text-center">
+          <th className={`${thClass} text-center`}>
             <input
               type="checkbox"
               checked={allSelected}
@@ -62,16 +79,16 @@ export function OrdersTable({
               aria-label="Select all orders on this page"
             />
           </th>
-          <th className="px-3 py-3">Order no.</th>
-          <th className="px-3 py-3">Customer</th>
-          <th className="px-3 py-3">Status</th>
-          <th className="px-3 py-3 text-center">Pack</th>
-          <th className="px-3 py-3 text-center">Fulfill</th>
-          <th className="px-3 py-3 text-center">Paid</th>
-          <th className="px-3 py-3 text-right">Total</th>
-          <th className="hidden px-3 py-3 sm:table-cell">Created</th>
-          <th className="hidden px-3 py-3 md:table-cell">Updated</th>
-          <th className="px-3 py-3 text-right">Actions</th>
+          <th className={thClass}>Order</th>
+          <th className={thClass}>Customer</th>
+          <th className={thClass}>Status</th>
+          <th className={`${thClass} text-center`}>Pack</th>
+          <th className={`${thClass} text-center`}>Fulfill</th>
+          <th className={`${thClass} text-center`}>Paid</th>
+          <th className={`${thClass} text-right`}>Total</th>
+          <th className={`${thClass} hidden sm:table-cell`}>Created</th>
+          <th className={`${thClass} hidden xl:table-cell`}>Updated</th>
+          <th className={`${thClass} text-right`}>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -90,7 +107,7 @@ export function OrdersTable({
               className={isSelected ? "is-selected" : ""}
             >
               <td
-                className="px-3 py-3 text-center"
+                className={`${tdClass} text-center`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <input
@@ -101,26 +118,29 @@ export function OrdersTable({
                   aria-label={`Select order ${order.id}`}
                 />
               </td>
-              <td className="px-3 py-3 font-bold text-brand">{order.id}</td>
-              <td className="px-3 py-3">
-                <p className="font-semibold leading-none text-ink">
+              <td className={`${tdClass} font-mono text-xs font-bold text-brand`}>
+                {order.id}
+              </td>
+              <td className={tdClass}>
+                <p
+                  className="truncate font-semibold leading-tight text-ink"
+                  title={order.customer}
+                >
                   {order.customer}
                 </p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
+                <p
+                  className="mt-0.5 truncate text-[10px] text-muted-foreground"
+                  title={`${order.channel}${order.branchName ? ` · ${order.branchName}` : ""}`}
+                >
                   {order.channel}
                   {order.branchName ? ` · ${order.branchName}` : ""}
                 </p>
-                {order.branchLocation ? (
-                  <p className="mt-0.5 text-[10px] text-muted-foreground">
-                    {order.branchLocation}
-                  </p>
-                ) : null}
               </td>
-              <td className="px-3 py-3">
+              <td className={tdClass}>
                 <OrderStatusBadge status={order.status} />
               </td>
               <td
-                className="px-3 py-3 text-center"
+                className={`${tdClass} text-center`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <OrdersProgressCheck
@@ -131,7 +151,7 @@ export function OrdersTable({
                 />
               </td>
               <td
-                className="px-3 py-3 text-center"
+                className={`${tdClass} text-center`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <OrdersProgressCheck
@@ -142,7 +162,7 @@ export function OrdersTable({
                 />
               </td>
               <td
-                className="px-3 py-3 text-center"
+                className={`${tdClass} text-center`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <OrdersProgressCheck
@@ -152,20 +172,21 @@ export function OrdersTable({
                   onChange={(v) => onProgressChange(order.id, "paid", v)}
                 />
               </td>
-              <td className="px-3 py-3 text-right font-bold tabular-nums text-ink">
+              <td className={`${tdClass} text-right text-xs font-bold tabular-nums text-ink`}>
                 {formatMoneyFromCents(order.totalCents, order.currency)}
               </td>
-              <td className="hidden px-3 py-3 text-xs text-muted-foreground sm:table-cell">
+              <td className={`${tdClass} hidden text-[10px] text-muted-foreground sm:table-cell`}>
                 {formatOrderDateShort(order.placedAt)}
               </td>
-              <td className="hidden px-3 py-3 text-xs text-muted-foreground md:table-cell">
+              <td className={`${tdClass} hidden text-[10px] text-muted-foreground xl:table-cell`}>
                 {formatOrderDateShort(orderUpdatedAt(order))}
               </td>
               <td
-                className="px-3 py-3"
+                className={`${tdClass} text-right`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <DashboardTableRowActions
+                  variant="segmented"
                   disabled={actionDisabled}
                   onView={() => onView(order)}
                   onEdit={() => onEdit(order)}

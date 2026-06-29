@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { company, homeCopy, stats } from "@/lib/company/site-content";
-import { PrimaryButton } from "@/components/store/ui/Buttons";
+import { GhostButton, PrimaryButton } from "@/components/store/ui/Buttons";
 import { SectionBand, cardOnBandClass } from "@/components/store/ui/SectionBand";
 
 export function AnnouncementBar() {
@@ -56,10 +56,13 @@ export function HeroSection() {
           <p className="animate-fade-in-up animation-delay-200 mt-6 max-w-2xl text-base leading-relaxed text-white/85 sm:text-lg">
             {homeCopy.heroSubtitle}
           </p>
-          <div className="animate-fade-in-up animation-delay-300 mt-9">
-            <PrimaryButton href="#about" size="lg">
-              {homeCopy.heroCta}
+          <div className="animate-fade-in-up animation-delay-300 mt-9 flex flex-wrap gap-3">
+            <PrimaryButton href="/request-order" size="lg">
+              Request an order
             </PrimaryButton>
+            <GhostButton href="#about" size="lg" dark>
+              {homeCopy.heroCta}
+            </GhostButton>
           </div>
         </div>
       </section>

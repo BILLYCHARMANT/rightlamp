@@ -1,15 +1,17 @@
 import { DashboardProductsHub } from "@/components/dashboard/dashboard-products-hub";
 import { listProductCategories } from "@/lib/dashboard/category-actions";
+import { toExplorerProduct } from "@/lib/dashboard/explorer-product";
 import { getDashboardOverviewStats } from "@/lib/dashboard/overview-stats";
 import { fetchExplorerProducts } from "@/lib/dashboard/product-queries";
 
 export default async function DashboardProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ create?: string }>;
+  searchParams: Promise<{ create?: string; edit?: string }>;
 }) {
   const sp = await searchParams;
   const initialCreateOpen = sp.create === "1";
+  const initialEditId = sp.edit?.trim() || null;
 
   const stats = await getDashboardOverviewStats();
   const categoryRows = await listProductCategories();
@@ -27,33 +29,14 @@ export default async function DashboardProductsPage({
     listWarning = CATALOG_LIST_WARNING;
   }
 
-  const explorerProducts = products.map((p) => ({
-    id: p.id,
-    name: p.name,
-    slug: p.slug,
-    category: p.category,
-    description: p.description,
-    priceCents: p.priceCents,
-    costPriceCents: p.costPriceCents,
-    currency: p.currency,
-    stock: p.stock,
-    published: p.published,
-    createdAt: p.createdAt.toISOString(),
-    updatedAt: p.updatedAt.toISOString(),
-    accessories: p.accessories.map((a) => ({
-      id: a.id,
-      name: a.name,
-      imageUrl: a.imageUrl,
-      priceCents: a.priceCents,
-      sortOrder: a.sortOrder,
-    })),
-  }));
+  const explorerProducts = products.map(toExplorerProduct);
 
   return (
     <DashboardProductsHub
       explorerProducts={explorerProducts}
       categories={categories}
       initialCreateOpen={initialCreateOpen}
+      initialEditId={initialEditId}
       connectionWarning={listWarning ?? stats.connectionWarning}
     />
   );

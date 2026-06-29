@@ -938,3 +938,32 @@ section.rlsgl-band--contact {
     animation-duration: 120s !important;
   }
 }
+
+/* Order request form — print / save as PDF */
+@media print {
+  body.order-request-printing * {
+    visibility: hidden;
+  }
+
+  body.order-request-printing .order-request-document,
+  body.order-request-printing .order-request-document * {
+    visibility: visible;
+  }
+
+  body.order-request-printing .order-request-document {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: none;
+    box-shadow: none;
+  }
+
+  body.order-request-printing .order-request-doc-attachment-link {
+    display: none;
+  }
+}
+
+.order-request-document--printing {
+  box-shadow: none !important;
+}

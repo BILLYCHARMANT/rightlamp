@@ -69,6 +69,18 @@ model ProductCategory {
   @@index([name])
 }
 
+/// Group of sellable versions (capacity/size) shown together on the storefront.
+model ProductFamily {
+  id        String    @id @default(cuid())
+  name      String
+  category  String?   @db.VarChar(160)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+
+  @@index([name])
+}
+
 /// Sellable item shown on the storefront when `published` is true.
 model Product {
   id          String   @id @default(cuid())
@@ -83,15 +95,37 @@ model Product {
   currency    String   @default("RWF")
   stock       Int      @default(0)
   published   Boolean  @default(false)
+  /** Links capacity/size versions — e.g. 50W vs 100W flood lights. */
+  familyId      String?
+  /** Short label for variant cards — e.g. "50W", "120cm". */
+  variantLabel  String?  @db.VarChar(120)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   stockMovements StockMovement[]
   orderItems     OrderItem[]
   accessories    ProductAccessory[]
+  images         ProductImage[]
   branchInventory BranchInventory[]
+  family         ProductFamily? @relation(fields: [familyId], references: [id], onDelete: SetNull)
 
   @@index([published])
+  @@index([familyId])
+}
+
+/// Product photos — primary view first, then optional alternate angles.
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String   @db.Text
+  label     String?  @db.VarChar(160)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
 }
 
 /// Optional add-on bundled with a product (bulbs, dimmers, mounts, etc.).
@@ -99,7 +133,7 @@ model ProductAccessory {
   id         String   @id @default(cuid())
   productId  String
   name       String
-  imageUrl   String?  @db.VarChar(500)
+  imageUrl   String?  @db.Text
   priceCents Int      @default(0)
   sortOrder  Int      @default(0)
   createdAt  DateTime @default(now())
@@ -134,6 +168,8 @@ model Order {
   totalCents      Int
   currency        String      @default("RWF") @db.VarChar(3)
   notes           String?     @db.Text
+  /** Structured storefront order-request form (applicant, delivery, payment, etc.). */
+  requestDetails  Json?
   createdByEmail  String?     @db.VarChar(255)
   /** Shop that fulfilled or recorded this sale — used for multi-branch analytics. */
   branchId        String?

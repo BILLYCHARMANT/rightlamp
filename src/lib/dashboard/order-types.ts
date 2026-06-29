@@ -1,3 +1,5 @@
+import type { OrderRequestDetails } from "@/lib/orders/order-request-details";
+
 export type OrderStatus =
   | "PENDING"
   | "PROCESSING"
@@ -40,6 +42,7 @@ export type OrderRow = {
   placedAt: string;
   updatedAt: string;
   notes: string | null;
+  requestDetails: OrderRequestDetails | null;
   branchId: string | null;
   branchName: string | null;
   branchLocation: string | null;
@@ -59,6 +62,9 @@ export type OrderableProduct = {
   priceCents: number;
   currency: string;
   stock: number;
+  familyId: string | null;
+  familyName: string | null;
+  variantLabel: string | null;
   accessories: OrderableProductAccessory[];
 };
 
@@ -91,4 +97,5 @@ export type OrderRequestInput = {
   branchId?: string;
   notes?: string;
   items: OrderRequestLineInput[];
+  requestDetails?: import("@/lib/orders/order-request-details").OrderRequestDetails;
 };

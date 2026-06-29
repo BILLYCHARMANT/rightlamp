@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState, useTransition } from "react";
 import {
   ChevronDown,
-  ImageIcon,
   Search,
 } from "lucide-react";
 import { formatMoneyFromCents } from "@/lib/dashboard/format-money";
@@ -17,7 +16,6 @@ import {
 import { getProductImageUrl } from "@/lib/dashboard/product-images";
 import { DashboardProductThumb } from "@/components/dashboard/ui/dashboard-product-thumb";
 import { DashboardTableRowActions } from "@/components/dashboard/ui/dashboard-table-row-actions";
-import { PodShellModal } from "@/components/dashboard/pod-shell-modal";
 import { usePaginatedRows } from "@/hooks/use-paginated-rows";
 
 export type ExplorerProductAccessory = {
@@ -25,6 +23,13 @@ export type ExplorerProductAccessory = {
   name: string;
   imageUrl: string | null;
   priceCents: number;
+  sortOrder: number;
+};
+
+export type ExplorerProductImage = {
+  id: string;
+  url: string;
+  label: string | null;
   sortOrder: number;
 };
 
@@ -39,8 +44,12 @@ export type ExplorerProduct = {
   currency: string;
   stock: number;
   published: boolean;
+  familyId: string | null;
+  variantLabel: string | null;
+  familyName: string | null;
   createdAt: string;
   updatedAt: string;
+  images: ExplorerProductImage[];
   accessories: ExplorerProductAccessory[];
 };
 
@@ -69,9 +78,9 @@ function stockVariant(stock: number): StockBadgeVariant {
 }
 
 function stockLabel(stock: number): string {
-  if (stock === 0) return `Out of Stock (${stock})`;
-  if (stock <= LOW_STOCK_THRESHOLD) return `Low Inventory (${stock})`;
-  return `In Stock (${stock})`;
+  if (stock === 0) return `Out (${stock})`;
+  if (stock <= LOW_STOCK_THRESHOLD) return `Low (${stock})`;
+  return `In (${stock})`;
 }
 
 const stockBadgeStyles: Record<
@@ -98,13 +107,14 @@ function StockBadge({ stock }: { stock: number }) {
   const styles = stockBadgeStyles[variant];
   return (
     <span
-      className={`inline-flex items-center rounded-sm border px-2.5 py-1 font-[family-name:var(--font-jetbrains)] text-[10px] font-bold uppercase tracking-wide ${styles.wrap}`}
+      className={`inline-flex max-w-full items-center rounded-sm border px-1.5 py-0.5 font-[family-name:var(--font-jetbrains)] text-[9px] font-bold uppercase tracking-wide ${styles.wrap}`}
+      title={stockLabel(stock)}
     >
       <span
-        className={`mr-2 h-1.5 w-1.5 rounded-full ${styles.dot} ${styles.pulse ? "animate-pulse" : ""}`}
+        className={`mr-1 h-1.5 w-1.5 shrink-0 rounded-full ${styles.dot} ${styles.pulse ? "animate-pulse" : ""}`}
         aria-hidden
       />
-      {stockLabel(stock)}
+      <span className="truncate">{stockLabel(stock)}</span>
     </span>
   );
 }
@@ -225,8 +235,8 @@ function SelectField({
 }
 
 const thClass =
-  "px-5 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-slate-500";
-const tdClass = "px-5 py-6 align-middle";
+  "px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500";
+const tdClass = "px-3 py-3 align-middle";
 
 export function DashboardProductsExplorer({
   products,
@@ -246,7 +256,6 @@ export function DashboardProductsExplorer({
   const [pending, setPending] = useState<FilterState>(defaultFilters);
   const [applied, setApplied] = useState<FilterState>(defaultFilters);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [viewProduct, setViewProduct] = useState<ExplorerProduct | null>(null);
   const tableAnchorRef = useRef<HTMLDivElement>(null);
 
   const counts = useMemo(
@@ -445,11 +454,21 @@ export function DashboardProductsExplorer({
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[1080px] border-collapse text-left text-sm">
+      <div>
+        <table className="w-full table-fixed border-collapse text-left text-sm">
+          <colgroup>
+            <col className="w-9" />
+            <col />
+            <col className="w-[11%]" />
+            <col className="w-[17%]" />
+            <col className="w-[12%]" />
+            <col className="w-[10%]" />
+            <col className="w-[11%]" />
+            <col className="w-[76px]" />
+          </colgroup>
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50">
-              <th className={`${thClass} w-10 text-center`}>
+              <th className={`${thClass} text-center`}>
                 <input
                   type="checkbox"
                   checked={allOnPageSelected}
@@ -458,26 +477,20 @@ export function DashboardProductsExplorer({
                   className="rounded-sm border-slate-300 text-[var(--dash-teal)] focus:ring-[var(--dash-teal)]"
                 />
               </th>
-              <th className={`${thClass} w-12`}>
-                <ImageIcon size={14} className="text-slate-400" aria-hidden />
-              </th>
-              <th className={thClass}>Product Name</th>
-              <th className={thClass}>Purchase Price</th>
+              <th className={thClass}>Product</th>
               <th className={thClass}>Stock</th>
-              <th className={thClass}>Price</th>
-              <th className={thClass}>Category</th>
-              <th className={thClass}>Type</th>
+              <th className={thClass}>Pricing</th>
               <th className={thClass}>Profit</th>
               <th className={thClass}>Live</th>
-              <th className={thClass}>Date</th>
-              <th className={`${thClass} text-center`}>Actions</th>
+              <th className={thClass}>Updated</th>
+              <th className={`${thClass} text-right`}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {slice.length === 0 ? (
               <tr>
                 <td
-                  colSpan={12}
+                  colSpan={8}
                   className="px-6 py-16 text-center text-sm text-slate-500"
                 >
                   No products match these filters.
@@ -487,6 +500,9 @@ export function DashboardProductsExplorer({
               slice.map((p) => {
                 const profit = productProfit(p);
                 const imageUrl = getProductImageUrl(p.slug, p.category);
+                const categoryLabel = (p.category ?? "").trim() || "—";
+                const retail = formatMoneyFromCents(p.priceCents, p.currency);
+                const cost = purchasePriceDisplay(p);
                 return (
                   <tr
                     key={p.id}
@@ -508,48 +524,65 @@ export function DashboardProductsExplorer({
                         className="rounded-sm border-slate-300 text-[var(--dash-teal)] focus:ring-[var(--dash-teal)]"
                       />
                     </td>
-                    <td className={tdClass}>
-                      <DashboardProductThumb
-                        src={imageUrl}
-                        alt={p.name}
-                        size="sm"
-                      />
-                    </td>
-                    <td className={`${tdClass} max-w-[12rem]`}>
-                      <div className="flex flex-col">
-                        <span className="truncate text-xs font-bold uppercase tracking-tight text-slate-900">
-                          {p.name}
-                        </span>
-                        <span className="truncate text-[10px] text-slate-400">
-                          {p.slug}
-                        </span>
+                    <td className={`${tdClass} !py-2.5`}>
+                      <div className="flex min-w-0 items-start gap-1">
+                        <DashboardProductThumb
+                          src={imageUrl}
+                          alt={p.name}
+                          size="xs"
+                          className="mt-0.5"
+                        />
+                        <div className="min-w-0 flex-1 leading-tight">
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/dashboard/products/${p.id}`)}
+                            className="truncate text-left text-xs font-bold uppercase tracking-tight text-slate-900 transition hover:text-[var(--dash-teal)]"
+                            title={p.name}
+                          >
+                            {p.name}
+                          </button>
+                          <p
+                            className="truncate font-mono text-[10px] leading-snug text-slate-400"
+                            title={p.slug}
+                          >
+                            {p.slug}
+                          </p>
+                          <p className="truncate text-[10px] leading-snug text-slate-500">
+                            {categoryLabel} · Simple
+                          </p>
+                        </div>
                       </div>
-                    </td>
-                    <td className={`${tdClass} font-[family-name:var(--font-jetbrains)] text-[11px] text-slate-500`}>
-                      {purchasePriceDisplay(p)}
                     </td>
                     <td className={tdClass}>
                       <StockBadge stock={p.stock} />
                     </td>
-                    <td className={`${tdClass} font-bold text-slate-900`}>
-                      {formatMoneyFromCents(p.priceCents, p.currency)}
+                    <td className={tdClass}>
+                      <div className="min-w-0">
+                        <p
+                          className="truncate text-xs font-bold text-slate-900"
+                          title={retail}
+                        >
+                          {retail}
+                        </p>
+                        <p
+                          className="truncate font-[family-name:var(--font-jetbrains)] text-[10px] text-slate-500"
+                          title={cost}
+                        >
+                          Cost {cost}
+                        </p>
+                      </div>
                     </td>
                     <td className={tdClass}>
-                      {(p.category ?? "").trim() ? (
-                        <span className="cursor-pointer font-semibold text-brand hover:underline">
-                          {(p.category ?? "").trim()}
-                        </span>
-                      ) : (
-                        <span className="text-slate-400">—</span>
-                      )}
-                    </td>
-                    <td className={`${tdClass} text-slate-500`}>Simple</td>
-                    <td className={`${tdClass} text-sm ${profit.className}`}>
-                      {profit.label}
+                      <span
+                        className={`block truncate text-xs ${profit.className}`}
+                        title={profit.label}
+                      >
+                        {profit.label}
+                      </span>
                     </td>
                     <td className={tdClass}>
                       <label className="inline-flex cursor-pointer items-center">
-                        <span className="relative inline-flex h-6 w-11 shrink-0">
+                        <span className="relative inline-flex h-5 w-9 shrink-0">
                           <input
                             type="checkbox"
                             checked={p.published}
@@ -562,11 +595,11 @@ export function DashboardProductsExplorer({
                                 : `Activate ${p.name}`
                             }
                           />
-                          <span className="h-6 w-11 rounded-full bg-slate-200 transition-colors peer-checked:bg-emerald-500 peer-disabled:opacity-50" />
-                          <span className="pointer-events-none absolute left-[2px] top-[2px] h-5 w-5 rounded-full border border-slate-300 bg-white transition-transform peer-checked:translate-x-5" />
+                          <span className="h-5 w-9 rounded-full bg-slate-200 transition-colors peer-checked:bg-emerald-500 peer-disabled:opacity-50" />
+                          <span className="pointer-events-none absolute left-[2px] top-[2px] h-4 w-4 rounded-full border border-slate-300 bg-white transition-transform peer-checked:translate-x-4" />
                         </span>
                         <span
-                          className={`ml-3 text-[10px] font-bold uppercase ${
+                          className={`ml-1.5 hidden text-[9px] font-bold uppercase sm:inline ${
                             p.published ? "text-emerald-600" : "text-slate-400"
                           }`}
                         >
@@ -575,20 +608,24 @@ export function DashboardProductsExplorer({
                       </label>
                     </td>
                     <td className={tdClass}>
-                      <div className="text-[10px]">
-                        <p className="text-slate-400">Last Modified</p>
-                        <p className="font-bold text-brand">
-                          {formatModified(p.updatedAt)}
-                        </p>
-                      </div>
+                      <time
+                        className="block truncate text-[10px] font-semibold text-brand"
+                        dateTime={p.updatedAt}
+                        title={formatModified(p.updatedAt)}
+                      >
+                        {formatModified(p.updatedAt)}
+                      </time>
                     </td>
-                    <td className={tdClass}>
-                      <DashboardTableRowActions
+                    <td className={`${tdClass} text-right`}>
+                      <div className="flex justify-end">
+                        <DashboardTableRowActions
+                          variant="segmented"
                         disabled={pendingId === p.id}
-                        onView={() => setViewProduct(p)}
+                        onView={() => router.push(`/dashboard/products/${p.id}`)}
                         onEdit={() => onEdit(p)}
                         onDelete={() => deleteProduct(p)}
-                      />
+                        />
+                      </div>
                     </td>
                   </tr>
                 );
@@ -605,112 +642,6 @@ export function DashboardProductsExplorer({
         pageSize={pageSize}
         onPage={setPage}
       />
-
-      <PodShellModal
-        isOpen={Boolean(viewProduct)}
-        title="Product details"
-        onClose={() => setViewProduct(null)}
-        footer={
-          <div className="flex w-full gap-2">
-            <button
-              type="button"
-              onClick={() => setViewProduct(null)}
-              className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium"
-            >
-              Close
-            </button>
-            {viewProduct ? (
-              <button
-                type="button"
-                onClick={() => {
-                  onEdit(viewProduct);
-                  setViewProduct(null);
-                }}
-                className="flex-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-ink"
-              >
-                Edit product
-              </button>
-            ) : null}
-          </div>
-        }
-      >
-        {viewProduct ? (
-          <dl className="space-y-3 text-sm">
-            <div>
-              <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                Name
-              </dt>
-              <dd className="mt-1 font-medium text-ink">{viewProduct.name}</dd>
-              <dd className="font-mono text-xs text-muted-foreground">
-                {viewProduct.slug}
-              </dd>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                  Category
-                </dt>
-                <dd className="mt-1">{viewProduct.category ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                  Status
-                </dt>
-                <dd className="mt-1">{viewProduct.published ? "Live" : "Draft"}</dd>
-              </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div>
-                <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                  Stock
-                </dt>
-                <dd className="mt-1 tabular-nums">{viewProduct.stock}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                  Retail
-                </dt>
-                <dd className="mt-1 tabular-nums">
-                  {formatMoneyFromCents(viewProduct.priceCents, viewProduct.currency)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                  Cost
-                </dt>
-                <dd className="mt-1 tabular-nums">
-                  {purchasePriceDisplay(viewProduct)}
-                </dd>
-              </div>
-            </div>
-            {viewProduct.description ? (
-              <div>
-                <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                  Description
-                </dt>
-                <dd className="mt-1 text-muted-foreground">{viewProduct.description}</dd>
-              </div>
-            ) : null}
-            {viewProduct.accessories.length > 0 ? (
-              <div>
-                <dt className="text-xs font-semibold uppercase text-muted-foreground">
-                  Accessories
-                </dt>
-                <dd className="mt-1">
-                  <ul className="space-y-1 text-muted-foreground">
-                    {viewProduct.accessories.map((a) => (
-                      <li key={a.id}>
-                        {a.name} —{" "}
-                        {formatMoneyFromCents(a.priceCents, viewProduct.currency)}
-                      </li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-            ) : null}
-          </dl>
-        ) : null}
-      </PodShellModal>
     </div>
   );
 }

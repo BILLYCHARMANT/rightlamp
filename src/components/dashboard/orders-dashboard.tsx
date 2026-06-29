@@ -8,30 +8,28 @@ import type { StaffOrderFormContext } from "@/lib/dashboard/order-branches";
 import type { OrderableProduct } from "@/lib/dashboard/order-types";
 import type { OrdersOverviewPayload } from "@/lib/dashboard/orders-overview";
 import {
-  filterOrdersByPeriod,
-  currentMonthDateBounds,
-  formatCalendarDateLabel,
-  MONTH_SCOPED_ORDER_PERIOD_OPTIONS,
-} from "@/lib/dashboard/orders-period";
-import type { OrderPeriodFilter } from "@/lib/dashboard/orders-period";
-import {
   updateOrderProgress,
   cancelOrder,
   type OrderProgressField,
 } from "@/lib/dashboard/order-actions";
 import { OrderDetailModal } from "@/components/dashboard/orders/order-detail-modal";
+import { OrderRequestDocumentModal } from "@/components/dashboard/orders/order-request-document-modal";
+import { OrderRequestDocumentsCards } from "@/components/dashboard/orders/order-request-documents-cards";
+import { OrderRequestDocumentsPanel } from "@/components/dashboard/orders/order-request-documents-panel";
+import { OrdersCards } from "@/components/dashboard/orders/orders-cards";
 import { OrdersManagementBar } from "@/components/dashboard/orders/orders-management-bar";
-import { OrdersPeriodFilters } from "@/components/dashboard/orders/orders-period-filters";
 import { OrdersSummaryStrip } from "@/components/dashboard/orders/orders-summary-strip";
 import { OrdersTable } from "@/components/dashboard/orders/orders-table";
 import { OrdersTabs } from "@/components/dashboard/orders/orders-tabs";
 import { StaffOrderFormModal } from "@/components/dashboard/orders/staff-order-form-modal";
+import { OrdersViewToggle } from "@/components/dashboard/orders/orders-view-toggle";
 import {
   computeOrdersPeriodSummary,
   downloadOrdersCsv,
   filterOrders,
   ordersToCsv,
   type OrderTabFilter,
+  type OrderViewMode,
 } from "@/components/dashboard/orders/orders-utils";
 import { DashboardEcomCard } from "@/components/dashboard/ui/dashboard-ecom";
 import { DashboardTablePagination } from "@/components/dashboard/ui/dashboard-table-pagination";
@@ -45,14 +43,12 @@ type Props = {
 
 export function OrdersDashboard({ data, orderableProducts, orderFormContext }: Props) {
   const router = useRouter();
-  const monthBounds = currentMonthDateBounds();
-  const periodOptions = MONTH_SCOPED_ORDER_PERIOD_OPTIONS;
   const [orders, setOrders] = useState<OrderRow[]>(data.orders);
   const [tab, setTab] = useState<OrderTabFilter>("active");
-  const [period, setPeriod] = useState<OrderPeriodFilter>("month");
-  const [customDate, setCustomDate] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<OrderViewMode>("table");
   const [query, setQuery] = useState("");
   const [detail, setDetail] = useState<OrderRow | null>(null);
+  const [requestDoc, setRequestDoc] = useState<OrderRow | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [pendingProgress, setPendingProgress] = useState<string | null>(null);
@@ -61,25 +57,17 @@ export function OrdersDashboard({ data, orderableProducts, orderFormContext }: P
   const tableAnchorRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(
-    () => filterOrders(orders, tab, query, period, customDate),
-    [orders, tab, query, period, customDate],
+    () => filterOrders(orders, tab, query, "month", null),
+    [orders, tab, query],
   );
 
   const { slice, pages, page: safePage, setPage, pageSize } =
     usePaginatedRows(filtered, tableAnchorRef);
 
-  const periodSummary = useMemo(() => {
-    const periodOrders = filterOrdersByPeriod(orders, period, customDate);
-    return computeOrdersPeriodSummary(periodOrders);
-  }, [orders, period, customDate]);
-
-  const periodLabel = useMemo(() => {
-    if (customDate) return formatCalendarDateLabel(customDate);
-    if (period === "month") return "This month";
-    return (
-      periodOptions.find((o) => o.id === period)?.label ?? "This month"
-    );
-  }, [period, customDate, periodOptions]);
+  const periodSummary = useMemo(
+    () => computeOrdersPeriodSummary(orders),
+    [orders],
+  );
 
   function patchOrder(updated: OrderRow) {
     setOrders((prev) =>
@@ -156,6 +144,8 @@ export function OrdersDashboard({ data, orderableProducts, orderFormContext }: P
     downloadOrdersCsv(`pv-grid-orders-${stamp}.csv`, ordersToCsv(filtered));
   };
 
+  const isRequestTab = tab === "order_requests";
+
   return (
     <div className="space-y-5">
       <OrdersManagementBar
@@ -164,8 +154,8 @@ export function OrdersDashboard({ data, orderableProducts, orderFormContext }: P
       />
 
       <DashboardEcomCard className="overflow-hidden">
-        <div className="flex flex-col gap-4 border-b border-slate-200 p-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:gap-4">
+        <div className="flex flex-col gap-3 border-b border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0 flex-1">
             <OrdersTabs
               tab={tab}
               onChange={(next) => {
@@ -173,61 +163,79 @@ export function OrdersDashboard({ data, orderableProducts, orderFormContext }: P
                 resetPage();
               }}
             />
-            <OrdersPeriodFilters
-              period={period}
-              customDate={customDate}
-              periodOptions={periodOptions}
-              dateMin={monthBounds.min}
-              dateMax={monthBounds.max}
-              monthOnly
-              onPeriodChange={(next) => {
-                setPeriod(next);
-                resetPage();
-              }}
-              onCustomDateChange={(date) => {
-                setCustomDate(date);
-                resetPage();
-              }}
-            />
           </div>
 
-          <label className="relative w-full shrink-0 lg:w-64">
-            <Search
-              size={16}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              aria-hidden
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                resetPage();
-              }}
-              placeholder="Search orders..."
-              className="w-full rounded-sm border border-slate-200 py-1.5 pl-9 pr-3 text-xs text-ink placeholder:text-muted-foreground focus:border-[var(--dash-teal)] focus:outline-none focus:ring-1 focus:ring-[var(--dash-teal)] sm:text-sm"
-            />
-          </label>
+          <div className="flex shrink-0 items-center gap-2">
+            <OrdersViewToggle view={viewMode} onChange={setViewMode} />
+            <label className="relative w-full sm:w-52">
+              <Search
+                size={16}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  resetPage();
+                }}
+                placeholder="Search orders..."
+                className="w-full rounded-sm border border-slate-200 py-1.5 pl-9 pr-3 text-xs text-ink placeholder:text-muted-foreground focus:border-[var(--dash-teal)] focus:outline-none focus:ring-1 focus:ring-[var(--dash-teal)] sm:text-sm"
+              />
+            </label>
+          </div>
         </div>
 
         <OrdersSummaryStrip
           summary={periodSummary}
-          periodLabel={periodLabel}
+          periodLabel="This month"
         />
 
-        <div ref={tableAnchorRef} className="overflow-x-auto">
-          <OrdersTable
-            rows={slice}
-            selected={selected}
-            pendingProgress={pendingProgress}
-            pendingCancel={pendingCancel}
-            onToggle={toggleSelect}
-            onToggleAll={toggleSelectAll}
-            onView={setDetail}
-            onEdit={setDetail}
-            onCancel={handleCancel}
-            onProgressChange={handleProgressChange}
-          />
+        <div
+          ref={tableAnchorRef}
+          className={viewMode === "table" ? "overflow-x-hidden" : undefined}
+        >
+          {isRequestTab ? (
+            viewMode === "cards" ? (
+              <OrderRequestDocumentsCards
+                rows={slice}
+                onViewDocument={setRequestDoc}
+                onViewOrder={setDetail}
+              />
+            ) : (
+              <OrderRequestDocumentsPanel
+                rows={slice}
+                onViewDocument={setRequestDoc}
+                onViewOrder={setDetail}
+              />
+            )
+          ) : viewMode === "cards" ? (
+            <OrdersCards
+              rows={slice}
+              selected={selected}
+              pendingProgress={pendingProgress}
+              pendingCancel={pendingCancel}
+              onToggle={toggleSelect}
+              onView={setDetail}
+              onEdit={setDetail}
+              onCancel={handleCancel}
+              onProgressChange={handleProgressChange}
+            />
+          ) : (
+            <OrdersTable
+              rows={slice}
+              selected={selected}
+              pendingProgress={pendingProgress}
+              pendingCancel={pendingCancel}
+              onToggle={toggleSelect}
+              onToggleAll={toggleSelectAll}
+              onView={setDetail}
+              onEdit={setDetail}
+              onCancel={handleCancel}
+              onProgressChange={handleProgressChange}
+            />
+          )}
         </div>
 
         <DashboardTablePagination
@@ -244,8 +252,21 @@ export function OrdersDashboard({ data, orderableProducts, orderFormContext }: P
       <OrderDetailModal
         order={detail}
         onClose={() => setDetail(null)}
+        onViewRequestDocument={
+          detail?.requestDetails
+            ? () => {
+                setRequestDoc(detail);
+                setDetail(null);
+              }
+            : undefined
+        }
         onProgressChange={handleProgressChange}
         progressDisabled={detail ? pendingProgress === detail.id : false}
+      />
+
+      <OrderRequestDocumentModal
+        order={requestDoc}
+        onClose={() => setRequestDoc(null)}
       />
 
       <StaffOrderFormModal

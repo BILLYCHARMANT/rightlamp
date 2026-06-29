@@ -41,3 +41,13 @@ export function getProductImageUrl(
 
   return BRAND_LOGO;
 }
+
+export function resolveProductImageUrl(
+  images: { url: string }[] | undefined,
+  slug: string,
+  category?: string | null,
+): string {
+  const stored = images?.find((image) => image.url.trim())?.url.trim();
+  if (stored) return stored;
+  return getProductImageUrl(slug, category);
+}

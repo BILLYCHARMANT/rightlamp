@@ -1,16 +1,28 @@
 "use client";
 
-import Image from "next/image";
+import { DashboardMediaImage } from "@/components/dashboard/dashboard-media-image";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { UploadCloud, Plus, Trash2 } from "lucide-react";
 import { DEFAULT_CURRENCY } from "@/lib/dashboard/constants";
 import type { ExplorerProduct } from "@/components/dashboard/dashboard-products-explorer";
 import {
   createDashboardProduct,
+  createDashboardProductVersion,
   updateDashboardProduct,
   type ProductAccessoryInput,
 } from "@/lib/dashboard/product-actions";
+import {
+  buildProductImagePayload,
+  DashboardProductGalleryFields,
+  galleryStateFromProductImages,
+  type GalleryViewDraft,
+} from "@/components/dashboard/dashboard-product-gallery-fields";
+import { normalizeAccessoryImageUrl } from "@/lib/dashboard/product-media";
+import {
+  extractCapacityLabel,
+  variantFamilyTitle,
+} from "@/lib/store/product-variants";
 import { PodShellModal } from "@/components/dashboard/pod-shell-modal";
 
 export type ProductCategoryOption = {
@@ -34,13 +46,21 @@ function emptyAccessory(): AccessoryDraft {
   };
 }
 
+type VersionContext = {
+  familyId: string;
+  familyName: string;
+  currency: string;
+  description?: string | null;
+};
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   categories: ProductCategoryOption[];
   product?: ExplorerProduct | null;
   /** Stock hub uses warehouse-focused labels and defaults. */
-  mode?: "product" | "stock";
+  mode?: "product" | "stock" | "version";
+  versionContext?: VersionContext;
 };
 
 export function DashboardProductFormModal(props: Props) {
@@ -59,17 +79,27 @@ function DashboardProductFormModalInner({
   categories,
   product = null,
   mode = "product",
+  versionContext,
 }: Props) {
   const isStock = mode === "stock";
-  const isEdit = Boolean(product);
+  const isVersion = mode === "version";
+  const isEdit = Boolean(product) && !isVersion;
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const [name, setName] = useState(() => product?.name ?? "");
+  const [familyName, setFamilyName] = useState(
+    () => product?.familyName ?? "",
+  );
+  const [variantLabel, setVariantLabel] = useState(
+    () => product?.variantLabel ?? "",
+  );
   const [slug, setSlug] = useState(() => product?.slug ?? "");
   const [category, setCategory] = useState(() => product?.category ?? "");
-  const [description, setDescription] = useState(() => product?.description ?? "");
+  const [description, setDescription] = useState(
+    () => product?.description ?? versionContext?.description ?? "",
+  );
   const [priceMajor, setPriceMajor] = useState(() =>
     product ? (product.priceCents / 100).toFixed(2) : "",
   );
@@ -79,7 +109,7 @@ function DashboardProductFormModalInner({
       : "",
   );
   const [currency, setCurrency] = useState(
-    () => product?.currency || DEFAULT_CURRENCY,
+    () => product?.currency || versionContext?.currency || DEFAULT_CURRENCY,
   );
   const [stock, setStock] = useState(() => String(product?.stock ?? 0));
   const [published, setPublished] = useState(() => product?.published ?? false);
@@ -95,19 +125,16 @@ function DashboardProductFormModalInner({
       : [],
   );
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadedPreview, setUploadedPreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setUploadedPreview(reader.result as string);
-      reader.readAsDataURL(file);
-    }
-  };
+  const initialGallery = galleryStateFromProductImages(product?.images ?? []);
+  const [primaryImageUrl, setPrimaryImageUrl] = useState(
+    () => initialGallery.primaryImageUrl,
+  );
+  const [primaryPreviewUrl, setPrimaryPreviewUrl] = useState<string | null>(
+    null,
+  );
+  const [galleryViews, setGalleryViews] = useState<GalleryViewDraft[]>(
+    () => initialGallery.views,
+  );
 
   const onFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +150,14 @@ function DashboardProductFormModalInner({
     }
     if (isStock && categories.length === 0) {
       setError("Create a category first.");
+      return;
+    }
+    if (isVersion && !variantLabel.trim()) {
+      setError("Enter a version label (e.g. 50W, 120cm).");
+      return;
+    }
+    if (isVersion && !versionContext?.familyId) {
+      setError("Product family is missing.");
       return;
     }
     const costParsed = costMajor.trim()
@@ -160,12 +195,45 @@ function DashboardProductFormModalInner({
 
       accessoryPayload.push({
         name: accessoryName,
-        imageUrl: row.imageUrl.trim() || null,
+        imageUrl: normalizeAccessoryImageUrl(row.imageUrl),
         priceCents: Math.round((accessoryPriceParsed || 0) * 100),
       });
     }
 
+    const imagePayload = buildProductImagePayload(
+      primaryImageUrl,
+      galleryViews,
+      primaryPreviewUrl,
+    );
+
     startTransition(async () => {
+      try {
+      if (isVersion && versionContext) {
+        const result = await createDashboardProductVersion({
+          familyId: versionContext.familyId,
+          variantLabel: variantLabel.trim(),
+          priceCents,
+          costPriceCents,
+          currency,
+          stock: stockQty,
+          published,
+          description: description.trim() || versionContext.description || null,
+          accessories: accessoryPayload,
+          images: imagePayload,
+        });
+        if (!result.ok) {
+          setError(result.message);
+          return;
+        }
+        onClose();
+        if (result.id) {
+          router.push(`/dashboard/products/${result.id}`);
+        } else {
+          router.refresh();
+        }
+        return;
+      }
+
       const payload = {
         name,
         slug: slug.trim() || undefined,
@@ -178,23 +246,54 @@ function DashboardProductFormModalInner({
         published: isStock ? false : published,
         accessories: accessoryPayload,
         categoryRequired: isStock,
+        familyName: familyName.trim() || undefined,
+        variantLabel: variantLabel.trim() || undefined,
+        variantLabelOnUpdate: variantLabel.trim() || undefined,
+        images: imagePayload,
       };
 
       const res = isEdit
-        ? await updateDashboardProduct({ id: product!.id, ...payload })
+        ? await updateDashboardProduct({
+            id: product!.id,
+            name: payload.name,
+            slug: payload.slug,
+            category: payload.category,
+            description: payload.description,
+            priceCents: payload.priceCents,
+            costPriceCents: payload.costPriceCents,
+            currency: payload.currency,
+            stock: payload.stock,
+            published: payload.published,
+            accessories: payload.accessories,
+            categoryRequired: payload.categoryRequired,
+            variantLabel: payload.variantLabelOnUpdate,
+            images: payload.images,
+          })
         : await createDashboardProduct(payload);
 
       if (!res.ok) {
         setError(res.message);
         return;
       }
-      void selectedFile;
       onClose();
+      if (!isEdit && !isStock && res.id) {
+        router.push(`/dashboard/products/${res.id}`);
+        return;
+      }
       router.refresh();
+      } catch (cause) {
+        const msg =
+          cause instanceof Error
+            ? cause.message
+            : "Could not save the product. Please try again.";
+        setError(msg);
+      }
     });
   };
 
-  const modalTitle = isEdit
+  const modalTitle = isVersion
+    ? "Add product version"
+    : isEdit
     ? isStock
       ? "Edit item"
       : "Edit Product"
@@ -204,6 +303,8 @@ function DashboardProductFormModalInner({
 
   const submitLabel = pending
     ? "Saving…"
+    : isVersion
+      ? "Create version"
     : isEdit
       ? "Save Changes"
       : isStock
@@ -215,8 +316,18 @@ function DashboardProductFormModalInner({
       isOpen
       title={modalTitle}
       onClose={() => !pending && onClose()}
+      maxWidthClass={isVersion ? "max-w-2xl" : "max-w-2xl"}
       footer={
-        <>
+        <div className="flex w-full flex-col gap-3">
+          {error ? (
+            <p
+              className="rounded-xl border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger"
+              role="alert"
+            >
+              {error}
+            </p>
+          ) : null}
+          <div className="flex gap-3">
           <button
             type="button"
             disabled={pending}
@@ -233,7 +344,8 @@ function DashboardProductFormModalInner({
           >
             {submitLabel}
           </button>
-        </>
+          </div>
+        </div>
       }
     >
       <form
@@ -250,57 +362,25 @@ function DashboardProductFormModalInner({
           </p>
         ) : null}
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-ink">
-            Product image
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            ref={fileInputRef}
-            className="sr-only"
-          />
-          <div className="flex items-stretch gap-4">
-            {uploadedPreview ? (
-              <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl border border-border bg-surface">
-                <Image
-                  src={uploadedPreview}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-            ) : null}
-            <div
-              role="button"
-              tabIndex={0}
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter" || ev.key === " ") {
-                  ev.preventDefault();
-                  fileInputRef.current?.click();
-                }
-              }}
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(ev) => ev.preventDefault()}
-              className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-surface/80 transition-colors hover:bg-surface ${
-                !uploadedPreview ? "min-h-[7rem]" : ""
-              }`}
-            >
-              <UploadCloud className="h-6 w-6 text-muted-foreground" aria-hidden />
-              <p className="px-4 text-center text-sm text-ink">
-                Drag and drop or{" "}
-                <span className="font-medium text-brand">browse</span>
-              </p>
-              <p className="px-4 text-center text-xs text-muted-foreground">
-                Image preview only — storefront media upload can be wired later.
-              </p>
-            </div>
-          </div>
-        </div>
+        {isVersion && versionContext ? (
+          <p className="rounded-xl border border-border bg-surface/80 px-4 py-3 text-sm text-muted-foreground">
+            New capacity/size under{" "}
+            <strong className="text-ink">{versionContext.familyName}</strong>.
+            Each version can have its own images and accessories.
+          </p>
+        ) : null}
+
+        <DashboardProductGalleryFields
+          primaryImageUrl={primaryImageUrl}
+          onPrimaryImageUrlChange={setPrimaryImageUrl}
+          primaryPreviewUrl={primaryPreviewUrl}
+          onPrimaryPreviewChange={setPrimaryPreviewUrl}
+          views={galleryViews}
+          onViewsChange={setGalleryViews}
+        />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {!isVersion ? (
           <div className="sm:col-span-2">
             <label className="text-sm font-semibold text-ink">
               {isStock ? "Item name" : "Product name"}
@@ -308,11 +388,67 @@ function DashboardProductFormModalInner({
             <input
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                const next = e.target.value;
+                setName(next);
+                if (!isEdit && !familyName.trim()) {
+                  setFamilyName(variantFamilyTitle(next));
+                }
+                if (!variantLabel.trim()) {
+                  setVariantLabel(extractCapacityLabel(next));
+                }
+              }}
               placeholder="Enter product name"
               className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
             />
           </div>
+          ) : (
+            <div className="sm:col-span-2">
+              <label className="text-sm font-semibold text-ink">
+                Version label (capacity / size)
+              </label>
+              <input
+                required
+                value={variantLabel}
+                onChange={(e) => setVariantLabel(e.target.value)}
+                placeholder="e.g. 100W, 2.1 Quarts"
+                className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+            </div>
+          )}
+          {!isStock && !isVersion ? (
+            <>
+              <div>
+                <label className="text-sm font-semibold text-ink">
+                  Product line / family
+                </label>
+                <input
+                  value={familyName}
+                  onChange={(e) => setFamilyName(e.target.value)}
+                  disabled={isEdit}
+                  placeholder="e.g. Outdoor Flood LED"
+                  className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:bg-slate-50 disabled:text-slate-500"
+                />
+                {isEdit ? (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Add more sizes from the product detail page.
+                  </p>
+                ) : null}
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-ink">
+                  Version label (capacity / size)
+                </label>
+                <input
+                  value={variantLabel}
+                  onChange={(e) => setVariantLabel(e.target.value)}
+                  placeholder="e.g. 50W, 120cm"
+                  className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                />
+              </div>
+            </>
+          ) : null}
+          {!isVersion ? (
           <div>
             <label className="text-sm font-semibold text-ink">URL slug</label>
             <input
@@ -322,6 +458,8 @@ function DashboardProductFormModalInner({
               className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2.5 font-mono text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
             />
           </div>
+          ) : null}
+          {!isVersion ? (
           <div>
             <label className="text-sm font-semibold text-ink">Category</label>
             <select
@@ -342,6 +480,7 @@ function DashboardProductFormModalInner({
               ))}
             </select>
           </div>
+          ) : null}
         </div>
 
         <div>
@@ -417,7 +556,7 @@ function DashboardProductFormModalInner({
               <p className="text-sm font-semibold text-ink">Related accessories</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Bulbs, dimmers, mounts, and other items buyers can add when ordering
-                this product.
+                this product. Upload an image or paste an HTTPS URL.
               </p>
             </div>
             <button
@@ -464,13 +603,7 @@ function DashboardProductFormModalInner({
                   <div className="grid gap-3 sm:grid-cols-[4.5rem_1fr]">
                     <label className="relative block h-[4.5rem] w-[4.5rem] cursor-pointer overflow-hidden rounded-md border border-dashed border-border bg-muted/20 transition hover:border-brand/40">
                       {row.imageUrl ? (
-                        <Image
-                          src={row.imageUrl}
-                          alt=""
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
+                        <DashboardMediaImage src={row.imageUrl} alt="" fill />
                       ) : (
                         <span className="flex h-full w-full flex-col items-center justify-center gap-1 text-[10px] text-muted-foreground">
                           <UploadCloud size={16} aria-hidden />

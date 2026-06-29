@@ -136,6 +136,7 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
 /** Prefer longest href prefix match so nested routes resolve correctly */
 export function getDashboardTitle(path: string): string {
   if (path.startsWith("/dashboard/reports")) return "Reports";
+  if (path.match(/^\/dashboard\/products\/[^/]+$/)) return "Product details";
   if (path.startsWith("/dashboard/my-shops/")) return "Shop details";
   if (path.startsWith("/dashboard/my-shops")) return "My Shops";
 

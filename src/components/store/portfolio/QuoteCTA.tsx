@@ -63,6 +63,9 @@ export function QuoteCTA() {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <PrimaryButton href="/request-order" size="lg">
+            Request an order
+          </PrimaryButton>
           <PrimaryButton href="/contact" size="lg">
             Get a quote
           </PrimaryButton>

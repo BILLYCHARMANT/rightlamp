@@ -23,7 +23,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 /** Bump when Prisma schema changes so dev hot-reload gets a fresh client. */
-const PRISMA_SCHEMA_KEY = "2026-06-22-staff-roles";
+const PRISMA_SCHEMA_KEY = "2026-06-26-product-images";
 
 function isStalePrismaClient(client: PrismaClient): boolean {
   const orderDelegate = (client as PrismaClient & { order?: { findMany?: unknown } })
@@ -44,6 +44,16 @@ function isStalePrismaClient(client: PrismaClient): boolean {
     client as PrismaClient & { branch?: { findMany?: unknown } }
   ).branch;
   if (typeof branchDelegate?.findMany !== "function") return true;
+
+  const familyDelegate = (
+    client as PrismaClient & { productFamily?: { findMany?: unknown } }
+  ).productFamily;
+  if (typeof familyDelegate?.findMany !== "function") return true;
+
+  const productImageDelegate = (
+    client as PrismaClient & { productImage?: { findMany?: unknown } }
+  ).productImage;
+  if (typeof productImageDelegate?.findMany !== "function") return true;
 
   const marker = (client as PrismaClient & { __rightlampSchemaKey?: string })
     .__rightlampSchemaKey;

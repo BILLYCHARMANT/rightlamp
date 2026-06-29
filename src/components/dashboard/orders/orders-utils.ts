@@ -1,4 +1,5 @@
 import type { OrderRow, OrderStatus } from "@/lib/dashboard/order-types";
+import { orderHasRequestDocument } from "@/lib/orders/order-request-details";
 import { DEFAULT_CURRENCY } from "@/lib/dashboard/constants";
 import { formatMoneyFromCents } from "@/lib/dashboard/format-money";
 import {
@@ -8,19 +9,17 @@ import {
 
 export type OrderStatusFilter = OrderStatus | "ALL";
 
+export type OrderViewMode = "table" | "cards";
+
 export type OrderTabFilter =
   | "active"
   | "all"
-  | "to_invoice"
-  | "to_ship"
-  | "to_backorder";
+  | "order_requests";
 
 export const ORDER_TABS: { id: OrderTabFilter; label: string }[] = [
   { id: "active", label: "Active" },
+  { id: "order_requests", label: "Order requests" },
   { id: "all", label: "All orders" },
-  { id: "to_invoice", label: "To invoice" },
-  { id: "to_ship", label: "To ship" },
-  { id: "to_backorder", label: "To backorder" },
 ];
 
 export type OrderProgress = {
@@ -72,16 +71,8 @@ export function filterOrdersByTab(
       return orders.filter(
         (o) => o.status === "PENDING" || o.status === "PROCESSING",
       );
-    case "to_invoice":
-      return orders.filter((o) => o.status === "PENDING");
-    case "to_ship":
-      return orders.filter((o) => o.status === "PROCESSING");
-    case "to_backorder":
-      return orders.filter(
-        (o) =>
-          o.status === "PENDING" &&
-          /b2b|installation/i.test(o.channel),
-      );
+    case "order_requests":
+      return orders.filter((o) => orderHasRequestDocument(o));
     case "all":
     default:
       return orders;
@@ -99,8 +90,19 @@ export function filterOrders(
   return filterOrdersByPeriod(filterOrdersByTab(orders, tab), period, customDate).filter(
     (o) => {
       if (!q) return true;
+      const requestHay = o.requestDetails
+        ? [
+            o.requestDetails.fullName,
+            o.requestDetails.companyName,
+            o.requestDetails.contactPerson,
+            o.requestDetails.productCategory,
+            o.requestDetails.purchaseOrderNumber,
+          ]
+            .filter(Boolean)
+            .join(" ")
+        : "";
       const hay =
-        `${o.id} ${o.customer} ${o.channel} ${o.lineSummary} ${o.branchName ?? ""} ${o.branchLocation ?? ""}`.toLowerCase();
+        `${o.id} ${o.customer} ${o.channel} ${o.lineSummary} ${o.branchName ?? ""} ${o.branchLocation ?? ""} ${requestHay}`.toLowerCase();
       return hay.includes(q);
     },
   );

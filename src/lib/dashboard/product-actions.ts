@@ -6,10 +6,21 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { PUBLISHED_CATALOG_CACHE_TAG } from "@/lib/store/published-catalog";
+import {
+  normalizeProductImages,
+  normalizeAccessoryImageUrl,
+  type ProductImageInput,
+} from "@/lib/dashboard/product-media";
+import {
+  extractCapacityLabel,
+  variantFamilyTitle,
+} from "@/lib/store/product-variants";
 
 export type ProductActionResult =
   | { ok: true; id?: string }
   | { ok: false; message: string };
+
+export type { ProductImageInput } from "@/lib/dashboard/product-media";
 
 export type ProductAccessoryInput = {
   name: string;
@@ -24,7 +35,7 @@ function normalizeAccessories(
   return accessories
     .map((a) => ({
       name: a.name.trim(),
-      imageUrl: a.imageUrl?.trim() || null,
+      imageUrl: normalizeAccessoryImageUrl(a.imageUrl),
       priceCents: Math.max(0, Math.round(a.priceCents ?? 0)),
     }))
     .filter((a) => a.name.length > 0);
@@ -46,6 +57,34 @@ async function replaceProductAccessories(
       sortOrder: index,
     })),
   });
+}
+
+async function replaceProductImages(
+  productId: string,
+  images: ProductImageInput[],
+) {
+  await prisma.productImage.deleteMany({ where: { productId } });
+  if (!images.length) return;
+
+  await prisma.productImage.createMany({
+    data: images.map((image, index) => ({
+      productId,
+      url: image.url,
+      label: image.label ?? null,
+      sortOrder: index,
+    })),
+  });
+}
+
+function productImagesCreateInput(images: ProductImageInput[]) {
+  if (!images.length) return undefined;
+  return {
+    create: images.map((image, index) => ({
+      url: image.url,
+      label: image.label ?? null,
+      sortOrder: index,
+    })),
+  };
 }
 
 function slugify(name: string, explicit?: string): string {
@@ -111,6 +150,10 @@ export async function createDashboardProduct(input: {
   stock: number;
   published: boolean;
   accessories?: ProductAccessoryInput[];
+  images?: ProductImageInput[];
+  familyName?: string | null;
+  variantLabel?: string | null;
+  familyId?: string | null;
 }): Promise<ProductActionResult & { id?: string }> {
   const authErr = await requireStaffSession();
   if (authErr) return authErr;
@@ -132,6 +175,7 @@ export async function createDashboardProduct(input: {
       ? Math.max(0, Math.round(input.costPriceCents))
       : null;
   const accessories = normalizeAccessories(input.accessories);
+  const images = normalizeProductImages(input.images);
 
   const categoryResult = await resolveProductCategory(
     input.category,
@@ -152,6 +196,20 @@ export async function createDashboardProduct(input: {
   }
 
   try {
+    const variantLabel =
+      input.variantLabel?.trim() || extractCapacityLabel(name);
+    let familyId = input.familyId?.trim() || null;
+
+    if (!familyId) {
+      const family = await prisma.productFamily.create({
+        data: {
+          name: input.familyName?.trim() || variantFamilyTitle(name),
+          category,
+        },
+      });
+      familyId = family.id;
+    }
+
     const p = await prisma.product.create({
       data: {
         name,
@@ -163,6 +221,8 @@ export async function createDashboardProduct(input: {
         currency,
         stock,
         published: input.published,
+        familyId,
+        variantLabel,
         accessories: accessories.length
           ? {
               create: accessories.map((a, index) => ({
@@ -173,12 +233,21 @@ export async function createDashboardProduct(input: {
               })),
             }
           : undefined,
+        images: productImagesCreateInput(images),
       },
     });
     revalidateProductSurfaces();
     return { ok: true, id: p.id };
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Could not create product.";
+    const msg =
+      e instanceof Error ? e.message : "Could not create product.";
+    if (msg.includes("character varying") || msg.includes("too long")) {
+      return {
+        ok: false,
+        message:
+          "One of the images is too large. Use a smaller file or paste a shorter HTTPS URL.",
+      };
+    }
     return { ok: false, message: msg };
   }
 }
@@ -196,6 +265,8 @@ export async function updateDashboardProduct(input: {
   stock: number;
   published: boolean;
   accessories?: ProductAccessoryInput[];
+  images?: ProductImageInput[];
+  variantLabel?: string | null;
 }): Promise<ProductActionResult> {
   const authErr = await requireStaffSession();
   if (authErr) return authErr;
@@ -225,6 +296,7 @@ export async function updateDashboardProduct(input: {
       ? Math.max(0, Math.round(input.costPriceCents))
       : null;
   const accessories = normalizeAccessories(input.accessories);
+  const images = normalizeProductImages(input.images);
 
   const categoryResult = await resolveProductCategory(
     input.category,
@@ -243,6 +315,9 @@ export async function updateDashboardProduct(input: {
   }
 
   try {
+    const variantLabel =
+      input.variantLabel?.trim() || extractCapacityLabel(name);
+
     await prisma.product.update({
       where: { id: input.id },
       data: {
@@ -255,13 +330,124 @@ export async function updateDashboardProduct(input: {
         currency,
         stock,
         published: input.published,
+        variantLabel,
       },
     });
     await replaceProductAccessories(input.id, accessories);
+    await replaceProductImages(input.id, images);
     revalidateProductSurfaces();
     return { ok: true, id: input.id };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Could not update product.";
+    return { ok: false, message: msg };
+  }
+}
+
+/** Add a new capacity/size version to an existing product family. */
+export async function createDashboardProductVersion(input: {
+  familyId: string;
+  variantLabel: string;
+  priceCents: number;
+  costPriceCents?: number | null;
+  currency?: string;
+  stock: number;
+  published?: boolean;
+  description?: string | null;
+  accessories?: ProductAccessoryInput[];
+  images?: ProductImageInput[];
+}): Promise<ProductActionResult & { id?: string }> {
+  const authErr = await requireStaffSession();
+  if (authErr) return authErr;
+
+  const variantLabel = input.variantLabel.trim();
+  if (!variantLabel) {
+    return { ok: false, message: "Version label is required (e.g. 50W, 120cm)." };
+  }
+
+  if (!Number.isFinite(input.priceCents) || input.priceCents < 0) {
+    return { ok: false, message: "Invalid price." };
+  }
+
+  const family = await prisma.productFamily.findUnique({
+    where: { id: input.familyId },
+    select: { id: true, name: true, category: true },
+  });
+  if (!family) {
+    return { ok: false, message: "Product family not found." };
+  }
+
+  const sibling = await prisma.product.findFirst({
+    where: { familyId: family.id },
+    orderBy: { createdAt: "asc" },
+    select: { description: true, currency: true },
+  });
+
+  const name = `${family.name} ${variantLabel}`.trim();
+  const stock = Math.max(0, Math.floor(Number(input.stock) || 0));
+  const currency = normalizeCurrency(input.currency ?? sibling?.currency ?? "RWF");
+  const description =
+    input.description?.trim() || sibling?.description?.trim() || null;
+  const costPriceCents =
+    input.costPriceCents != null && Number.isFinite(input.costPriceCents)
+      ? Math.max(0, Math.round(input.costPriceCents))
+      : null;
+  const accessories = normalizeAccessories(input.accessories);
+  const images = normalizeProductImages(input.images);
+
+  const labelClash = await prisma.product.findFirst({
+    where: { familyId: family.id, variantLabel },
+    select: { id: true },
+  });
+  if (labelClash) {
+    return {
+      ok: false,
+      message: `A version labeled "${variantLabel}" already exists for this product.`,
+    };
+  }
+
+  const base = slugify(name);
+  let slug = base;
+  for (let n = 0; n < 20; n++) {
+    const clash = await prisma.product.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+    if (!clash) break;
+    slug = `${base}-${n + 2}`;
+  }
+
+  try {
+    const product = await prisma.product.create({
+      data: {
+        name,
+        slug,
+        category: family.category,
+        description,
+        priceCents: Math.round(input.priceCents),
+        costPriceCents,
+        currency,
+        stock,
+        published: input.published ?? false,
+        familyId: family.id,
+        variantLabel,
+        accessories: accessories.length
+          ? {
+              create: accessories.map((a, index) => ({
+                name: a.name,
+                imageUrl: a.imageUrl,
+                priceCents: a.priceCents ?? 0,
+                sortOrder: index,
+              })),
+            }
+          : undefined,
+        images: productImagesCreateInput(images),
+      },
+    });
+    revalidateProductSurfaces();
+    revalidatePath(`/dashboard/products/${product.id}`);
+    return { ok: true, id: product.id };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Could not create version.";
     return { ok: false, message: msg };
   }
 }
@@ -303,6 +489,15 @@ export async function fetchDashboardProductForEdit(id: string): Promise<
         published: boolean;
         createdAt: string;
         updatedAt: string;
+        familyName: string | null;
+        variantLabel: string | null;
+        familyId: string | null;
+        images: {
+          id: string;
+          url: string;
+          label: string | null;
+          sortOrder: number;
+        }[];
         accessories: {
           id: string;
           name: string;
@@ -340,6 +535,15 @@ export async function fetchDashboardProductForEdit(id: string): Promise<
       published: row.published,
       createdAt: row.createdAt.toISOString(),
       updatedAt: row.updatedAt.toISOString(),
+      familyName: row.familyName,
+      variantLabel: row.variantLabel,
+      familyId: row.familyId,
+      images: row.images.map((image) => ({
+        id: image.id,
+        url: image.url,
+        label: image.label,
+        sortOrder: image.sortOrder,
+      })),
       accessories: row.accessories.map((a) => ({
         id: a.id,
         name: a.name,

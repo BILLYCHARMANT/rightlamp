@@ -1,5 +1,6 @@
 import type { OrderItem, Order as PrismaOrder, OrderItemAccessory } from "@/generated/prisma/client";
 import type { OrderLineItem, OrderRow, OrderStatus } from "@/lib/dashboard/order-types";
+import { parseOrderRequestDetails } from "@/lib/orders/order-request-details";
 
 type OrderItemWithAccessories = OrderItem & {
   accessories: OrderItemAccessory[];
@@ -81,6 +82,7 @@ export function mapOrderToRow(order: OrderWithItems): OrderRow {
     placedAt: order.placedAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
     notes: order.notes,
+    requestDetails: parseOrderRequestDetails(order.requestDetails),
     branchId: order.branchId,
     branchName: order.branch?.name ?? null,
     branchLocation: order.branch?.location ?? null,
